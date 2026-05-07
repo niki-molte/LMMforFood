@@ -1,0 +1,15 @@
+# Ambienti virtuali
+.venv/
+.env/
+
+# Sicurezza (FONDAMENTALE)
+.env
+
+# PyCharm specifici
+.idea/
+*.iml
+
+# Cache e compilati Python
+__pycache__/
+*.pyc
+*.pyo
