@@ -6,7 +6,7 @@ from google.genai import errors, types
 
 load_dotenv()
 
-from GoogleLLMClient.exceptions import InvalidApiKeyError, InvalidModelNameError, RateLimitExceededError
+from GoogleLLMClient.exceptions import InvalidApiKeyError
 
 
 class GoogleClient:
@@ -56,7 +56,6 @@ class GoogleClient:
         uploaded_files = []
         request_contents = []
 
-        # 1. Few-Shot Examples
         if examples:
             request_contents.append("Here are some examples of the expected task:\n")
             for idx, ex in enumerate(examples, 1):
@@ -78,7 +77,6 @@ class GoogleClient:
 
             request_contents.append("\nNow, process the following target request exactly as shown in the examples:\n")
 
-        # 2. Target Input
         target_image = self.client.files.upload(file=image_path)
         uploaded_files.append(target_image)
 
@@ -100,7 +98,6 @@ class GoogleClient:
                 return response.text
 
             except errors.APIError as e:
-                # Fatal errors that should NOT trigger a retry
                 if e.code == 404:
                     print(f"[GoogleClient FATAL ERROR] Model '{self.model_name}' not found. Aborting.")
                     return None
@@ -108,28 +105,30 @@ class GoogleClient:
                     print(f"[GoogleClient FATAL ERROR] Bad Request (Check your schema or prompt): {e.message}")
                     return None
 
-                # Transient errors that CAN be retried
                 if attempt == self.max_retries - 1:
                     print(
-                        f"[GoogleClient ERROR] API call failed completely after {self.max_retries} attempts: {e.message}")
+                        f"[GoogleClient ERROR] API call failed completely after {self.max_retries} "
+                        f"attempts: {e.message}")
                     return None
 
                 sleep_time = self.base_delay * (2 ** attempt)
 
                 if e.code == 429:
                     print(
-                        f"[Google Rate Limit] Quota exceeded. Retrying in {sleep_time}s (Attempt {attempt + 1}/{self.max_retries})")
+                        f"[Google Rate Limit] Quota exceeded. Retrying in {sleep_time}s "
+                        f"(Attempt {attempt + 1}/{self.max_retries})")
                 elif e.code in [500, 503]:
                     print(
-                        f"[Google Server Busy] Internal Error. Retrying in {sleep_time}s (Attempt {attempt + 1}/{self.max_retries})")
+                        f"[Google Server Busy] Internal Error. Retrying in {sleep_time}s "
+                        f"(Attempt {attempt + 1}/{self.max_retries})")
                 else:
                     print(
-                        f"[Google Generic Error] {e.message}. Retrying in {sleep_time}s (Attempt {attempt + 1}/{self.max_retries})")
+                        f"[Google Generic Error] {e.message}. Retrying in {sleep_time}s "
+                        f"(Attempt {attempt + 1}/{self.max_retries})")
 
                 time.sleep(sleep_time)
 
             except Exception as e:
-                # Catch-all for non-API errors (e.g., connection lost)
                 if attempt == self.max_retries - 1:
                     print(f"[GoogleClient UNEXPECTED ERROR] {e}")
                     return None
@@ -147,17 +146,11 @@ class GoogleClient:
         """
         uploaded_files = []
         try:
-            # 1. Configure parameters
             model_config = self._define_model_configuration(system_instruction, thinking, response_schema)
-
-            # 2. Upload files and build messages
             contents, uploaded_files = self._prepare_contents(image_path, prompt, examples)
-
-            # 3. Execute with robust retry logic
             return self._execute_with_retry(model_config, contents)
 
         finally:
-            # 4. Mandatory Cleanup: Delete files from Google's servers to avoid hitting storage quotas
             for file_obj in uploaded_files:
                 try:
                     self.client.files.delete(name=file_obj.name)
