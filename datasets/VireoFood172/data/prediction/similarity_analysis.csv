@@ -1,0 +1,1609 @@
+recipe_id,predicted,best_gt_match,similarity_score,threshold_passed
+/102/1_15.jpg,black noodles,fern root noodles,0.5296,False
+/102/1_15.jpg,chopped red chili,crushed pepper,0.5779,False
+/102/1_15.jpg,chopped green onions,minced green onion,0.7764,True
+/102/1_15.jpg,garlic,crushed garlic,0.8264,True
+/102/1_15.jpg,fern root starch,fern root noodles,0.7048,True
+/102/1_15.jpg,water,crushed pepper,0.3562,False
+/102/1_15.jpg,soy sauce,crushed pepper,0.4362,False
+/102/1_15.jpg,vinegar,crushed pepper,0.3617,False
+/102/1_15.jpg,salt,crushed pepper,0.4381,False
+/102/1_15.jpg,sugar,crushed garlic,0.3284,False
+/102/1_15.jpg,sesame oil,crushed garlic,0.3806,False
+/102/1_15.jpg,chili oil,crushed pepper,0.5489,False
+/103/1-130609142951D7.jpg,cabbage,chinese cabbage,0.8539,True
+/103/1-130609142951D7.jpg,red chili peppers,crushed hot and dry chili,0.5118,False
+/103/1-130609142951D7.jpg,green peppers,shredded pepper,0.6194,False
+/103/1-130609142951D7.jpg,vinegar,shredded pepper,0.4046,False
+/103/1-130609142951D7.jpg,salt,shredded pepper,0.4259,False
+/103/1-130609142951D7.jpg,cooking oil,crushed hot and dry chili,0.1674,False
+/103/1-130609142951D7.jpg,sugar,shredded pepper,0.3118,False
+/103/1-130609142951D7.jpg,soy sauce,crushed hot and dry chili,0.4662,False
+/105/0Q01231Y-0.jpg,chinese yam,yam chunks,0.6126,False
+/105/0Q01231Y-0.jpg,cucumber,cucumber slices,0.7626,True
+/105/0Q01231Y-0.jpg,cherry tomato,cherry tomato slices,0.8207,True
+/105/0Q01231Y-0.jpg,sugar,crystal sugar,0.7711,True
+/105/0Q01231Y-0.jpg,water,crystal sugar,0.3391,False
+/105/0Q01231Y-0.jpg,oil,black sesame,0.3395,False
+/105/0Q01231Y-0.jpg,sesame seeds,black sesame,0.7333,True
+/104/01200000023782135249768714551.jpg,intestines,pork intestines,0.7135,True
+/104/01200000023782135249768714551.jpg,green onion,minced green onion,0.8627,True
+/104/01200000023782135249768714551.jpg,lettuce,lettuce,1.0,True
+/104/01200000023782135249768714551.jpg,soy sauce,lettuce,0.3911,False
+/104/01200000023782135249768714551.jpg,sugar,lettuce,0.3353,False
+/104/01200000023782135249768714551.jpg,ginger,minced green onion,0.2998,False
+/104/01200000023782135249768714551.jpg,garlic,minced green onion,0.4955,False
+/104/01200000023782135249768714551.jpg,cooking oil,minced green onion,0.2281,False
+/104/01200000023782135249768714551.jpg,starches,pork intestines,0.244,False
+/104/01200000023782135249768714551.jpg,salt,minced green onion,0.2758,False
+/104/01200000023782135249768714551.jpg,water,lettuce,0.3078,False
+/107/01300000560404127475936344336_s.jpg,sea cucumber,sea cucumber,1.0,True
+/107/01300000560404127475936344336_s.jpg,brown sauce,shanghai cabbage,0.3451,False
+/107/01300000560404127475936344336_s.jpg,scallion,sea cucumber,0.3586,False
+/107/01300000560404127475936344336_s.jpg,carrot,shanghai cabbage,0.5111,False
+/107/01300000560404127475936344336_s.jpg,soy sauce,shanghai cabbage,0.2807,False
+/107/01300000560404127475936344336_s.jpg,sugar,shanghai cabbage,0.1708,False
+/107/01300000560404127475936344336_s.jpg,cornstarch,shanghai cabbage,0.2408,False
+/107/01300000560404127475936344336_s.jpg,salt,sea cucumber,0.3251,False
+/107/01300000560404127475936344336_s.jpg,oil,shanghai cabbage,0.3029,False
+/107/01300000560404127475936344336_s.jpg,ginger,shanghai cabbage,0.2947,False
+/107/01300000560404127475936344336_s.jpg,garlic,shanghai cabbage,0.385,False
+/108/10_1.jpg,meatballs,meat balls,0.8707,True
+/108/10_1.jpg,glaze,lettuce,0.2505,False
+/108/10_1.jpg,lettuce,lettuce,1.0,True
+/108/10_1.jpg,ground meat,meat balls,0.6206,False
+/108/10_1.jpg,breadcrumbs,lettuce,0.2312,False
+/108/10_1.jpg,egg,lettuce,0.3353,False
+/108/10_1.jpg,onion,lettuce,0.4158,False
+/108/10_1.jpg,garlic,meat balls,0.3186,False
+/108/10_1.jpg,soy sauce,lettuce,0.3911,False
+/108/10_1.jpg,sugar,lettuce,0.3353,False
+/108/10_1.jpg,cornstarch,lettuce,0.3055,False
+/108/10_1.jpg,salt,meat balls,0.3033,False
+/108/10_1.jpg,pepper,lettuce,0.4316,False
+/108/10_1.jpg,oil,lettuce,0.2838,False
+/110/10_2.jpg,yam,white yam,0.5911,False
+/110/10_2.jpg,blueberry sauce,blueberry jam,0.6878,False
+/110/10_2.jpg,blueberries,blueberry jam,0.7297,True
+/110/10_2.jpg,sugar,blueberry jam,0.3562,False
+/110/10_2.jpg,cornstarch,white yam,0.2343,False
+/110/10_2.jpg,lemon juice,blueberry jam,0.3654,False
+/110/10_2.jpg,water,blueberry jam,0.2733,False
+/112/10_1.jpg,bullfrog meat,bullfrog,0.8287,True
+/112/10_1.jpg,red pepper,pepper slices,0.6667,False
+/112/10_1.jpg,green pepper,pepper slices,0.6457,False
+/112/10_1.jpg,sauce,pepper slices,0.4094,False
+/112/10_1.jpg,soy sauce,pepper slices,0.3932,False
+/112/10_1.jpg,ginger,pepper slices,0.3157,False
+/112/10_1.jpg,garlic,pepper slices,0.4731,False
+/112/10_1.jpg,sugar,pepper slices,0.2818,False
+/112/10_1.jpg,cornstarch,bullfrog,0.284,False
+/112/10_1.jpg,cooking oil,pepper slices,0.1692,False
+/112/10_1.jpg,salt,pepper slices,0.4369,False
+/112/10_1.jpg,chili oil,pepper slices,0.5226,False
+/111/01300000820304126595948986524_s.jpg,green onions,minced green onion,0.8161,True
+/111/01300000820304126595948986524_s.jpg,carrots,hob blocks of carrot,0.6082,False
+/111/01300000820304126595948986524_s.jpg,tofu,noodles,0.3295,False
+/111/01300000820304126595948986524_s.jpg,mushrooms,black fungus,0.6217,False
+/111/01300000820304126595948986524_s.jpg,chili oil,minced green onion,0.446,False
+/111/01300000820304126595948986524_s.jpg,noodles,noodles,1.0,True
+/111/01300000820304126595948986524_s.jpg,wheat flour,noodles,0.3636,False
+/111/01300000820304126595948986524_s.jpg,water,noodles,0.3891,False
+/111/01300000820304126595948986524_s.jpg,salt,noodles,0.3757,False
+/111/01300000820304126595948986524_s.jpg,soy sauce,noodles,0.5082,False
+/111/01300000820304126595948986524_s.jpg,vinegar,black fungus,0.4243,False
+/111/01300000820304126595948986524_s.jpg,garlic,minced green onion,0.4955,False
+/111/01300000820304126595948986524_s.jpg,ginger,black fungus,0.3437,False
+/111/01300000820304126595948986524_s.jpg,sugar,noodles,0.3095,False
+/122/1089834.1.jpg,beef,sliced fatty beef,0.7299,True
+/122/1089834.1.jpg,red chili peppers,crushed pepper,0.4852,False
+/122/1089834.1.jpg,green chili peppers,crushed pepper,0.5063,False
+/122/1089834.1.jpg,fresh green peppercorns,crushed pepper,0.5105,False
+/122/1089834.1.jpg,bean sprouts,crushed pepper,0.32,False
+/122/1089834.1.jpg,water,water,1.0,True
+/122/1089834.1.jpg,salt,water,0.554,False
+/122/1089834.1.jpg,fish sauce,sliced fatty beef,0.4375,False
+/122/1089834.1.jpg,lime juice,water,0.5502,False
+/122/1089834.1.jpg,sugar,water,0.4796,False
+/122/1089834.1.jpg,garlic,crushed pepper,0.457,False
+/122/1089834.1.jpg,shallots,crushed pepper,0.2158,False
+/116/1-13061215550LK.jpg,beef,beef slices,0.7781,True
+/116/1-13061215550LK.jpg,soy sauce glaze,beef slices,0.29,False
+/116/1-13061215550LK.jpg,soy sauce,beef slices,0.3629,False
+/116/1-13061215550LK.jpg,sugar,beef slices,0.2191,False
+/116/1-13061215550LK.jpg,salt,beef slices,0.2726,False
+/116/1-13061215550LK.jpg,ginger,beef slices,0.1873,False
+/116/1-13061215550LK.jpg,garlic,beef slices,0.2745,False
+/116/1-13061215550LK.jpg,star anise,beef slices,0.2118,False
+/116/1-13061215550LK.jpg,cooking oil,beef slices,0.1247,False
+/118/1-111014233U0616.jpg,pork ribs,spareribs,0.3071,False
+/118/1-111014233U0616.jpg,white gourd,white gourd chunks,0.7938,True
+/118/1-111014233U0616.jpg,water,water,1.0,True
+/118/1-111014233U0616.jpg,salt,water,0.554,False
+/118/1-111014233U0616.jpg,ginger,water,0.3422,False
+/118/1-111014233U0616.jpg,garlic,water,0.3572,False
+/117/1-130R3213606244.jpg,spring roll wrapper,spring rolls,0.8458,True
+/117/1-130R3213606244.jpg,shredded cabbage,parsley,0.3802,False
+/117/1-130R3213606244.jpg,shredded carrots,parsley,0.3506,False
+/117/1-130R3213606244.jpg,minced meat,parsley,0.3307,False
+/117/1-130R3213606244.jpg,parsley,parsley,1.0,True
+/117/1-130R3213606244.jpg,oil,parsley,0.3307,False
+/117/1-130R3213606244.jpg,salt,parsley,0.2474,False
+/117/1-130R3213606244.jpg,pepper,parsley,0.4762,False
+/117/1-130R3213606244.jpg,soy sauce,parsley,0.3464,False
+/117/1-130R3213606244.jpg,garlic,parsley,0.5175,False
+/117/1-130R3213606244.jpg,ginger,parsley,0.386,False
+/120/0103202904702.jpg,crucian carp,crucian,0.5769,False
+/120/0103202904702.jpg,tofu,tofu chunks,0.7553,True
+/120/0103202904702.jpg,soup broth,tofu chunks,0.3961,False
+/120/0103202904702.jpg,water,water,1.0,True
+/120/0103202904702.jpg,salt,water,0.554,False
+/120/0103202904702.jpg,ginger,water,0.3422,False
+/120/0103202904702.jpg,scallions,water,0.3151,False
+/120/0103202904702.jpg,soy sauce,tofu chunks,0.3993,False
+/120/0103202904702.jpg,cooking oil,tofu chunks,0.222,False
+/119/1-130331145632E3.jpg,tremella mushroom,white fungus,0.4937,False
+/119/1-130331145632E3.jpg,red dates,red dates,1.0,True
+/119/1-130331145632E3.jpg,goji berries,lotus seeds,0.4268,False
+/119/1-130331145632E3.jpg,water,water,1.0,True
+/119/1-130331145632E3.jpg,rock sugar,water,0.3776,False
+/11/1007190809261983.jpg,vermicelli,vermicelli,1.0,True
+/11/1007190809261983.jpg,minced pork,minced pork,1.0,True
+/11/1007190809261983.jpg,green onions,minced green onion,0.8161,True
+/11/1007190809261983.jpg,red chili,minced green onion,0.4376,False
+/11/1007190809261983.jpg,soy sauce,minced green onion,0.3497,False
+/11/1007190809261983.jpg,cooking oil,minced pork,0.2614,False
+/11/1007190809261983.jpg,salt,minced green onion,0.2758,False
+/11/1007190809261983.jpg,sugar,minced green onion,0.2438,False
+/11/1007190809261983.jpg,garlic,minced green onion,0.4955,False
+/11/1007190809261983.jpg,white pepper,minced green onion,0.4382,False
+/12/10_15.jpg,pork,pork slices,0.8011,True
+/12/10_15.jpg,mushrooms,shredded pepper,0.356,False
+/12/10_15.jpg,carrots,shredded pepper,0.4037,False
+/12/10_15.jpg,green onions,shredded pepper,0.4548,False
+/12/10_15.jpg,soy sauce,shredded pepper,0.4117,False
+/12/10_15.jpg,oil,shredded pepper,0.3134,False
+/12/10_15.jpg,salt,shredded pepper,0.4259,False
+/12/10_15.jpg,sugar,shredded pepper,0.3118,False
+/12/10_15.jpg,cornstarch,shredded pepper,0.3105,False
+/12/10_15.jpg,garlic,shredded pepper,0.484,False
+/12/10_15.jpg,ginger,shredded pepper,0.3636,False
+/123/xiachufang_5.jpg,chicken,chicken chunks,0.6697,False
+/123/xiachufang_5.jpg,red onion,onion slices,0.7152,True
+/123/xiachufang_5.jpg,cilantro,garlic clove,0.3867,False
+/123/xiachufang_5.jpg,garlic,garlic clove,0.8575,True
+/123/xiachufang_5.jpg,chili oil,garlic clove,0.427,False
+/123/xiachufang_5.jpg,soy sauce,chicken chunks,0.4148,False
+/123/xiachufang_5.jpg,ginger,garlic clove,0.3083,False
+/123/xiachufang_5.jpg,sugar,garlic clove,0.3267,False
+/123/xiachufang_5.jpg,salt,onion slices,0.3549,False
+/123/xiachufang_5.jpg,cooking oil,garlic clove,0.2924,False
+/123/xiachufang_5.jpg,cornstarch,onion slices,0.2955,False
+/124/1_1.jpg,eggplant,eggplant slice,0.805,True
+/124/1_1.jpg,seasoning powder,hot and dry pepper powder,0.5828,False
+/124/1_1.jpg,oil,hot and dry pepper powder,0.221,False
+/124/1_1.jpg,salt,hot and dry pepper powder,0.3579,False
+/124/1_1.jpg,pepper,hot and dry pepper powder,0.5893,False
+/126/01200000026525134396856441164_s.jpg,wheat gluten,gluten,0.8463,True
+/126/01200000026525134396856441164_s.jpg,wooden skewers,gluten,0.0909,False
+/126/01200000026525134396856441164_s.jpg,soy sauce,gluten,0.3468,False
+/126/01200000026525134396856441164_s.jpg,sugar,gluten,0.4162,False
+/126/01200000026525134396856441164_s.jpg,oil,gluten,0.2989,False
+/126/01200000026525134396856441164_s.jpg,salt,gluten,0.3719,False
+/126/01200000026525134396856441164_s.jpg,spices,gluten,0.3146,False
+/127/10_10.jpg,scrambled eggs,scrambled egg,0.9577,True
+/127/10_10.jpg,bitter melon,bitter gourd slices,0.5063,False
+/127/10_10.jpg,cooking oil,scrambled egg,0.2364,False
+/127/10_10.jpg,salt,scrambled egg,0.3175,False
+/127/10_10.jpg,pepper,bitter gourd slices,0.3924,False
+/128/001372af6e321099ab273d.jpg,dumpling wrapper,dumplings,0.6816,False
+/128/001372af6e321099ab273d.jpg,green garnish,dumplings,0.2443,False
+/128/001372af6e321099ab273d.jpg,filling,dumplings,0.3085,False
+/128/001372af6e321099ab273d.jpg,flour,dumplings,0.2971,False
+/128/001372af6e321099ab273d.jpg,water,dumplings,0.2909,False
+/128/001372af6e321099ab273d.jpg,salt,dumplings,0.279,False
+/128/001372af6e321099ab273d.jpg,oil,dumplings,0.2395,False
+/128/001372af6e321099ab273d.jpg,pork,dumplings,0.2909,False
+/128/001372af6e321099ab273d.jpg,cabbage,dumplings,0.3845,False
+/128/001372af6e321099ab273d.jpg,ginger,dumplings,0.2156,False
+/128/001372af6e321099ab273d.jpg,garlic,dumplings,0.3627,False
+/128/001372af6e321099ab273d.jpg,soy sauce,dumplings,0.1536,False
+/128/001372af6e321099ab273d.jpg,sesame oil,dumplings,0.1634,False
+/125/1_1.jpg,leeks,chives,0.2998,False
+/125/1_1.jpg,sesame seeds,black sesame,0.7333,True
+/125/1_1.jpg,soy sauce,black sesame,0.4739,False
+/125/1_1.jpg,oil,black sesame,0.3395,False
+/125/1_1.jpg,sugar,black sesame,0.338,False
+/125/1_1.jpg,salt,chili saurce,0.3685,False
+/125/1_1.jpg,garlic,black sesame,0.378,False
+/131/01300000290761122612136329352_s.jpg,duck neck,duck neck,1.0,True
+/131/01300000290761122612136329352_s.jpg,salt,duck neck,0.1742,False
+/131/01300000290761122612136329352_s.jpg,soy sauce,duck neck,0.2583,False
+/131/01300000290761122612136329352_s.jpg,sugar,duck neck,0.1224,False
+/131/01300000290761122612136329352_s.jpg,five spice powder,duck neck,0.0909,False
+/131/01300000290761122612136329352_s.jpg,oil,duck neck,0.2269,False
+/132/10_17.jpg,peanuts,groundnut kernels,0.3988,False
+/132/10_17.jpg,oil,groundnut kernels,0.2219,False
+/132/10_17.jpg,salt,groundnut kernels,0.1968,False
+/133/01300000440507128618994958571.jpg,steamed bun dough,steamed bun,0.8286,True
+/133/01300000440507128618994958571.jpg,filling peek,steamed bun,0.2031,False
+/133/01300000440507128618994958571.jpg,wheat flour,steamed bun,0.2767,False
+/133/01300000440507128618994958571.jpg,water,steamed bun,0.3612,False
+/133/01300000440507128618994958571.jpg,yeast,steamed bun,0.2494,False
+/133/01300000440507128618994958571.jpg,sugar,steamed bun,0.3353,False
+/133/01300000440507128618994958571.jpg,salt,steamed bun,0.2643,False
+/133/01300000440507128618994958571.jpg,meat,steamed bun,0.3733,False
+/133/01300000440507128618994958571.jpg,vegetables,steamed bun,0.2963,False
+/133/01300000440507128618994958571.jpg,soy sauce,steamed bun,0.3556,False
+/133/01300000440507128618994958571.jpg,ginger,steamed bun,0.3385,False
+/133/01300000440507128618994958571.jpg,sesame oil,steamed bun,0.3331,False
+/135/-luoshifen.jpg,rice noodles,rice noodle,0.8673,True
+/135/-luoshifen.jpg,lettuce,lettuce,1.0,True
+/135/-luoshifen.jpg,river snails,black fungus,0.2427,False
+/135/-luoshifen.jpg,soy sauce,chili oil,0.5823,False
+/135/-luoshifen.jpg,salt,chili oil,0.4322,False
+/135/-luoshifen.jpg,oil,chili oil,0.6611,False
+/135/-luoshifen.jpg,spices,chili oil,0.6235,False
+/135/-luoshifen.jpg,water,chili oil,0.3518,False
+/136/10_1.jpg,rice noodles,cold steamed rice noodles,0.7935,True
+/136/10_1.jpg,shredded cucumber,julienned cucumber,0.7703,True
+/136/10_1.jpg,shredded carrots,julienned cucumber,0.5109,False
+/136/10_1.jpg,purple cabbage,black sesame,0.4802,False
+/136/10_1.jpg,cilantro,chili oil,0.5409,False
+/136/10_1.jpg,sesame seeds,black sesame,0.7333,True
+/136/10_1.jpg,chili oil paste,chili oil,0.8155,True
+/136/10_1.jpg,soy sauce,chili oil,0.5823,False
+/136/10_1.jpg,vinegar,chili oil,0.3832,False
+/136/10_1.jpg,sugar,black sesame,0.338,False
+/136/10_1.jpg,salt,chili oil,0.4322,False
+/136/10_1.jpg,garlic,chili oil,0.4617,False
+/136/10_1.jpg,sesame oil,black sesame,0.7274,True
+/136/10_1.jpg,cornstarch,chili oil,0.3959,False
+/138/10_2.jpg,lamb,mutton slices,0.3158,False
+/138/10_2.jpg,pita bread,crushed small loaf of steamed bread,0.5286,False
+/138/10_2.jpg,cilantro,chinese parsleycoriander,0.3726,False
+/138/10_2.jpg,scallions,mutton slices,0.3015,False
+/138/10_2.jpg,water,mutton slices,0.1758,False
+/138/10_2.jpg,salt,mutton slices,0.2487,False
+/138/10_2.jpg,black pepper,chinese parsleycoriander,0.3384,False
+/138/10_2.jpg,onion,mutton slices,0.3203,False
+/138/10_2.jpg,garlic,chinese parsleycoriander,0.326,False
+/137/10_4.jpg,noodles,noodles,1.0,True
+/137/10_4.jpg,beef,beef chunks,0.7408,True
+/137/10_4.jpg,daikon radish,crushed pepper,0.2331,False
+/137/10_4.jpg,green leaf vegetable,green vegetables,0.846,True
+/137/10_4.jpg,broth,noodles,0.386,False
+/137/10_4.jpg,wheat flour,noodles,0.3636,False
+/137/10_4.jpg,salt,crushed pepper,0.4381,False
+/137/10_4.jpg,water,noodles,0.3891,False
+/137/10_4.jpg,ginger,chili oil,0.428,False
+/137/10_4.jpg,garlic,minced green onion,0.4955,False
+/137/10_4.jpg,soy sauce,chili oil,0.5823,False
+/137/10_4.jpg,star anise,chili oil,0.1954,False
+/137/10_4.jpg,cinnamon,chili oil,0.5157,False
+/137/10_4.jpg,oil,chili oil,0.6611,False
+/140/105F425I-0.jpg,squid,tentacles of squid,0.8462,True
+/140/105F425I-0.jpg,red chili peppers,crushed pepper,0.4852,False
+/140/105F425I-0.jpg,green onions,minced green onion,0.8161,True
+/140/105F425I-0.jpg,garlic,minced green onion,0.4955,False
+/140/105F425I-0.jpg,soy sauce,black sesame,0.4739,False
+/140/105F425I-0.jpg,oil,crushed pepper,0.3439,False
+/140/105F425I-0.jpg,sugar,black sesame,0.338,False
+/140/105F425I-0.jpg,salt,crushed pepper,0.4381,False
+/140/105F425I-0.jpg,pepper,crushed pepper,0.7985,True
+/140/105F425I-0.jpg,sesame seeds,black sesame,0.7333,True
+/139/10_21.jpg,tofu,tofu chunks,0.7553,True
+/139/10_21.jpg,minced meat,minced pork,0.839,True
+/139/10_21.jpg,green onions,minced green onion,0.8161,True
+/139/10_21.jpg,chili peppers,chili oil,0.7289,True
+/139/10_21.jpg,sauce,chili oil,0.4582,False
+/139/10_21.jpg,soy sauce,chili oil,0.5823,False
+/139/10_21.jpg,oil,chili oil,0.6611,False
+/139/10_21.jpg,sugar,crushed pepper,0.2984,False
+/139/10_21.jpg,salt,crushed pepper,0.4381,False
+/139/10_21.jpg,garlic,minced green onion,0.4955,False
+/139/10_21.jpg,ginger,chili oil,0.428,False
+/139/10_21.jpg,cornstarch,chili oil,0.3959,False
+/14/10_1.jpg,pork,streaky pork chunks,0.6356,False
+/14/10_1.jpg,minced garlic,crushed garlic,0.7491,True
+/14/10_1.jpg,soy sauce,crushed garlic,0.3469,False
+/14/10_1.jpg,sesame oil,crushed garlic,0.3806,False
+/14/10_1.jpg,sugar,crushed garlic,0.3284,False
+/14/10_1.jpg,salt,crushed garlic,0.313,False
+/14/10_1.jpg,vinegar,crushed garlic,0.3469,False
+/13/1-120605101JN28.jpg,pork leg,pork leg,1.0,True
+/13/1-120605101JN28.jpg,braising liquid,pork leg,0.0508,False
+/13/1-120605101JN28.jpg,soy sauce,pork leg,0.2088,False
+/13/1-120605101JN28.jpg,sugar,pork leg,0.2697,False
+/13/1-120605101JN28.jpg,cooking oil,pork leg,0.1896,False
+/13/1-120605101JN28.jpg,ginger,pork leg,0.2568,False
+/13/1-120605101JN28.jpg,garlic,pork leg,0.3073,False
+/13/1-120605101JN28.jpg,starches,pork leg,0.3819,False
+/13/1-120605101JN28.jpg,salt,pork leg,0.1916,False
+/13/1-120605101JN28.jpg,water,pork leg,0.2695,False
+/141/1-140930011S95c.jpg,puff pastry,small loaf of steamed bread,0.3868,False
+/141/1-140930011S95c.jpg,braised pork,minced pork,0.6751,False
+/141/1-140930011S95c.jpg,parsley,parsley,1.0,True
+/141/1-140930011S95c.jpg,edible flower,parsley,0.3354,False
+/141/1-140930011S95c.jpg,flour,small loaf of steamed bread,0.3369,False
+/141/1-140930011S95c.jpg,butter,parsley,0.3441,False
+/141/1-140930011S95c.jpg,salt,minced pork,0.2582,False
+/141/1-140930011S95c.jpg,sugar,parsley,0.2832,False
+/141/1-140930011S95c.jpg,soy sauce,parsley,0.3464,False
+/141/1-140930011S95c.jpg,five-spice powder,parsley,0.3757,False
+/141/1-140930011S95c.jpg,oil,parsley,0.3307,False
+/143/100007843409.jpg,banana leaves,rice dumpling,0.3562,False
+/143/100007843409.jpg,bamboo ties,rice dumpling,0.2765,False
+/143/100007843409.jpg,glutinous rice,rice dumpling,0.5026,False
+/143/100007843409.jpg,pork,rice dumpling,0.3373,False
+/143/100007843409.jpg,mushrooms,rice dumpling,0.3168,False
+/143/100007843409.jpg,soy sauce,rice dumpling,0.3277,False
+/143/100007843409.jpg,salt,rice dumpling,0.3274,False
+/143/100007843409.jpg,water,rice dumpling,0.3373,False
+/144/10_0.jpg,sweet dumpling,sweet dumplings,0.866,True
+/144/10_0.jpg,liquid base,sweet dumplings,0.169,False
+/144/10_0.jpg,glutinous rice flour,sweet dumplings,0.1564,False
+/144/10_0.jpg,water,sweet dumplings,0.2597,False
+/144/10_0.jpg,sugar,sweet dumplings,0.4054,False
+/144/10_0.jpg,sesame seeds,sweet dumplings,0.2776,False
+/144/10_0.jpg,lard,sweet dumplings,0.2664,False
+/144/10_0.jpg,salt,sweet dumplings,0.2662,False
+/146/002564a17b73102eeedd19.jpg,shrimp,brunoise diced carrot,0.2629,False
+/146/002564a17b73102eeedd19.jpg,shumai wrapper,shumai,0.6831,False
+/146/002564a17b73102eeedd19.jpg,goji berry,wolfberry,0.4391,False
+/146/002564a17b73102eeedd19.jpg,pork,wolfberry,0.3126,False
+/146/002564a17b73102eeedd19.jpg,ginger,wolfberry,0.3299,False
+/146/002564a17b73102eeedd19.jpg,soy sauce,brunoise diced carrot,0.2988,False
+/146/002564a17b73102eeedd19.jpg,sesame oil,brunoise diced carrot,0.2133,False
+/146/002564a17b73102eeedd19.jpg,wheat flour,wolfberry,0.1339,False
+/146/002564a17b73102eeedd19.jpg,egg,wolfberry,0.2299,False
+/146/002564a17b73102eeedd19.jpg,salt,shumai,0.3359,False
+/146/002564a17b73102eeedd19.jpg,sugar,brunoise diced carrot,0.3067,False
+/146/002564a17b73102eeedd19.jpg,white pepper,wolfberry,0.3399,False
+/145/00RIHTBE7E600BB16BFABBl.jpg,rice flour batter,rice noodle roll,0.5258,False
+/145/00RIHTBE7E600BB16BFABBl.jpg,soy sauce,rice noodle roll,0.4261,False
+/145/00RIHTBE7E600BB16BFABBl.jpg,scallions,rice noodle roll,0.2447,False
+/145/00RIHTBE7E600BB16BFABBl.jpg,water,rice noodle roll,0.1996,False
+/145/00RIHTBE7E600BB16BFABBl.jpg,sugar,rice noodle roll,0.2773,False
+/145/00RIHTBE7E600BB16BFABBl.jpg,cornstarch,rice noodle roll,0.3405,False
+/145/00RIHTBE7E600BB16BFABBl.jpg,sesame oil,rice noodle roll,0.4389,False
+/145/00RIHTBE7E600BB16BFABBl.jpg,salt,rice noodle roll,0.2479,False
+/148/01.jpg,rice,rice,1.0,True
+/148/01.jpg,peas,pea,0.8001,True
+/148/01.jpg,carrots,rice,0.4055,False
+/148/01.jpg,eggs,scrambled egg,0.7803,True
+/148/01.jpg,shrimp,pea,0.4161,False
+/148/01.jpg,vegetable oil,minced green onion,0.4421,False
+/148/01.jpg,soy sauce,rice,0.5068,False
+/148/01.jpg,salt,crushed pepper,0.4381,False
+/148/01.jpg,sugar,rice,0.3971,False
+/148/01.jpg,white pepper,crushed pepper,0.7194,True
+/149/10_10.jpg,scallions,scallion pancake,0.7333,True
+/149/10_10.jpg,dough,scallion pancake,0.3954,False
+/149/10_10.jpg,flour,scallion pancake,0.3539,False
+/149/10_10.jpg,water,scallion pancake,0.2081,False
+/149/10_10.jpg,salt,scallion pancake,0.2132,False
+/149/10_10.jpg,oil,scallion pancake,0.1769,False
+/150/10_1.jpg,kelp,shredded kelp,0.8016,True
+/150/10_1.jpg,garlic,crushed garlic,0.8264,True
+/150/10_1.jpg,chili flakes,crushed pepper,0.5109,False
+/150/10_1.jpg,soy sauce,crushed pepper,0.4362,False
+/150/10_1.jpg,vinegar,crushed pepper,0.3617,False
+/150/10_1.jpg,sugar,shredded kelp,0.3365,False
+/150/10_1.jpg,sesame oil,crushed garlic,0.3806,False
+/150/10_1.jpg,salt,crushed pepper,0.4381,False
+/153/1-14060416091BX.jpg,mango,mango,1.0,True
+/153/1-14060416091BX.jpg,glutinous rice,rice,0.7237,True
+/153/1-14060416091BX.jpg,sesame seeds,black sesame,0.7333,True
+/153/1-14060416091BX.jpg,coconut milk,coconut water,0.7925,True
+/153/1-14060416091BX.jpg,sugar,coconut water,0.403,False
+/153/1-14060416091BX.jpg,salt,rice,0.4362,False
+/151/10_21.jpg,fried egg,double-side fried egg,0.7873,True
+/151/10_21.jpg,carrots,julienned carrot,0.7,False
+/151/10_21.jpg,spinach,julienned cucumber,0.3729,False
+/151/10_21.jpg,mushrooms,white beech mushroom,0.7021,True
+/151/10_21.jpg,cabbage,baby chinese cabbage,0.7872,True
+/151/10_21.jpg,marinated meat,julienned carrot,0.3236,False
+/151/10_21.jpg,rice,baby chinese cabbage,0.4878,False
+/151/10_21.jpg,sesame oil,baby chinese cabbage,0.3227,False
+/151/10_21.jpg,soy sauce,julienned carrot,0.3013,False
+/151/10_21.jpg,sugar,chive pieces,0.2956,False
+/151/10_21.jpg,salt,baby chinese cabbage,0.2024,False
+/151/10_21.jpg,vegetable oil,julienned carrot,0.4174,False
+/155/10_26.jpg,shredded coconut,coconut cake,0.6966,False
+/155/10_26.jpg,taro root,coconut cake,0.1662,False
+/155/10_26.jpg,red beans,coconut cake,0.3152,False
+/155/10_26.jpg,sugar,coconut cake,0.3695,False
+/155/10_26.jpg,glutinous rice flour,coconut cake,0.2579,False
+/155/10_26.jpg,water,coconut cake,0.3146,False
+/155/10_26.jpg,salt,coconut cake,0.28,False
+/155/10_26.jpg,coconut milk,coconut cake,0.6852,False
+/154/1-120Z6134S5.jpg,shrimp,fresh shrimp,0.8787,True
+/154/1-120Z6134S5.jpg,clams,clams,1.0,True
+/154/1-120Z6134S5.jpg,coconut milk,water,0.3909,False
+/154/1-120Z6134S5.jpg,cilantro,lime leaves,0.3169,False
+/154/1-120Z6134S5.jpg,chili,lime leaves,0.4026,False
+/154/1-120Z6134S5.jpg,lemongrass,lime leaves,0.4888,False
+/154/1-120Z6134S5.jpg,galangal,water,0.2787,False
+/154/1-120Z6134S5.jpg,kaffir lime leaves,lime leaves,0.6944,False
+/154/1-120Z6134S5.jpg,fish sauce,fresh shrimp,0.4782,False
+/154/1-120Z6134S5.jpg,lime juice,lime leaves,0.7007,True
+/154/1-120Z6134S5.jpg,salt,water,0.554,False
+/154/1-120Z6134S5.jpg,sugar,water,0.4796,False
+/157/1_10.jpg,sushi rice,rice,0.7948,True
+/157/1_10.jpg,nori seaweed,sea sedge,0.436,False
+/157/1_10.jpg,salmon,sea sedge,0.3668,False
+/157/1_10.jpg,cucumber,brunoise diced cucumber,0.773,True
+/157/1_10.jpg,egg omelette,scrambled egg,0.6443,False
+/157/1_10.jpg,rice vinegar,rice,0.6558,False
+/157/1_10.jpg,sugar,rice,0.3971,False
+/157/1_10.jpg,salt,rice,0.4362,False
+/156/0062K48A785E07C2B582A9m.jpg,pineapple,pineapple,1.0,True
+/156/0062K48A785E07C2B582A9m.jpg,rice,rice,1.0,True
+/156/0062K48A785E07C2B582A9m.jpg,shrimp,pineapple,0.4952,False
+/156/0062K48A785E07C2B582A9m.jpg,meat,shredded pork,0.6231,False
+/156/0062K48A785E07C2B582A9m.jpg,spring onions,shredded pork,0.359,False
+/156/0062K48A785E07C2B582A9m.jpg,soy sauce,rice,0.5068,False
+/156/0062K48A785E07C2B582A9m.jpg,fish sauce,pineapple,0.4735,False
+/156/0062K48A785E07C2B582A9m.jpg,vegetable oil,rice,0.3592,False
+/156/0062K48A785E07C2B582A9m.jpg,garlic,rice,0.4571,False
+/156/0062K48A785E07C2B582A9m.jpg,onion,shredded pork,0.3951,False
+/156/0062K48A785E07C2B582A9m.jpg,sugar,pineapple,0.4503,False
+/156/0062K48A785E07C2B582A9m.jpg,salt,rice,0.4362,False
+/156/0062K48A785E07C2B582A9m.jpg,pepper,rice,0.4954,False
+/158/00CO019DC5BF89FA8C659El.jpg,chicken feet,chicken feet,1.0,True
+/158/00CO019DC5BF89FA8C659El.jpg,sauce,crushed pepper,0.4277,False
+/158/00CO019DC5BF89FA8C659El.jpg,red chili peppers,crushed pepper,0.4852,False
+/158/00CO019DC5BF89FA8C659El.jpg,fermented black beans,crushed pepper,0.2795,False
+/158/00CO019DC5BF89FA8C659El.jpg,soy sauce,crushed pepper,0.4362,False
+/158/00CO019DC5BF89FA8C659El.jpg,garlic,crushed pepper,0.457,False
+/158/00CO019DC5BF89FA8C659El.jpg,ginger,crushed pepper,0.3516,False
+/158/00CO019DC5BF89FA8C659El.jpg,sugar,crushed pepper,0.2984,False
+/158/00CO019DC5BF89FA8C659El.jpg,oil,crushed pepper,0.3439,False
+/158/00CO019DC5BF89FA8C659El.jpg,cornstarch,crushed pepper,0.288,False
+/158/00CO019DC5BF89FA8C659El.jpg,salt,crushed pepper,0.4381,False
+/159/10_21.jpg,glutinous rice,glutinous rice,1.0,True
+/159/10_21.jpg,bamboo leaves,glutinous rice,0.4102,False
+/159/10_21.jpg,chicken,glutinous rice,0.291,False
+/159/10_21.jpg,salt,glutinous rice,0.2514,False
+/159/10_21.jpg,soy sauce,glutinous rice,0.4447,False
+/159/10_21.jpg,ginger,glutinous rice,0.312,False
+/159/10_21.jpg,sugar,glutinous rice,0.3047,False
+/159/10_21.jpg,cooking oil,glutinous rice,0.1244,False
+/160/01200000023782135248863910074.jpg,bullfrog meat,bullfrog,0.8287,True
+/160/01200000023782135248863910074.jpg,lotus root,lotus root slices,0.7716,True
+/160/01200000023782135248863910074.jpg,celery,celtuce sclices,0.3684,False
+/160/01200000023782135248863910074.jpg,red chili peppers,hot and dry pepper,0.4845,False
+/160/01200000023782135248863910074.jpg,garlic cloves,garlic clove,0.9677,True
+/160/01200000023782135248863910074.jpg,soy sauce,hot and dry pepper,0.4192,False
+/160/01200000023782135248863910074.jpg,cooking oil,garlic clove,0.2924,False
+/160/01200000023782135248863910074.jpg,salt,hot and dry pepper,0.3893,False
+/160/01200000023782135248863910074.jpg,sugar,garlic clove,0.3267,False
+/160/01200000023782135248863910074.jpg,cornstarch,groundnut kernels,0.3047,False
+/160/01200000023782135248863910074.jpg,ginger,hot and dry pepper,0.3314,False
+/161/01300000164586121440401634182.jpg,pork lungs,pork lungs,1.0,True
+/161/01300000164586121440401634182.jpg,cilantro,chili oil,0.5409,False
+/161/01300000164586121440401634182.jpg,sesame seeds,black sesame,0.7333,True
+/161/01300000164586121440401634182.jpg,chili oil,chili oil,1.0,True
+/161/01300000164586121440401634182.jpg,green onions,minced green onion,0.8161,True
+/161/01300000164586121440401634182.jpg,soy sauce,chili oil,0.5823,False
+/161/01300000164586121440401634182.jpg,vinegar,chili oil,0.3832,False
+/161/01300000164586121440401634182.jpg,sugar,black sesame,0.338,False
+/161/01300000164586121440401634182.jpg,garlic,minced green onion,0.4955,False
+/161/01300000164586121440401634182.jpg,ginger,chili oil,0.428,False
+/161/01300000164586121440401634182.jpg,salt,chili oil,0.4322,False
+/161/01300000164586121440401634182.jpg,cornstarch,chili oil,0.3959,False
+/163/094f7e76df3811e4b77cb8ca3aeed2d7.jpg,pork,shredded pork,0.8383,True
+/163/094f7e76df3811e4b77cb8ca3aeed2d7.jpg,garlic sprouts,garlic sprout pieces,0.9092,True
+/163/094f7e76df3811e4b77cb8ca3aeed2d7.jpg,red chili,shredded pork,0.3072,False
+/163/094f7e76df3811e4b77cb8ca3aeed2d7.jpg,soy sauce,garlic sprout pieces,0.2746,False
+/163/094f7e76df3811e4b77cb8ca3aeed2d7.jpg,garlic,garlic sprout pieces,0.6854,False
+/163/094f7e76df3811e4b77cb8ca3aeed2d7.jpg,ginger,shredded pork,0.2497,False
+/163/094f7e76df3811e4b77cb8ca3aeed2d7.jpg,cooking oil,garlic sprout pieces,0.2616,False
+/163/094f7e76df3811e4b77cb8ca3aeed2d7.jpg,salt,shredded pork,0.2891,False
+/163/094f7e76df3811e4b77cb8ca3aeed2d7.jpg,sugar,shredded pork,0.332,False
+/163/094f7e76df3811e4b77cb8ca3aeed2d7.jpg,cornstarch,garlic sprout pieces,0.2209,False
+/171/01d43d400bac593eea89007b752cef04.jpg,braised pork,streaky pork chunks,0.6164,False
+/171/01d43d400bac593eea89007b752cef04.jpg,vermicelli,sweet potato starch noodles,0.2565,False
+/171/01d43d400bac593eea89007b752cef04.jpg,basil,streaky pork chunks,0.212,False
+/171/01d43d400bac593eea89007b752cef04.jpg,soy sauce,sweet potato starch noodles,0.4086,False
+/171/01d43d400bac593eea89007b752cef04.jpg,sugar,sweet potato starch noodles,0.38,False
+/171/01d43d400bac593eea89007b752cef04.jpg,salt,sweet potato starch noodles,0.2609,False
+/171/01d43d400bac593eea89007b752cef04.jpg,ginger,sweet potato starch noodles,0.1745,False
+/171/01d43d400bac593eea89007b752cef04.jpg,garlic,sweet potato starch noodles,0.3333,False
+/171/01d43d400bac593eea89007b752cef04.jpg,cooking oil,streaky pork chunks,0.1557,False
+/171/01d43d400bac593eea89007b752cef04.jpg,water,sweet potato starch noodles,0.2045,False
+/171/01d43d400bac593eea89007b752cef04.jpg,starches,sweet potato starch noodles,0.6019,False
+/15/10_24.jpg,pork,chiffonade of green onion,0.2732,False
+/15/10_24.jpg,green onions,chiffonade of green onion,0.6567,False
+/15/10_24.jpg,carrots,chiffonade of green onion,0.271,False
+/15/10_24.jpg,sauce,chiffonade of green onion,0.295,False
+/15/10_24.jpg,soy sauce,chiffonade of green onion,0.3113,False
+/15/10_24.jpg,sugar,chiffonade of green onion,0.302,False
+/15/10_24.jpg,cornstarch,chiffonade of green onion,0.3319,False
+/15/10_24.jpg,oil,chiffonade of green onion,0.1834,False
+/15/10_24.jpg,salt,chiffonade of green onion,0.2026,False
+/15/10_24.jpg,ginger,chiffonade of green onion,0.2447,False
+/15/10_24.jpg,garlic,chiffonade of green onion,0.4388,False
+/164/01300000245880122362433364658.jpg,black chicken,whole black chicken,0.8567,True
+/164/01300000245880122362433364658.jpg,broth,water,0.3381,False
+/164/01300000245880122362433364658.jpg,sliced mushrooms,codonopsis pilosula,0.3284,False
+/164/01300000245880122362433364658.jpg,goji berries,water,0.2511,False
+/164/01300000245880122362433364658.jpg,salt,water,0.554,False
+/164/01300000245880122362433364658.jpg,ginger,water,0.3422,False
+/164/01300000245880122362433364658.jpg,garlic,water,0.3572,False
+/164/01300000245880122362433364658.jpg,water,water,1.0,True
+/165/1_14.jpg,roasted suckling pig,suckling pig,0.8311,True
+/165/1_14.jpg,sesame seeds,black sesame,0.7333,True
+/165/1_14.jpg,lettuce,green vegetables,0.6272,False
+/165/1_14.jpg,dipping sauces,sweet fermented flour paste,0.3259,False
+/165/1_14.jpg,salt,suckling pig,0.2989,False
+/165/1_14.jpg,sugar,sweet fermented flour paste,0.3961,False
+/165/1_14.jpg,soy sauce,black sesame,0.4739,False
+/165/1_14.jpg,five-spice powder,sweet fermented flour paste,0.366,False
+/165/1_14.jpg,honey,suckling pig,0.338,False
+/165/1_14.jpg,oil,black sesame,0.3395,False
+/165/1_14.jpg,vinegar,green vegetables,0.304,False
+/166/1_10.jpg,rice,shredded pork,0.3704,False
+/166/1_10.jpg,preserved egg,crushed preserved egg,0.8421,True
+/166/1_10.jpg,scallions,shredded pork,0.4126,False
+/166/1_10.jpg,minced pork,shredded pork,0.6919,False
+/166/1_10.jpg,water,shredded pork,0.3398,False
+/166/1_10.jpg,salt,white congee,0.309,False
+/166/1_10.jpg,lark,white congee,0.2123,False
+/166/1_10.jpg,pepper,minced green onion,0.4218,False
+/167/00.jpg,dough,steamed twisted roll,0.4302,False
+/167/00.jpg,chopped chives,minced green onion,0.3442,False
+/167/00.jpg,flour,minced green onion,0.2714,False
+/167/00.jpg,water,steamed twisted roll,0.2122,False
+/167/00.jpg,yeast,minced green onion,0.2488,False
+/167/00.jpg,sugar,minced green onion,0.2438,False
+/167/00.jpg,salt,minced green onion,0.2758,False
+/167/00.jpg,oil,minced green onion,0.2333,False
+/169/1085010.1.jpg,spaghetti,spaghetti,1.0,True
+/169/1085010.1.jpg,ground meat,pork paste,0.4941,False
+/169/1085010.1.jpg,tomato sauce,spaghetti,0.5629,False
+/169/1085010.1.jpg,parsley,spaghetti,0.3441,False
+/169/1085010.1.jpg,olive oil,pork paste,0.4009,False
+/169/1085010.1.jpg,onion,spaghetti,0.3665,False
+/169/1085010.1.jpg,garlic,spaghetti,0.5383,False
+/169/1085010.1.jpg,salt,spaghetti,0.3834,False
+/169/1085010.1.jpg,black pepper,spaghetti,0.4022,False
+/169/1085010.1.jpg,carrots,spaghetti,0.4121,False
+/169/1085010.1.jpg,celery,spaghetti,0.3508,False
+/168/01300000229465124460287250044_s.jpg,corn,corn kernels,0.7995,True
+/168/01300000229465124460287250044_s.jpg,red pepper,salad dressing,0.4339,False
+/168/01300000229465124460287250044_s.jpg,green pepper,green vegetables,0.6531,False
+/168/01300000229465124460287250044_s.jpg,red onion,brunoise diced onion,0.5925,False
+/168/01300000229465124460287250044_s.jpg,lettuce,green vegetables,0.6272,False
+/168/01300000229465124460287250044_s.jpg,olive oil,salad dressing,0.441,False
+/168/01300000229465124460287250044_s.jpg,lemon juice,salad dressing,0.4047,False
+/168/01300000229465124460287250044_s.jpg,salt,salad dressing,0.3323,False
+/168/01300000229465124460287250044_s.jpg,black pepper,salad dressing,0.4321,False
+/168/01300000229465124460287250044_s.jpg,vinegar,salad dressing,0.4004,False
+/170/0023ae9bc7a60bf4c9dc17.jpg,bitter gourd,bitter gourd slices,0.8413,True
+/170/0023ae9bc7a60bf4c9dc17.jpg,garlic,crushed garlic,0.8264,True
+/170/0023ae9bc7a60bf4c9dc17.jpg,vegetable oil,crushed garlic,0.4134,False
+/170/0023ae9bc7a60bf4c9dc17.jpg,salt,crushed garlic,0.313,False
+/16/06shuizhurou.jpg,sliced pork,pork slices,0.9038,True
+/16/06shuizhurou.jpg,dried red chili peppers,hot and dry pepper,0.7117,True
+/16/06shuizhurou.jpg,green onions,minced green onion,0.8161,True
+/16/06shuizhurou.jpg,wood ear mushrooms,black fungus,0.5123,False
+/16/06shuizhurou.jpg,vegetable oil,chili oil,0.6939,False
+/16/06shuizhurou.jpg,soy sauce,chili oil,0.5823,False
+/16/06shuizhurou.jpg,garlic,minced green onion,0.4955,False
+/16/06shuizhurou.jpg,ginger,chili oil,0.428,False
+/16/06shuizhurou.jpg,salt,chili oil,0.4322,False
+/16/06shuizhurou.jpg,sugar,chili oil,0.2808,False
+/16/06shuizhurou.jpg,cornstarch,chili oil,0.3959,False
+/16/06shuizhurou.jpg,sesame oil,chili oil,0.6372,False
+/101/01300000804744128754289158712.jpg,noodles,noodles,1.0,True
+/101/01300000804744128754289158712.jpg,wontons,wonton,0.8958,True
+/101/01300000804744128754289158712.jpg,green onions,minced green onion,0.8161,True
+/101/01300000804744128754289158712.jpg,broth,noodles,0.386,False
+/101/01300000804744128754289158712.jpg,wheat flour,noodles,0.3636,False
+/101/01300000804744128754289158712.jpg,ground pork,minced green onion,0.2941,False
+/101/01300000804744128754289158712.jpg,shrimp,noodles,0.5263,False
+/101/01300000804744128754289158712.jpg,soy sauce,noodles,0.5082,False
+/101/01300000804744128754289158712.jpg,sesame oil,noodles,0.47,False
+/101/01300000804744128754289158712.jpg,salt,water,0.554,False
+/101/01300000804744128754289158712.jpg,ginger,water,0.3422,False
+/101/01300000804744128754289158712.jpg,garlic,minced green onion,0.4955,False
+/101/01300000804744128754289158712.jpg,egg,water,0.4041,False
+/18/10038908_489688.jpg,shredded pork,shredded pork,1.0,True
+/18/10038908_489688.jpg,ginger,shredded pork,0.2497,False
+/18/10038908_489688.jpg,scallions,shredded pork,0.4126,False
+/18/10038908_489688.jpg,sweet bean sauce,chiffonade of green onion,0.3813,False
+/18/10038908_489688.jpg,soy sauce,chiffonade of green onion,0.3113,False
+/18/10038908_489688.jpg,sugar,shredded pork,0.332,False
+/18/10038908_489688.jpg,salt,shredded pork,0.2891,False
+/18/10038908_489688.jpg,cornstarch,chiffonade of green onion,0.3319,False
+/18/10038908_489688.jpg,cooking oil,shredded pork,0.218,False
+/106/00T5757331C76062822750l.jpg,barbecued pork,barbecued pork slices,0.862,True
+/106/00T5757331C76062822750l.jpg,fried egg,double-side fried egg,0.7873,True
+/106/00T5757331C76062822750l.jpg,rice,rice,1.0,True
+/106/00T5757331C76062822750l.jpg,soy sauce,rice,0.5068,False
+/106/00T5757331C76062822750l.jpg,honey,rice,0.3214,False
+/106/00T5757331C76062822750l.jpg,five-spice powder,rice,0.359,False
+/106/00T5757331C76062822750l.jpg,sugar,rice,0.3971,False
+/106/00T5757331C76062822750l.jpg,salt,rice,0.4362,False
+/106/00T5757331C76062822750l.jpg,cooking oil,double-side fried egg,0.2947,False
+/106/00T5757331C76062822750l.jpg,water,rice,0.4303,False
+/109/01300001385827133492914078721_s.jpg,duck head,duck head,1.0,True
+/109/01300001385827133492914078721_s.jpg,red chili peppers,crushed pepper,0.4852,False
+/109/01300001385827133492914078721_s.jpg,cilantro,crushed pepper,0.3957,False
+/109/01300001385827133492914078721_s.jpg,soy sauce,crushed pepper,0.4362,False
+/109/01300001385827133492914078721_s.jpg,sugar,crushed pepper,0.2984,False
+/109/01300001385827133492914078721_s.jpg,ginger,crushed pepper,0.3516,False
+/109/01300001385827133492914078721_s.jpg,garlic,crushed pepper,0.457,False
+/109/01300001385827133492914078721_s.jpg,cooking oil,chinese parsleycoriander,0.1876,False
+/109/01300001385827133492914078721_s.jpg,star anise,duck head,0.1733,False
+/109/01300001385827133492914078721_s.jpg,cinnamon,crushed pepper,0.4064,False
+/109/01300001385827133492914078721_s.jpg,salt,crushed pepper,0.4381,False
+/152/10_14.jpg,crayfish,crayfish,1.0,True
+/152/10_14.jpg,green onion,minced green onion,0.8627,True
+/152/10_14.jpg,sesame seeds,minced green onion,0.3584,False
+/152/10_14.jpg,chili oil,minced green onion,0.446,False
+/152/10_14.jpg,ginger,minced green onion,0.2998,False
+/152/10_14.jpg,garlic,minced green onion,0.4955,False
+/152/10_14.jpg,soy sauce,minced green onion,0.3497,False
+/152/10_14.jpg,sugar,minced green onion,0.2438,False
+/152/10_14.jpg,salt,minced green onion,0.2758,False
+/152/10_14.jpg,vegetable oil,minced green onion,0.4421,False
+/152/10_14.jpg,sichuan peppercorns,minced green onion,0.2643,False
+/19/xiachufang_2.jpg,tofu skin,shredded pork,0.2628,False
+/19/xiachufang_2.jpg,pork,shredded pork,0.8383,True
+/19/xiachufang_2.jpg,red bell pepper,shredded pepper,0.6375,False
+/19/xiachufang_2.jpg,green bell pepper,shredded pepper,0.6278,False
+/19/xiachufang_2.jpg,green onions,shredded pepper,0.4548,False
+/19/xiachufang_2.jpg,soy sauce,shredded pepper,0.4117,False
+/19/xiachufang_2.jpg,cooking oil,shredded pork,0.218,False
+/19/xiachufang_2.jpg,salt,shredded pepper,0.4259,False
+/19/xiachufang_2.jpg,sugar,shredded pork,0.332,False
+/19/xiachufang_2.jpg,ginger,shredded pepper,0.3636,False
+/19/xiachufang_2.jpg,garlic,shredded pepper,0.484,False
+/20/1_10.jpg,roasted chicken,whole chicken,0.7068,True
+/20/1_10.jpg,corn,corn blocks,0.76,True
+/20/1_10.jpg,broccoli,green vegetables,0.5222,False
+/20/1_10.jpg,red leaf lettuce,green vegetables,0.6286,False
+/20/1_10.jpg,carrots,green vegetables,0.6199,False
+/20/1_10.jpg,salt,whole chicken,0.2804,False
+/20/1_10.jpg,black pepper,green vegetables,0.39,False
+/20/1_10.jpg,cooking oil,whole chicken,0.2259,False
+/20/1_10.jpg,butter,whole chicken,0.3944,False
+/20/1_10.jpg,garlic powder,green vegetables,0.2565,False
+/20/1_10.jpg,honey,whole chicken,0.2535,False
+/1/1.jpg,pork belly,pork chunks,0.6525,False
+/1/1.jpg,brown glaze,pork chunks,0.2832,False
+/1/1.jpg,soy sauce,pork chunks,0.2842,False
+/1/1.jpg,sugar,pork chunks,0.3009,False
+/1/1.jpg,ginger,pork chunks,0.1851,False
+/1/1.jpg,garlic,pork chunks,0.3889,False
+/1/1.jpg,star anise,pork chunks,0.1336,False
+/1/1.jpg,cooking oil,pork chunks,0.2212,False
+/1/1.jpg,water,pork chunks,0.3028,False
+/2/10688781_164736603000_2.jpg,pork belly,streaky pork slices,0.5681,False
+/2/10688781_164736603000_2.jpg,green chilies,pepper slices,0.4851,False
+/2/10688781_164736603000_2.jpg,red chilies,hot and dry pepper,0.4945,False
+/2/10688781_164736603000_2.jpg,scallions,streaky pork slices,0.3368,False
+/2/10688781_164736603000_2.jpg,garlic,garlic leaves,0.8475,True
+/2/10688781_164736603000_2.jpg,soy sauce,hot and dry pepper,0.4192,False
+/2/10688781_164736603000_2.jpg,oil,hot and dry pepper,0.315,False
+/2/10688781_164736603000_2.jpg,salt,pepper slices,0.4369,False
+/2/10688781_164736603000_2.jpg,sugar,pepper slices,0.2818,False
+/2/10688781_164736603000_2.jpg,ginger,hot and dry pepper,0.3314,False
+/2/10688781_164736603000_2.jpg,cornstarch,pepper slices,0.2707,False
+/23/001aa018fefe0cce47d82a.jpg,chicken,brunoise diced chicken,0.6165,False
+/23/001aa018fefe0cce47d82a.jpg,peanuts,groundnut kernels,0.3988,False
+/23/001aa018fefe0cce47d82a.jpg,dried red chilies,crushed hot and dry chili,0.7275,True
+/23/001aa018fefe0cce47d82a.jpg,green bell pepper,crushed hot and dry chili,0.4433,False
+/23/001aa018fefe0cce47d82a.jpg,spring onions,parsley,0.4327,False
+/23/001aa018fefe0cce47d82a.jpg,soy sauce,crushed hot and dry chili,0.4662,False
+/23/001aa018fefe0cce47d82a.jpg,sugar,parsley,0.2832,False
+/23/001aa018fefe0cce47d82a.jpg,cornstarch,groundnut kernels,0.3047,False
+/23/001aa018fefe0cce47d82a.jpg,vinegar,parsley,0.3406,False
+/23/001aa018fefe0cce47d82a.jpg,ginger,parsley,0.386,False
+/23/001aa018fefe0cce47d82a.jpg,garlic,parsley,0.5175,False
+/23/001aa018fefe0cce47d82a.jpg,oil,parsley,0.3307,False
+/23/001aa018fefe0cce47d82a.jpg,salt,crushed hot and dry chili,0.3029,False
+/21/1-140Z21QZ1.jpg,diced chicken,brunoise diced chicken,0.7915,True
+/21/1-140Z21QZ1.jpg,red chili peppers,pepper slices,0.4628,False
+/21/1-140Z21QZ1.jpg,bell peppers,pepper slices,0.6136,False
+/21/1-140Z21QZ1.jpg,soy sauce,pepper slices,0.3932,False
+/21/1-140Z21QZ1.jpg,cooking oil,brunoise diced chicken,0.193,False
+/21/1-140Z21QZ1.jpg,garlic,pepper slices,0.4731,False
+/21/1-140Z21QZ1.jpg,ginger,pepper slices,0.3157,False
+/21/1-140Z21QZ1.jpg,salt,pepper slices,0.4369,False
+/21/1-140Z21QZ1.jpg,sugar,pepper slices,0.2818,False
+/21/1-140Z21QZ1.jpg,cornstarch,pepper slices,0.2707,False
+/24/1_1.jpg,chicken feet,chicken feet,1.0,True
+/24/1_1.jpg,pickled peppers,pickled capsicum annum fasciculatum,0.6581,False
+/24/1_1.jpg,red chili peppers,crushed pepper,0.4852,False
+/24/1_1.jpg,green onions,celery,0.3668,False
+/24/1_1.jpg,vinegar,crushed pepper,0.3617,False
+/24/1_1.jpg,salt,crushed pepper,0.4381,False
+/24/1_1.jpg,sugar,celery,0.3208,False
+/24/1_1.jpg,water,crushed pepper,0.3562,False
+/25/1_0.jpg,chicken,chicken chunks,0.6697,False
+/25/1_0.jpg,green bell peppers,pepper slices,0.5494,False
+/25/1_0.jpg,dried red chilies,pepper slices,0.5014,False
+/25/1_0.jpg,onions,pepper slices,0.4366,False
+/25/1_0.jpg,soy sauce,chicken chunks,0.4148,False
+/25/1_0.jpg,cooking oil,chicken chunks,0.2058,False
+/25/1_0.jpg,garlic,pepper slices,0.4731,False
+/25/1_0.jpg,ginger,pepper slices,0.3157,False
+/25/1_0.jpg,salt,pepper slices,0.4369,False
+/25/1_0.jpg,sugar,pepper slices,0.2818,False
+/25/1_0.jpg,cornstarch,chicken chunks,0.2815,False
+/26/-14a0b3561215bc87dbb-7d8b.jpg,chicken wings,chicken wings,1.0,True
+/26/-14a0b3561215bc87dbb-7d8b.jpg,parsley,parsley,1.0,True
+/26/-14a0b3561215bc87dbb-7d8b.jpg,edible flower,parsley,0.3354,False
+/26/-14a0b3561215bc87dbb-7d8b.jpg,soy sauce,parsley,0.3464,False
+/26/-14a0b3561215bc87dbb-7d8b.jpg,honey,chicken wings,0.1883,False
+/26/-14a0b3561215bc87dbb-7d8b.jpg,garlic,parsley,0.5175,False
+/26/-14a0b3561215bc87dbb-7d8b.jpg,ginger,parsley,0.386,False
+/26/-14a0b3561215bc87dbb-7d8b.jpg,salt,chicken wings,0.2788,False
+/26/-14a0b3561215bc87dbb-7d8b.jpg,oil,parsley,0.3307,False
+/26/-14a0b3561215bc87dbb-7d8b.jpg,pepper,parsley,0.4762,False
+/28/10_1.jpg,chicken,chicken chunks,0.6697,False
+/28/10_1.jpg,mushrooms,dried mushroom,0.7805,True
+/28/10_1.jpg,sauce,chicken chunks,0.3614,False
+/28/10_1.jpg,soy sauce,chicken chunks,0.4148,False
+/28/10_1.jpg,oil,chicken chunks,0.283,False
+/28/10_1.jpg,sugar,starch sheet,0.3379,False
+/28/10_1.jpg,salt,dried mushroom,0.3047,False
+/28/10_1.jpg,ginger,dried mushroom,0.2652,False
+/28/10_1.jpg,garlic,dried mushroom,0.3715,False
+/28/10_1.jpg,cornstarch,starch sheet,0.5607,False
+/28/10_1.jpg,water,dried mushroom,0.3452,False
+/29/10_0.jpg,chicken wings,chicken wings,1.0,True
+/29/10_0.jpg,breading,fried flour,0.487,False
+/29/10_0.jpg,flour,fried flour,0.8776,True
+/29/10_0.jpg,salt,fried flour,0.3431,False
+/29/10_0.jpg,pepper,fried flour,0.42,False
+/29/10_0.jpg,oil,fried flour,0.4346,False
+/29/10_0.jpg,egg,chicken wings,0.4332,False
+/29/10_0.jpg,paprika,chicken wings,0.3576,False
+/30/01300001385827132937274523645.jpg,chicken,boiled chicken slices,0.5539,False
+/30/01300001385827132937274523645.jpg,red chili peppers,chili oil,0.5481,False
+/30/01300001385827132937274523645.jpg,cilantro,chili oil,0.5409,False
+/30/01300001385827132937274523645.jpg,sesame seeds,black sesame,0.7333,True
+/30/01300001385827132937274523645.jpg,red chili oil,chili oil,0.8826,True
+/30/01300001385827132937274523645.jpg,soy sauce,chili oil,0.5823,False
+/30/01300001385827132937274523645.jpg,garlic,minced green onion,0.4955,False
+/30/01300001385827132937274523645.jpg,ginger,chili oil,0.428,False
+/30/01300001385827132937274523645.jpg,sugar,black sesame,0.338,False
+/30/01300001385827132937274523645.jpg,salt,crushed pepper,0.4381,False
+/30/01300001385827132937274523645.jpg,cornstarch,chili oil,0.3959,False
+/30/01300001385827132937274523645.jpg,vinegar,chili oil,0.3832,False
+/30/01300001385827132937274523645.jpg,cooking oil,chili oil,0.551,False
+/31/00N074BBAA4C9D1137183Bl.jpg,shredded chicken,shredded chicken,1.0,True
+/31/00N074BBAA4C9D1137183Bl.jpg,sesame seeds,black sesame,0.7333,True
+/31/00N074BBAA4C9D1137183Bl.jpg,cilantro,black sesame,0.393,False
+/31/00N074BBAA4C9D1137183Bl.jpg,soy sauce,black sesame,0.4739,False
+/31/00N074BBAA4C9D1137183Bl.jpg,sesame oil,black sesame,0.7274,True
+/31/00N074BBAA4C9D1137183Bl.jpg,sugar,black sesame,0.338,False
+/31/00N074BBAA4C9D1137183Bl.jpg,salt,shredded chicken,0.2809,False
+/31/00N074BBAA4C9D1137183Bl.jpg,vinegar,black sesame,0.2843,False
+/31/00N074BBAA4C9D1137183Bl.jpg,cornstarch,black sesame,0.3208,False
+/32/10_16.jpg,chicken,chicken chunks,0.6697,False
+/32/10_16.jpg,basil leaves,green vegetables,0.2413,False
+/32/10_16.jpg,soy sauce,chicken chunks,0.4148,False
+/32/10_16.jpg,sesame oil,chicken chunks,0.2968,False
+/32/10_16.jpg,rice wine,green vegetables,0.3074,False
+/32/10_16.jpg,sugar,green vegetables,0.2964,False
+/32/10_16.jpg,garlic,green vegetables,0.3783,False
+/32/10_16.jpg,ginger,green vegetables,0.2845,False
+/32/10_16.jpg,salt,chicken chunks,0.2815,False
+/32/10_16.jpg,oil,chicken chunks,0.283,False
+/33/10_1.jpg,fried chicken drumstick,chicken legs,0.5758,False
+/33/10_1.jpg,breading,fried flour,0.487,False
+/33/10_1.jpg,flour,fried flour,0.8776,True
+/33/10_1.jpg,salt,fried flour,0.3431,False
+/33/10_1.jpg,pepper,fried flour,0.42,False
+/33/10_1.jpg,oil,fried flour,0.4346,False
+/33/10_1.jpg,spices,fried flour,0.433,False
+/33/10_1.jpg,eggs,chicken legs,0.4347,False
+/34/00AWM489B247F9F5759638l.jpg,fish,fish,1.0,True
+/34/00AWM489B247F9F5759638l.jpg,cilantro,chinese parsleycoriander,0.3726,False
+/34/00AWM489B247F9F5759638l.jpg,chili peppers,hot and dry pepper,0.6259,False
+/34/00AWM489B247F9F5759638l.jpg,green onions,hot and dry pepper,0.3265,False
+/34/00AWM489B247F9F5759638l.jpg,ginger,fish,0.3399,False
+/34/00AWM489B247F9F5759638l.jpg,garlic,hot and dry pepper,0.3944,False
+/34/00AWM489B247F9F5759638l.jpg,soy sauce,hot and dry pepper,0.4192,False
+/34/00AWM489B247F9F5759638l.jpg,oil,fish,0.3607,False
+/34/00AWM489B247F9F5759638l.jpg,salt,fish,0.4109,False
+/34/00AWM489B247F9F5759638l.jpg,sugar,fish,0.2396,False
+/34/00AWM489B247F9F5759638l.jpg,sesame oil,chinese parsleycoriander,0.404,False
+/34/00AWM489B247F9F5759638l.jpg,cornstarch,chinese parsleycoriander,0.2611,False
+/44/10_0.jpg,scrambled eggs,scrambled egg,0.9577,True
+/44/10_0.jpg,tomatoes,tomato sclices,0.6426,False
+/44/10_0.jpg,green onions,minced green onion,0.8161,True
+/44/10_0.jpg,cooking oil,scrambled egg,0.2364,False
+/44/10_0.jpg,salt,scrambled egg,0.3175,False
+/44/10_0.jpg,sugar,scrambled egg,0.2977,False
+/44/10_0.jpg,pepper,minced green onion,0.4218,False
+/35/10_11.jpg,dried red chili peppers,hot and dry pepper,0.7117,True
+/35/10_11.jpg,fish fillets,fish slices,0.6302,False
+/35/10_11.jpg,green onions,minced green onion,0.8161,True
+/35/10_11.jpg,sichuan peppercorns,chili oil,0.4235,False
+/35/10_11.jpg,vegetable oil,chili oil,0.6939,False
+/35/10_11.jpg,soy sauce,chili oil,0.5823,False
+/35/10_11.jpg,salt,chili oil,0.4322,False
+/35/10_11.jpg,sugar,chili oil,0.2808,False
+/35/10_11.jpg,ginger,chili oil,0.428,False
+/35/10_11.jpg,garlic,minced green onion,0.4955,False
+/35/10_11.jpg,cornstarch,chili oil,0.3959,False
+/36/00MTDY4AF3E461A267773Fl.jpg,fish,fish slices,0.7176,True
+/36/00MTDY4AF3E461A267773Fl.jpg,sweet and sour sauce,sweet and sour sauce,1.0,True
+/36/00MTDY4AF3E461A267773Fl.jpg,green onions,minced green onion,0.8161,True
+/36/00MTDY4AF3E461A267773Fl.jpg,cornstarch,minced green onion,0.3577,False
+/36/00MTDY4AF3E461A267773Fl.jpg,flour,minced green onion,0.2714,False
+/36/00MTDY4AF3E461A267773Fl.jpg,sugar,sweet and sour sauce,0.4659,False
+/36/00MTDY4AF3E461A267773Fl.jpg,vinegar,sweet and sour sauce,0.3884,False
+/36/00MTDY4AF3E461A267773Fl.jpg,salt,fish slices,0.3464,False
+/36/00MTDY4AF3E461A267773Fl.jpg,oil,sweet and sour sauce,0.2802,False
+/36/00MTDY4AF3E461A267773Fl.jpg,garlic,minced green onion,0.4955,False
+/36/00MTDY4AF3E461A267773Fl.jpg,ginger,sweet and sour sauce,0.3504,False
+/37/10_0.jpg,fish,fish slices,0.7176,True
+/37/10_0.jpg,pickled cabbage,fermented vegetables,0.481,False
+/37/10_0.jpg,chili peppers,hot and dry pepper,0.6259,False
+/37/10_0.jpg,green onion,minced green onion,0.8627,True
+/37/10_0.jpg,broth,minced green onion,0.3161,False
+/37/10_0.jpg,ginger,hot and dry pepper,0.3314,False
+/37/10_0.jpg,garlic,minced green onion,0.4955,False
+/37/10_0.jpg,salt,hot and dry pepper,0.3893,False
+/37/10_0.jpg,oil,hot and dry pepper,0.315,False
+/37/10_0.jpg,soy sauce,hot and dry pepper,0.4192,False
+/37/10_0.jpg,cornstarch,minced green onion,0.3577,False
+/37/10_0.jpg,white pepper,hot and dry pepper,0.674,False
+/38/10_13.jpg,fish head,fish head,1.0,True
+/38/10_13.jpg,red peppers,crushed pepper,0.5548,False
+/38/10_13.jpg,garlic,minced green onion,0.4955,False
+/38/10_13.jpg,green onions,minced green onion,0.8161,True
+/38/10_13.jpg,soy sauce,chili oil,0.5823,False
+/38/10_13.jpg,ginger,chili oil,0.428,False
+/38/10_13.jpg,cooking oil,chili oil,0.551,False
+/38/10_13.jpg,salt,crushed pepper,0.4381,False
+/38/10_13.jpg,sugar,crushed pepper,0.2984,False
+/38/10_13.jpg,sesame oil,chili oil,0.6372,False
+/46/10_16.jpg,scrambled eggs,scrambled egg,0.9577,True
+/46/10_16.jpg,green pepper,shredded pepper,0.6784,False
+/46/10_16.jpg,onion,shredded onion,0.8355,True
+/46/10_16.jpg,oil,shredded pepper,0.3134,False
+/46/10_16.jpg,salt,shredded pepper,0.4259,False
+/46/10_16.jpg,pepper,shredded pepper,0.8075,True
+/39/001e4f9d7c880d5d9f4e62.jpg,whole fish,fish,0.7513,True
+/39/001e4f9d7c880d5d9f4e62.jpg,green onions,chiffonade of green onion,0.6567,False
+/39/001e4f9d7c880d5d9f4e62.jpg,red chili peppers,crushed hot and dry chili,0.5118,False
+/39/001e4f9d7c880d5d9f4e62.jpg,ginger,fish,0.3399,False
+/39/001e4f9d7c880d5d9f4e62.jpg,garlic,chiffonade of green onion,0.4388,False
+/39/001e4f9d7c880d5d9f4e62.jpg,soy sauce,crushed hot and dry chili,0.4662,False
+/39/001e4f9d7c880d5d9f4e62.jpg,sesame oil,crushed hot and dry chili,0.3354,False
+/39/001e4f9d7c880d5d9f4e62.jpg,salt,fish,0.4109,False
+/39/001e4f9d7c880d5d9f4e62.jpg,water,fish,0.5088,False
+/4/10_1.jpg,pork,streaky pork slices,0.6469,False
+/4/10_1.jpg,rice powder,steamed rice powder,0.8771,True
+/4/10_1.jpg,green herbs,steamed rice powder,0.2982,False
+/4/10_1.jpg,red chili,steamed rice powder,0.3395,False
+/4/10_1.jpg,carrots,sliced carrot,0.7856,True
+/4/10_1.jpg,salt,steamed rice powder,0.2985,False
+/4/10_1.jpg,sugar,sliced carrot,0.2678,False
+/4/10_1.jpg,fish sauce,steamed rice powder,0.3794,False
+/4/10_1.jpg,soy sauce,steamed rice powder,0.4918,False
+/4/10_1.jpg,pepper,sliced carrot,0.4183,False
+/4/10_1.jpg,garlic,sliced carrot,0.4081,False
+/40/00154529.jpg,hairtail fish,ribbonfish,0.4332,False
+/40/00154529.jpg,green onions,minced green onion,0.8161,True
+/40/00154529.jpg,soy sauce glaze,minced green onion,0.359,False
+/40/00154529.jpg,oil,minced green onion,0.2333,False
+/40/00154529.jpg,sugar,ribbonfish,0.257,False
+/40/00154529.jpg,ginger,minced green onion,0.2998,False
+/40/00154529.jpg,garlic,minced green onion,0.4955,False
+/40/00154529.jpg,water,ribbonfish,0.3048,False
+/40/00154529.jpg,salt,minced green onion,0.2758,False
+/40/00154529.jpg,cooking wine,minced green onion,0.1547,False
+/3/10684606_123649480000_2.jpg,fried pork slices,tenderloin slices,0.5918,False
+/3/10684606_123649480000_2.jpg,sweet and sour sauce,tenderloin slices,0.4367,False
+/3/10684606_123649480000_2.jpg,green onion,lettuce,0.5274,False
+/3/10684606_123649480000_2.jpg,parsley,lettuce,0.3688,False
+/3/10684606_123649480000_2.jpg,purple orchid flower,lettuce,0.1309,False
+/3/10684606_123649480000_2.jpg,cornstarch,fried flour,0.4272,False
+/3/10684606_123649480000_2.jpg,flour,fried flour,0.8776,True
+/3/10684606_123649480000_2.jpg,sugar,fried flour,0.3777,False
+/3/10684606_123649480000_2.jpg,vinegar,lettuce,0.3113,False
+/3/10684606_123649480000_2.jpg,salt,fried flour,0.3431,False
+/3/10684606_123649480000_2.jpg,oil,fried flour,0.4346,False
+/3/10684606_123649480000_2.jpg,soy sauce,lettuce,0.3911,False
+/45/030435K35-0.jpg,scrambled egg,scrambled egg,1.0,True
+/45/030435K35-0.jpg,leek,chive pieces,0.2168,False
+/45/030435K35-0.jpg,oil,scrambled egg,0.2573,False
+/45/030435K35-0.jpg,salt,scrambled egg,0.3175,False
+/41/10_0.jpg,orange peel,wolfberry,0.304,False
+/41/10_0.jpg,egg custard,steamed egg custard,0.8983,True
+/41/10_0.jpg,goji berries,wolfberry,0.4393,False
+/41/10_0.jpg,lily bulbs,lotus seeds,0.3695,False
+/41/10_0.jpg,water,wolfberry,0.3244,False
+/41/10_0.jpg,salt,white fungus,0.2406,False
+/41/10_0.jpg,sugar,wolfberry,0.2887,False
+/41/10_0.jpg,soy sauce,steamed egg custard,0.3099,False
+/43/10_23.jpg,brown eggs,boild eggs,0.6096,False
+/43/10_23.jpg,tea,boild eggs,0.2964,False
+/43/10_23.jpg,soy sauce,boild eggs,0.2209,False
+/43/10_23.jpg,star anise,boild eggs,0.1321,False
+/43/10_23.jpg,cinnamon,boild eggs,0.1663,False
+/43/10_23.jpg,sugar,boild eggs,0.2225,False
+/43/10_23.jpg,water,boild eggs,0.319,False
+/42/045397b250df1729ba162478bcfff0a5.jpg,fried egg,double-side fried egg,0.7873,True
+/42/045397b250df1729ba162478bcfff0a5.jpg,tomato,tomato sclices,0.6578,False
+/42/045397b250df1729ba162478bcfff0a5.jpg,cucumber,cucumber slices,0.7626,True
+/42/045397b250df1729ba162478bcfff0a5.jpg,cheese slice,bread,0.4766,False
+/42/045397b250df1729ba162478bcfff0a5.jpg,bread,bread,1.0,True
+/42/045397b250df1729ba162478bcfff0a5.jpg,mint leaves,cucumber slices,0.1682,False
+/42/045397b250df1729ba162478bcfff0a5.jpg,butter,bread,0.4857,False
+/42/045397b250df1729ba162478bcfff0a5.jpg,oil,bread,0.3886,False
+/42/045397b250df1729ba162478bcfff0a5.jpg,salt,bread,0.4089,False
+/42/045397b250df1729ba162478bcfff0a5.jpg,pepper,bread,0.4096,False
+/58/03e9f65f9861e2e5d340d280dedb953f.jpg,millet,millet,1.0,True
+/58/03e9f65f9861e2e5d340d280dedb953f.jpg,mango,sweet potato chunks,0.3512,False
+/58/03e9f65f9861e2e5d340d280dedb953f.jpg,water,millet,0.2813,False
+/58/03e9f65f9861e2e5d340d280dedb953f.jpg,sugar,sweet potato chunks,0.4746,False
+/58/03e9f65f9861e2e5d340d280dedb953f.jpg,salt,millet,0.359,False
+/90/0911144639-0.jpg,mung beans,green beans,0.6425,False
+/90/0911144639-0.jpg,red dates,red dates,1.0,True
+/90/0911144639-0.jpg,steamed bun,steamed bread,0.7067,True
+/90/0911144639-0.jpg,water,water,1.0,True
+/90/0911144639-0.jpg,sugar,water,0.4796,False
+/90/0911144639-0.jpg,salt,water,0.554,False
+/90/0911144639-0.jpg,wheat flour,steamed bread,0.4252,False
+/47/xiachufang_1.jpg,eggs,boild egg slices,0.6432,False
+/47/xiachufang_1.jpg,green bell pepper,crushed pepper,0.5921,False
+/47/xiachufang_1.jpg,red chili pepper,crushed pepper,0.655,False
+/47/xiachufang_1.jpg,black beans,fermented soya beans,0.496,False
+/47/xiachufang_1.jpg,oil,crushed pepper,0.3439,False
+/47/xiachufang_1.jpg,salt,crushed pepper,0.4381,False
+/47/xiachufang_1.jpg,soy sauce,fermented soya beans,0.5563,False
+/47/xiachufang_1.jpg,sugar,crushed pepper,0.2984,False
+/47/xiachufang_1.jpg,garlic,crushed pepper,0.457,False
+/47/xiachufang_1.jpg,ginger,crushed pepper,0.3516,False
+/48/0506195816782.jpg,preserved egg,preserved egg chunks,0.7859,True
+/48/0506195816782.jpg,cilantro,chinese parsleycoriander,0.3726,False
+/48/0506195816782.jpg,chili,chinese parsleycoriander,0.2987,False
+/48/0506195816782.jpg,soy sauce,chinese parsleycoriander,0.3572,False
+/48/0506195816782.jpg,vinegar,chinese parsleycoriander,0.2773,False
+/48/0506195816782.jpg,sugar,preserved egg chunks,0.187,False
+/48/0506195816782.jpg,sesame oil,chinese parsleycoriander,0.404,False
+/48/0506195816782.jpg,salt,chinese parsleycoriander,0.1475,False
+/48/0506195816782.jpg,garlic,chinese parsleycoriander,0.326,False
+/50/10_14.jpg,pork spareribs,spareribs,0.7056,True
+/50/10_14.jpg,sauce,sweet and sour sauce,0.6089,False
+/50/10_14.jpg,sugar,sweet and sour sauce,0.4659,False
+/50/10_14.jpg,vinegar,sweet and sour sauce,0.3884,False
+/50/10_14.jpg,salt,sweet and sour sauce,0.3316,False
+/50/10_14.jpg,soy sauce,sweet and sour sauce,0.6439,False
+/50/10_14.jpg,cornstarch,sweet and sour sauce,0.3408,False
+/50/10_14.jpg,oil,sweet and sour sauce,0.2802,False
+/50/10_14.jpg,water,green vegetables,0.2363,False
+/5/000802aa2f2f09d295cc3d.jpg,pork belly,streaky pork slices,0.5681,False
+/5/000802aa2f2f09d295cc3d.jpg,white rice,rice,0.8926,True
+/5/000802aa2f2f09d295cc3d.jpg,salted vegetables,preserved vegetables,0.6317,False
+/5/000802aa2f2f09d295cc3d.jpg,red chili,shredded pepper,0.5521,False
+/5/000802aa2f2f09d295cc3d.jpg,green onion,shredded pepper,0.4706,False
+/5/000802aa2f2f09d295cc3d.jpg,soy sauce,rice,0.5068,False
+/5/000802aa2f2f09d295cc3d.jpg,sugar,rice,0.3971,False
+/5/000802aa2f2f09d295cc3d.jpg,cooking oil,rice,0.1611,False
+/5/000802aa2f2f09d295cc3d.jpg,garlic,shredded pepper,0.484,False
+/5/000802aa2f2f09d295cc3d.jpg,ginger,rice,0.4043,False
+/5/000802aa2f2f09d295cc3d.jpg,salt,rice,0.4362,False
+/52/10_49.jpg,spare ribs,spareribs,0.5926,False
+/52/10_49.jpg,peanuts,black sesame,0.523,False
+/52/10_49.jpg,cilantro,black sesame,0.393,False
+/52/10_49.jpg,sesame seeds,black sesame,0.7333,True
+/52/10_49.jpg,garlic,hot and dry pepper,0.3944,False
+/52/10_49.jpg,soy sauce,black sesame,0.4739,False
+/52/10_49.jpg,sugar,black sesame,0.338,False
+/52/10_49.jpg,oil,black sesame,0.3395,False
+/52/10_49.jpg,salt,hot and dry pepper,0.3893,False
+/54/01200000023782135248776670473.jpg,shrimp,fresh shrimp,0.8787,True
+/54/01200000023782135248776670473.jpg,batter,fried flour,0.3515,False
+/54/01200000023782135248776670473.jpg,flour,fried flour,0.8776,True
+/54/01200000023782135248776670473.jpg,oil,fried flour,0.4346,False
+/54/01200000023782135248776670473.jpg,salt,fried flour,0.3431,False
+/54/01200000023782135248776670473.jpg,black pepper,fried flour,0.4162,False
+/54/01200000023782135248776670473.jpg,egg,fried flour,0.3891,False
+/53/10_10.jpg,shrimp,fresh shrimp,0.8787,True
+/53/10_10.jpg,dried red chili peppers,hot and dry pepper,0.7117,True
+/53/10_10.jpg,scallions,seared green onion,0.4111,False
+/53/10_10.jpg,garlic,seared green onion,0.4609,False
+/53/10_10.jpg,vegetable oil,seared green onion,0.4409,False
+/53/10_10.jpg,soy sauce,hot and dry pepper,0.4192,False
+/53/10_10.jpg,salt,hot and dry pepper,0.3893,False
+/53/10_10.jpg,sugar,fresh shrimp,0.2567,False
+/53/10_10.jpg,ginger,hot and dry pepper,0.3314,False
+/55/00JTYV0002DC0F1DD73E2Cl.jpg,beef,beef chunks,0.7408,True
+/55/00JTYV0002DC0F1DD73E2Cl.jpg,brown sauce,beef chunks,0.4042,False
+/55/00JTYV0002DC0F1DD73E2Cl.jpg,soy sauce,beef chunks,0.3807,False
+/55/00JTYV0002DC0F1DD73E2Cl.jpg,sugar,beef chunks,0.2399,False
+/55/00JTYV0002DC0F1DD73E2Cl.jpg,garlic,beef chunks,0.2837,False
+/55/00JTYV0002DC0F1DD73E2Cl.jpg,ginger,beef chunks,0.164,False
+/55/00JTYV0002DC0F1DD73E2Cl.jpg,oil,beef chunks,0.2228,False
+/55/00JTYV0002DC0F1DD73E2Cl.jpg,salt,beef chunks,0.2259,False
+/55/00JTYV0002DC0F1DD73E2Cl.jpg,water,beef chunks,0.2716,False
+/55/00JTYV0002DC0F1DD73E2Cl.jpg,cornstarch,beef chunks,0.3161,False
+/57/10_10.jpg,white rice,rice,0.8926,True
+/57/10_10.jpg,potatoes,hob blocks of potato,0.6016,False
+/57/10_10.jpg,beef,beef chunks,0.7408,True
+/57/10_10.jpg,soy sauce,rice,0.5068,False
+/57/10_10.jpg,sugar,rice,0.3971,False
+/57/10_10.jpg,salt,rice,0.4362,False
+/57/10_10.jpg,oil,rice,0.4176,False
+/57/10_10.jpg,water,rice,0.4303,False
+/57/10_10.jpg,ginger,rice,0.4043,False
+/57/10_10.jpg,garlic,rice,0.4571,False
+/57/10_10.jpg,starches,beef chunks,0.3806,False
+/56/002LE3AAEB4AA649A63A29mx.jpg,beef,beef slices,0.7781,True
+/56/002LE3AAEB4AA649A63A29mx.jpg,carrots,hob blocks of carrot,0.6082,False
+/56/002LE3AAEB4AA649A63A29mx.jpg,potatoes,beef slices,0.4258,False
+/56/002LE3AAEB4AA649A63A29mx.jpg,curry sauce,curry,0.6945,False
+/56/002LE3AAEB4AA649A63A29mx.jpg,oil,curry,0.3132,False
+/56/002LE3AAEB4AA649A63A29mx.jpg,curry powder,curry,0.655,False
+/56/002LE3AAEB4AA649A63A29mx.jpg,salt,curry,0.3464,False
+/56/002LE3AAEB4AA649A63A29mx.jpg,pepper,beef slices,0.3574,False
+/56/002LE3AAEB4AA649A63A29mx.jpg,water,curry,0.2429,False
+/56/002LE3AAEB4AA649A63A29mx.jpg,flour,beef slices,0.2042,False
+/6/10_10.jpg,pork,pork slices,0.8011,True
+/6/10_10.jpg,green pepper,pepper slices,0.6457,False
+/6/10_10.jpg,red chili,crushed hot and dry chili,0.6315,False
+/6/10_10.jpg,soy sauce,crushed hot and dry chili,0.4662,False
+/6/10_10.jpg,oil,pork slices,0.2736,False
+/6/10_10.jpg,salt,pepper slices,0.4369,False
+/6/10_10.jpg,sugar,pepper slices,0.2818,False
+/6/10_10.jpg,cornstarch,pepper slices,0.2707,False
+/6/10_10.jpg,garlic,pepper slices,0.4731,False
+/6/10_10.jpg,ginger,pepper slices,0.3157,False
+/59/1-140913223559.jpg,noodles,noodles,1.0,True
+/59/1-140913223559.jpg,beef,beef chunks,0.7408,True
+/59/1-140913223559.jpg,broccoli,broccoli,1.0,True
+/59/1-140913223559.jpg,lettuce,broccoli,0.4245,False
+/59/1-140913223559.jpg,cucumber,broccoli,0.4615,False
+/59/1-140913223559.jpg,carrot,broccoli,0.5156,False
+/59/1-140913223559.jpg,red chili peppers,crushed pepper,0.4852,False
+/59/1-140913223559.jpg,soy sauce,noodles,0.5082,False
+/59/1-140913223559.jpg,oil,noodles,0.4097,False
+/59/1-140913223559.jpg,salt,crushed pepper,0.4381,False
+/59/1-140913223559.jpg,sugar,noodles,0.3095,False
+/59/1-140913223559.jpg,garlic,broccoli,0.4646,False
+/59/1-140913223559.jpg,ginger,crushed pepper,0.3516,False
+/59/1-140913223559.jpg,wheat flour,broccoli,0.3837,False
+/66/01300000246140122398874714540_s.jpg,eggplant,hob blocks of eggplant,0.7044,True
+/66/01300000246140122398874714540_s.jpg,minced pork,minced pork,1.0,True
+/66/01300000246140122398874714540_s.jpg,red chili peppers,shredded pepper,0.5067,False
+/66/01300000246140122398874714540_s.jpg,garlic,crushed garlic,0.8264,True
+/66/01300000246140122398874714540_s.jpg,soy sauce,shredded pepper,0.4117,False
+/66/01300000246140122398874714540_s.jpg,sugar,crushed garlic,0.3284,False
+/66/01300000246140122398874714540_s.jpg,salt,shredded pepper,0.4259,False
+/66/01300000246140122398874714540_s.jpg,cooking oil,minced pork,0.2614,False
+/66/01300000246140122398874714540_s.jpg,cornstarch,shredded pepper,0.3105,False
+/66/01300000246140122398874714540_s.jpg,ginger,shredded pepper,0.3636,False
+/66/01300000246140122398874714540_s.jpg,white pepper,shredded pepper,0.7081,True
+/113/00630M63E88B00E80DFC51n.jpg,chinese broccoli (gai lan),chinese kale,0.5726,False
+/113/00630M63E88B00E80DFC51n.jpg,garlic,chinese kale,0.2062,False
+/113/00630M63E88B00E80DFC51n.jpg,salt,chinese kale,0.2522,False
+/113/00630M63E88B00E80DFC51n.jpg,oil,chinese kale,0.2362,False
+/113/00630M63E88B00E80DFC51n.jpg,water,chinese kale,0.2291,False
+/113/00630M63E88B00E80DFC51n.jpg,sugar,chinese kale,0.1511,False
+/114/10_33.jpg,edamame,aniseed,0.3191,False
+/114/10_33.jpg,dried chili peppers,green soy beans,0.4652,False
+/114/10_33.jpg,salt,green soy beans,0.3209,False
+/114/10_33.jpg,oil,green soy beans,0.3736,False
+/114/10_33.jpg,garlic,green soy beans,0.3335,False
+/114/10_33.jpg,soy sauce,green soy beans,0.5984,False
+/129/002QWG8AD9D14FFBAD5256l.jpg,deep-fried dough sticks,fried bread stick,0.7468,True
+/129/002QWG8AD9D14FFBAD5256l.jpg,condensed milk,soya-bean milk,0.5227,False
+/129/002QWG8AD9D14FFBAD5256l.jpg,wheat flour,fried bread stick,0.4436,False
+/129/002QWG8AD9D14FFBAD5256l.jpg,water,soya-bean milk,0.2734,False
+/129/002QWG8AD9D14FFBAD5256l.jpg,salt,fried bread stick,0.3094,False
+/129/002QWG8AD9D14FFBAD5256l.jpg,yeast,fried bread stick,0.3853,False
+/129/002QWG8AD9D14FFBAD5256l.jpg,baking powder,fried bread stick,0.3309,False
+/129/002QWG8AD9D14FFBAD5256l.jpg,oil,fried bread stick,0.4117,False
+/22/10_37.jpg,garlic cloves,garlic clove,0.9677,True
+/22/10_37.jpg,sugar,garlic clove,0.3267,False
+/22/10_37.jpg,vinegar,garlic clove,0.3543,False
+/22/10_37.jpg,salt,garlic clove,0.298,False
+/51/10_10.jpg,mushrooms,shanghai cabbage,0.4212,False
+/51/10_10.jpg,bok choy,shanghai cabbage,0.3045,False
+/51/10_10.jpg,carrots,shanghai cabbage,0.4834,False
+/51/10_10.jpg,soy sauce,shanghai cabbage,0.2807,False
+/51/10_10.jpg,sugar,shanghai cabbage,0.1708,False
+/51/10_10.jpg,oil,shanghai cabbage,0.3029,False
+/51/10_10.jpg,salt,shanghai cabbage,0.2535,False
+/51/10_10.jpg,cornstarch,shanghai cabbage,0.2408,False
+/51/10_10.jpg,garlic,shanghai cabbage,0.385,False
+/51/10_10.jpg,ginger,shanghai cabbage,0.2947,False
+/63/01300000326808123012566498554_s.jpg,tofu,tofu chunks,0.7553,True
+/63/01300000326808123012566498554_s.jpg,green onions,chili oil,0.4428,False
+/63/01300000326808123012566498554_s.jpg,red chili oil,chili oil,0.8826,True
+/63/01300000326808123012566498554_s.jpg,minced meat,tofu chunks,0.3896,False
+/63/01300000326808123012566498554_s.jpg,doubanjiang,tofu chunks,0.2572,False
+/63/01300000326808123012566498554_s.jpg,soy sauce,chili oil,0.5823,False
+/63/01300000326808123012566498554_s.jpg,ginger,chili oil,0.428,False
+/63/01300000326808123012566498554_s.jpg,garlic,chili oil,0.4617,False
+/63/01300000326808123012566498554_s.jpg,cornstarch,chili oil,0.3959,False
+/63/01300000326808123012566498554_s.jpg,sugar,chili oil,0.2808,False
+/63/01300000326808123012566498554_s.jpg,salt,chili oil,0.4322,False
+/63/01300000326808123012566498554_s.jpg,vegetable oil,chili oil,0.6939,False
+/64/0563-Braised-Bean-Curds.jpg,tofu,tofu chunks,0.7553,True
+/64/0563-Braised-Bean-Curds.jpg,green bell pepper,shredded pepper,0.6278,False
+/64/0563-Braised-Bean-Curds.jpg,red bell pepper,shredded pepper,0.6375,False
+/64/0563-Braised-Bean-Curds.jpg,mushrooms,shredded pepper,0.356,False
+/64/0563-Braised-Bean-Curds.jpg,brown sauce,shredded pepper,0.418,False
+/64/0563-Braised-Bean-Curds.jpg,soy sauce,shredded pepper,0.4117,False
+/64/0563-Braised-Bean-Curds.jpg,cornstarch,shredded pepper,0.3105,False
+/64/0563-Braised-Bean-Curds.jpg,sugar,shredded pepper,0.3118,False
+/64/0563-Braised-Bean-Curds.jpg,garlic,shredded pepper,0.484,False
+/64/0563-Braised-Bean-Curds.jpg,ginger,shredded pepper,0.3636,False
+/64/0563-Braised-Bean-Curds.jpg,sesame oil,tofu chunks,0.3433,False
+/64/0563-Braised-Bean-Curds.jpg,vegetable oil,shredded pepper,0.3766,False
+/64/0563-Braised-Bean-Curds.jpg,salt,shredded pepper,0.4259,False
+/65/1034080.jpg,tofu,tofu chunks,0.7553,True
+/65/1034080.jpg,preserved eggs,preserved egg chunks,0.7776,True
+/65/1034080.jpg,scallions,minced green onion,0.3637,False
+/65/1034080.jpg,sauce,minced green onion,0.3067,False
+/65/1034080.jpg,soy sauce,tofu chunks,0.3993,False
+/65/1034080.jpg,sesame oil,minced green onion,0.3631,False
+/65/1034080.jpg,sugar,tofu chunks,0.2675,False
+/65/1034080.jpg,salt,minced green onion,0.2758,False
+/65/1034080.jpg,water,tofu chunks,0.2622,False
+/68/10688781_092841276000_2.jpg,eggplant,hob blocks of eggplant,0.7044,True
+/68/10688781_092841276000_2.jpg,green beans,beans,0.8246,True
+/68/10688781_092841276000_2.jpg,green onion,seared green onion,0.8859,True
+/68/10688781_092841276000_2.jpg,red chili peppers,beans,0.3518,False
+/68/10688781_092841276000_2.jpg,oil,beans,0.4332,False
+/68/10688781_092841276000_2.jpg,soy sauce,beans,0.4297,False
+/68/10688781_092841276000_2.jpg,salt,beans,0.4572,False
+/68/10688781_092841276000_2.jpg,sugar,beans,0.4345,False
+/68/10688781_092841276000_2.jpg,garlic,seared green onion,0.4609,False
+/68/10688781_092841276000_2.jpg,ginger,beans,0.4142,False
+/69/10_12.jpg,mashed potatoes,mashed potatoes,1.0,True
+/69/10_12.jpg,white cream sauce,cherry tomato slices,0.3232,False
+/69/10_12.jpg,red chili pepper,cherry tomato slices,0.374,False
+/69/10_12.jpg,parsley,cherry tomato slices,0.365,False
+/69/10_12.jpg,butter,mashed potatoes,0.3544,False
+/69/10_12.jpg,milk,mashed potatoes,0.3382,False
+/69/10_12.jpg,salt,mashed potatoes,0.3234,False
+/69/10_12.jpg,pepper,cherry tomato slices,0.3839,False
+/69/10_12.jpg,garlic,mashed potatoes,0.433,False
+/70/10_10.jpg,potato,shredded potato,0.7756,True
+/70/10_10.jpg,green onion,minced green onion,0.8627,True
+/70/10_10.jpg,vinegar,minced green onion,0.3198,False
+/70/10_10.jpg,salt,shredded potato,0.3169,False
+/70/10_10.jpg,sugar,shredded potato,0.3037,False
+/70/10_10.jpg,oil,shredded potato,0.2377,False
+/70/10_10.jpg,chili pepper,minced green onion,0.4625,False
+/70/10_10.jpg,garlic,minced green onion,0.4955,False
+/72/0d9863ff0c4ee64516bab6cc1ce10163.jpg,green beans,beans,0.8246,True
+/72/0d9863ff0c4ee64516bab6cc1ce10163.jpg,dried red chili peppers,crushed hot and dry chili,0.7259,True
+/72/0d9863ff0c4ee64516bab6cc1ce10163.jpg,garlic,parsley,0.5175,False
+/72/0d9863ff0c4ee64516bab6cc1ce10163.jpg,sesame seeds,black sesame,0.7333,True
+/72/0d9863ff0c4ee64516bab6cc1ce10163.jpg,cooking oil,parsley,0.2645,False
+/72/0d9863ff0c4ee64516bab6cc1ce10163.jpg,salt,beans,0.4572,False
+/72/0d9863ff0c4ee64516bab6cc1ce10163.jpg,soy sauce,black sesame,0.4739,False
+/72/0d9863ff0c4ee64516bab6cc1ce10163.jpg,sugar,beans,0.4345,False
+/74/10_10.jpg,lettuce,lettuce,1.0,True
+/74/10_10.jpg,garlic,crushed garlic,0.8264,True
+/74/10_10.jpg,oyster sauce,oyster sauce,1.0,True
+/74/10_10.jpg,cooking oil,crushed garlic,0.2582,False
+/74/10_10.jpg,sugar,lettuce,0.3353,False
+/74/10_10.jpg,salt,oyster sauce,0.4084,False
+/74/10_10.jpg,cornstarch,lettuce,0.3055,False
+/74/10_10.jpg,water,oyster sauce,0.3126,False
+/75/10_1.jpg,spinach,water spinach,0.8103,True
+/75/10_1.jpg,garlic,water spinach,0.3573,False
+/75/10_1.jpg,oil,water spinach,0.2497,False
+/75/10_1.jpg,salt,water spinach,0.2866,False
+/75/10_1.jpg,sugar,water spinach,0.2818,False
+/77/0f0236028be297500a7ecbda2885dc26.jpg,cucumber,hob blocks of cucumber,0.6229,False
+/77/0f0236028be297500a7ecbda2885dc26.jpg,cilantro,chinese parsleycoriander,0.3726,False
+/77/0f0236028be297500a7ecbda2885dc26.jpg,chili flakes,crushed garlic,0.34,False
+/77/0f0236028be297500a7ecbda2885dc26.jpg,vinegar,crushed garlic,0.3469,False
+/77/0f0236028be297500a7ecbda2885dc26.jpg,sugar,crushed garlic,0.3284,False
+/77/0f0236028be297500a7ecbda2885dc26.jpg,salt,crushed garlic,0.313,False
+/77/0f0236028be297500a7ecbda2885dc26.jpg,sesame oil,chinese parsleycoriander,0.404,False
+/77/0f0236028be297500a7ecbda2885dc26.jpg,garlic,crushed garlic,0.8264,True
+/77/0f0236028be297500a7ecbda2885dc26.jpg,soy sauce,chinese parsleycoriander,0.3572,False
+/80/10_16.jpg,cauliflower,cauliflower,1.0,True
+/80/10_16.jpg,red chili,crushed pepper,0.511,False
+/80/10_16.jpg,green chili,crushed pepper,0.4843,False
+/80/10_16.jpg,green onions,cauliflower,0.3599,False
+/80/10_16.jpg,soy sauce,crushed pepper,0.4362,False
+/80/10_16.jpg,cooking oil,streaky pork slices,0.1554,False
+/80/10_16.jpg,salt,crushed pepper,0.4381,False
+/80/10_16.jpg,sugar,crushed pepper,0.2984,False
+/80/10_16.jpg,garlic,crushed pepper,0.457,False
+/80/10_16.jpg,ginger,crushed pepper,0.3516,False
+/80/10_16.jpg,cornstarch,cauliflower,0.3046,False
+/81/0019b91ecbd112cc99710b.jpg,lettuce,crushed pepper,0.3346,False
+/81/0019b91ecbd112cc99710b.jpg,pork,streaky pork slices,0.6469,False
+/81/0019b91ecbd112cc99710b.jpg,red chili,crushed pepper,0.511,False
+/81/0019b91ecbd112cc99710b.jpg,garlic,crushed pepper,0.457,False
+/81/0019b91ecbd112cc99710b.jpg,soy sauce,crushed pepper,0.4362,False
+/81/0019b91ecbd112cc99710b.jpg,cooking oil,streaky pork slices,0.1554,False
+/81/0019b91ecbd112cc99710b.jpg,salt,crushed pepper,0.4381,False
+/81/0019b91ecbd112cc99710b.jpg,sugar,crushed pepper,0.2984,False
+/81/0019b91ecbd112cc99710b.jpg,white pepper,crushed pepper,0.7194,True
+/7/01300534143107134568780787270.jpg,shredded pork,shredded pork,1.0,True
+/7/01300534143107134568780787270.jpg,shredded carrots,shredded pork,0.5913,False
+/7/01300534143107134568780787270.jpg,shredded wood ear mushrooms,black fungus,0.4602,False
+/7/01300534143107134568780787270.jpg,green onions,minced green onion,0.8161,True
+/7/01300534143107134568780787270.jpg,soy sauce,crushed pepper,0.4362,False
+/7/01300534143107134568780787270.jpg,vinegar,black fungus,0.4243,False
+/7/01300534143107134568780787270.jpg,sugar,shredded pork,0.332,False
+/7/01300534143107134568780787270.jpg,cornstarch,minced green onion,0.3577,False
+/7/01300534143107134568780787270.jpg,garlic,minced green onion,0.4955,False
+/7/01300534143107134568780787270.jpg,ginger,crushed pepper,0.3516,False
+/7/01300534143107134568780787270.jpg,oil,crushed pepper,0.3439,False
+/7/01300534143107134568780787270.jpg,salt,crushed pepper,0.4381,False
+/8/044.jpg,sliced pork,pork slices,0.9038,True
+/8/044.jpg,eggs,scrambled egg,0.7803,True
+/8/044.jpg,black fungus,black fungus,1.0,True
+/8/044.jpg,carrots,sliced carrot,0.7856,True
+/8/044.jpg,cucumber,cucumber slices,0.7626,True
+/8/044.jpg,shiitake mushrooms,black fungus,0.4321,False
+/8/044.jpg,soy sauce,scrambled egg,0.3028,False
+/8/044.jpg,cooking oil,scrambled egg,0.2364,False
+/8/044.jpg,salt,scrambled egg,0.3175,False
+/8/044.jpg,sugar,scrambled egg,0.2977,False
+/8/044.jpg,cornstarch,black fungus,0.2172,False
+/8/044.jpg,garlic,sliced carrot,0.4081,False
+/8/044.jpg,ginger,scrambled egg,0.3549,False
+/82/10_1.jpg,black fungus,black fungus,1.0,True
+/82/10_1.jpg,red bell pepper,crushed pepper,0.6247,False
+/82/10_1.jpg,green bell pepper,crushed pepper,0.5921,False
+/82/10_1.jpg,sesame seeds,black sesame,0.7333,True
+/82/10_1.jpg,soy sauce,black sesame,0.4739,False
+/82/10_1.jpg,vinegar,black fungus,0.4243,False
+/82/10_1.jpg,sugar,black sesame,0.338,False
+/82/10_1.jpg,salt,crushed pepper,0.4381,False
+/82/10_1.jpg,sesame oil,black sesame,0.7274,True
+/82/10_1.jpg,garlic,crushed pepper,0.457,False
+/82/10_1.jpg,oil,crushed pepper,0.3439,False
+/83/10_19.jpg,tea tree mushrooms,poplar mushroom,0.6531,False
+/83/10_19.jpg,cilantro,crushed pepper,0.3957,False
+/83/10_19.jpg,red chili pepper,crushed pepper,0.655,False
+/83/10_19.jpg,ginger,crushed pepper,0.3516,False
+/83/10_19.jpg,soy sauce,crushed pepper,0.4362,False
+/83/10_19.jpg,cooking oil,chinese parsleycoriander,0.1876,False
+/83/10_19.jpg,sugar,crushed pepper,0.2984,False
+/83/10_19.jpg,salt,crushed pepper,0.4381,False
+/83/10_19.jpg,garlic,crushed pepper,0.457,False
+/83/10_19.jpg,cornstarch,poplar mushroom,0.3266,False
+/84/1006281619501117.jpg,deep-fried tofu,stinky tofu,0.6726,False
+/84/1006281619501117.jpg,cucumber,julienned cucumber,0.7853,True
+/84/1006281619501117.jpg,cabbage,shredded pepper,0.4774,False
+/84/1006281619501117.jpg,carrots,julienned cucumber,0.4491,False
+/84/1006281619501117.jpg,sauce,shredded pepper,0.406,False
+/84/1006281619501117.jpg,soybeans,julienned cucumber,0.3434,False
+/84/1006281619501117.jpg,water,shredded pepper,0.3264,False
+/84/1006281619501117.jpg,salt,shredded pepper,0.4259,False
+/84/1006281619501117.jpg,oil,shredded pepper,0.3134,False
+/84/1006281619501117.jpg,sugar,shredded pepper,0.3118,False
+/84/1006281619501117.jpg,vinegar,shredded pepper,0.4046,False
+/84/1006281619501117.jpg,fermented tofu paste,stinky tofu,0.5934,False
+/85/00Q85310D5EC2935CC42ABl.jpg,scallops,scallop,0.9103,True
+/85/00Q85310D5EC2935CC42ABl.jpg,vermicelli,vermicelli,1.0,True
+/85/00Q85310D5EC2935CC42ABl.jpg,green onions,minced green onion,0.8161,True
+/85/00Q85310D5EC2935CC42ABl.jpg,soy sauce,minced green onion,0.3497,False
+/85/00Q85310D5EC2935CC42ABl.jpg,garlic,minced green onion,0.4955,False
+/85/00Q85310D5EC2935CC42ABl.jpg,ginger,minced green onion,0.2998,False
+/85/00Q85310D5EC2935CC42ABl.jpg,oil,minced green onion,0.2333,False
+/85/00Q85310D5EC2935CC42ABl.jpg,salt,minced green onion,0.2758,False
+/85/00Q85310D5EC2935CC42ABl.jpg,sugar,minced green onion,0.2438,False
+/86/10354554_955999.jpg,crab,crab,1.0,True
+/86/10354554_955999.jpg,cilantro,chinese parsleycoriander,0.3726,False
+/86/10354554_955999.jpg,water,crab,0.3323,False
+/86/10354554_955999.jpg,salt,crab,0.3873,False
+/87/000b2f5751590fdc03e109.jpg,clams,clams,1.0,True
+/87/000b2f5751590fdc03e109.jpg,red chili peppers,hot and dry pepper,0.4845,False
+/87/000b2f5751590fdc03e109.jpg,green onions,hot and dry pepper,0.3265,False
+/87/000b2f5751590fdc03e109.jpg,garlic,hot and dry pepper,0.3944,False
+/87/000b2f5751590fdc03e109.jpg,soy sauce,hot and dry pepper,0.4192,False
+/87/000b2f5751590fdc03e109.jpg,cooking oil,hot and dry pepper,0.2306,False
+/87/000b2f5751590fdc03e109.jpg,salt,hot and dry pepper,0.3893,False
+/87/000b2f5751590fdc03e109.jpg,sugar,hot and dry pepper,0.2299,False
+/87/000b2f5751590fdc03e109.jpg,ginger,hot and dry pepper,0.3314,False
+/87/000b2f5751590fdc03e109.jpg,white pepper,hot and dry pepper,0.674,False
+/89/101-110Q0141R90-L.jpg,seaweed,water,0.4035,False
+/89/101-110Q0141R90-L.jpg,eggs,egg drop,0.6706,False
+/89/101-110Q0141R90-L.jpg,green onions,minced green onion,0.8161,True
+/89/101-110Q0141R90-L.jpg,water,water,1.0,True
+/89/101-110Q0141R90-L.jpg,salt,water,0.554,False
+/89/101-110Q0141R90-L.jpg,sesame oil,minced green onion,0.3631,False
+/89/101-110Q0141R90-L.jpg,white pepper,minced green onion,0.4382,False
+/89/101-110Q0141R90-L.jpg,chicken broth,minced green onion,0.3956,False
+/92/075817xlk22xxxagbk296x.jpg,beef tripe,shredded beef tripe,0.8569,True
+/92/075817xlk22xxxagbk296x.jpg,red chili peppers,shredded pepper,0.5067,False
+/92/075817xlk22xxxagbk296x.jpg,green peppers,shredded pepper,0.6194,False
+/92/075817xlk22xxxagbk296x.jpg,garlic,minced green onion,0.4955,False
+/92/075817xlk22xxxagbk296x.jpg,soy sauce,shredded pepper,0.4117,False
+/92/075817xlk22xxxagbk296x.jpg,cooking oil,minced green onion,0.2281,False
+/92/075817xlk22xxxagbk296x.jpg,salt,shredded pepper,0.4259,False
+/92/075817xlk22xxxagbk296x.jpg,sugar,shredded pepper,0.3118,False
+/92/075817xlk22xxxagbk296x.jpg,cornstarch,minced green onion,0.3577,False
+/92/075817xlk22xxxagbk296x.jpg,ginger,shredded pepper,0.3636,False
+/91/01300000314631128928123971928_s.jpg,white rice,rice,0.8926,True
+/91/01300000314631128928123971928_s.jpg,stewed pork,stewed pork,1.0,True
+/91/01300000314631128928123971928_s.jpg,boiled egg,spiced corned egg,0.5539,False
+/91/01300000314631128928123971928_s.jpg,green vegetable,minced green onion,0.6338,False
+/91/01300000314631128928123971928_s.jpg,red chili pepper,hot and dry pepper,0.6651,False
+/91/01300000314631128928123971928_s.jpg,yellow pickled radish,minced green onion,0.3956,False
+/91/01300000314631128928123971928_s.jpg,soy sauce,rice,0.5068,False
+/91/01300000314631128928123971928_s.jpg,sugar,rice,0.3971,False
+/91/01300000314631128928123971928_s.jpg,five-spice powder,hot and dry pepper,0.4908,False
+/91/01300000314631128928123971928_s.jpg,garlic,minced green onion,0.4955,False
+/91/01300000314631128928123971928_s.jpg,oil,rice,0.4176,False
+/91/01300000314631128928123971928_s.jpg,salt,rice,0.4362,False
+/94/01300000826484128140917328574_s.jpg,sweet corn,corn kernels,0.7203,True
+/94/01300000826484128140917328574_s.jpg,pine nuts,pine nuts,1.0,True
+/94/01300000826484128140917328574_s.jpg,red bell pepper,crushed pepper,0.6247,False
+/94/01300000826484128140917328574_s.jpg,parsley,crushed pepper,0.4253,False
+/94/01300000826484128140917328574_s.jpg,olive oil,crushed pepper,0.3333,False
+/94/01300000826484128140917328574_s.jpg,salt,crushed pepper,0.4381,False
+/94/01300000826484128140917328574_s.jpg,black pepper,crushed pepper,0.7215,True
+/94/01300000826484128140917328574_s.jpg,butter,crushed pepper,0.3944,False
+/93/10_10.jpg,sour beans,minced pickled beans,0.5135,False
+/93/10_10.jpg,minced pork,minced pork,1.0,True
+/93/10_10.jpg,red chili,crushed pepper,0.511,False
+/93/10_10.jpg,green bell pepper,crushed pepper,0.5921,False
+/93/10_10.jpg,vegetable oil,crushed pepper,0.3663,False
+/93/10_10.jpg,salt,crushed pepper,0.4381,False
+/93/10_10.jpg,soy sauce,crushed pepper,0.4362,False
+/93/10_10.jpg,sugar,crushed pepper,0.2984,False
+/93/10_10.jpg,garlic,crushed pepper,0.457,False
+/93/10_10.jpg,ginger,crushed pepper,0.3516,False
+/95/1000944.1.jpg,shredded pork,shredded pork,1.0,True
+/95/1000944.1.jpg,vermicelli,chiffonade of cabbage,0.3766,False
+/95/1000944.1.jpg,pickled vegetables,chiffonade of cabbage,0.4547,False
+/95/1000944.1.jpg,green bell pepper,shredded pepper,0.6278,False
+/95/1000944.1.jpg,red chili,crushed hot and dry chili,0.6315,False
+/95/1000944.1.jpg,soy sauce,crushed hot and dry chili,0.4662,False
+/95/1000944.1.jpg,oil,shredded pork,0.3237,False
+/95/1000944.1.jpg,salt,shredded pepper,0.4259,False
+/95/1000944.1.jpg,sugar,sweet potato starch noodles,0.38,False
+/95/1000944.1.jpg,garlic,shredded pepper,0.484,False
+/95/1000944.1.jpg,ginger,shredded pepper,0.3636,False
+/96/1057226.1.jpg,scrambled eggs,scrambled egg,0.9577,True
+/96/1057226.1.jpg,okra,okra slices,0.6813,False
+/96/1057226.1.jpg,salt,scrambled egg,0.3175,False
+/96/1057226.1.jpg,pepper,scrambled egg,0.3377,False
+/96/1057226.1.jpg,cooking oil,scrambled egg,0.2364,False
+/97/10_27.jpg,shredded pork,shredded pork,1.0,True
+/97/10_27.jpg,dried tofu slices,shredded dried bean curd,0.4599,False
+/97/10_27.jpg,green garlic stems,garlic sprout pieces,0.6263,False
+/97/10_27.jpg,soy sauce,shredded dried bean curd,0.3138,False
+/97/10_27.jpg,cooking oil,garlic sprout pieces,0.2616,False
+/97/10_27.jpg,salt,shredded pork,0.2891,False
+/97/10_27.jpg,sugar,shredded pork,0.332,False
+/97/10_27.jpg,cornstarch,shredded dried bean curd,0.2752,False
+/99/10037241_991992.jpg,shrimps,shelled fresh shrimps,0.7468,True
+/99/10037241_991992.jpg,celery,celery stalk slices,0.6502,False
+/99/10037241_991992.jpg,parsley,parsley,1.0,True
+/99/10037241_991992.jpg,edible flower,lilium brownii,0.3681,False
+/99/10037241_991992.jpg,oil,crushed pepper,0.3439,False
+/99/10037241_991992.jpg,salt,crushed pepper,0.4381,False
+/99/10037241_991992.jpg,sugar,crushed pepper,0.2984,False
+/99/10037241_991992.jpg,garlic,parsley,0.5175,False
+/99/10037241_991992.jpg,white pepper,crushed pepper,0.7194,True
+/9/006KZ6E53D6FE80B173C6Al.jpg,spare ribs,spare ribs chunks,0.8363,True
+/9/006KZ6E53D6FE80B173C6Al.jpg,brown sauce,spare ribs chunks,0.2851,False
+/9/006KZ6E53D6FE80B173C6Al.jpg,soy sauce,spare ribs chunks,0.2409,False
+/9/006KZ6E53D6FE80B173C6Al.jpg,sugar,spare ribs chunks,0.2034,False
+/9/006KZ6E53D6FE80B173C6Al.jpg,starches,spare ribs chunks,0.3548,False
+/9/006KZ6E53D6FE80B173C6Al.jpg,ginger,spare ribs chunks,0.0991,False
+/9/006KZ6E53D6FE80B173C6Al.jpg,garlic,spare ribs chunks,0.229,False
+/9/006KZ6E53D6FE80B173C6Al.jpg,cooking oil,spare ribs chunks,0.0131,False
+/9/006KZ6E53D6FE80B173C6Al.jpg,water,spare ribs chunks,0.2216,False
+/9/006KZ6E53D6FE80B173C6Al.jpg,salt,spare ribs chunks,0.2769,False
+/9/006KZ6E53D6FE80B173C6Al.jpg,five spice powder,spare ribs chunks,0.2028,False
+/9/006KZ6E53D6FE80B173C6Al.jpg,shaoxing wine,spare ribs chunks,0.1863,False
+/98/10_0.jpg,preserved pork,pork slices,0.6968,False
+/98/10_0.jpg,garlic sprouts,garlic sprout pieces,0.9092,True
+/98/10_0.jpg,oil,pork slices,0.2736,False
+/98/10_0.jpg,salt,pork slices,0.2981,False
+/98/10_0.jpg,sugar,pork slices,0.2771,False
+/98/10_0.jpg,soy sauce,garlic sprout pieces,0.2746,False
+/98/10_0.jpg,garlic,garlic sprout pieces,0.6854,False
+/172/10634.jpg,white rice,rice,0.8926,True
+/172/10634.jpg,water,rice,0.4303,False
+/172/10634.jpg,salt,rice,0.4362,False
+/10/1.jpg,fried tenderloin,batonnet tenderloin,0.5796,False
+/10/1.jpg,sweet and sour sauce,sweet and sour sauce,1.0,True
+/10/1.jpg,flour,sweet and sour sauce,0.2507,False
+/10/1.jpg,cornstarch,sweet and sour sauce,0.3408,False
+/10/1.jpg,egg,sweet and sour sauce,0.1826,False
+/10/1.jpg,sugar,sweet and sour sauce,0.4659,False
+/10/1.jpg,vinegar,sweet and sour sauce,0.3884,False
+/10/1.jpg,salt,sweet and sour sauce,0.3316,False
+/10/1.jpg,oil,sweet and sour sauce,0.2802,False
+/10/1.jpg,soy sauce,sweet and sour sauce,0.6439,False
+/100/xiachufang_7.jpg,eggs,egg cake,0.7301,True
+/100/xiachufang_7.jpg,green onions,minced green onion,0.8161,True
+/100/xiachufang_7.jpg,salt,minced green onion,0.2758,False
+/100/xiachufang_7.jpg,cooking oil,egg cake,0.281,False
+/121/10_13.jpg,pork ribs,spareribs,0.3071,False
+/121/10_13.jpg,lotus root,lotus root chunks,0.7477,True
+/121/10_13.jpg,corn,corn blocks,0.76,True
+/121/10_13.jpg,broth,water,0.3381,False
+/121/10_13.jpg,salt,water,0.554,False
+/121/10_13.jpg,water,water,1.0,True
+/121/10_13.jpg,ginger,water,0.3422,False
+/121/10_13.jpg,pepper,water,0.4196,False
+/121/10_13.jpg,soy sauce,water,0.3161,False
+/115/01300001128119142201719978008_s.jpg,baby cabbage,baby chinese cabbage,0.883,True
+/115/01300001128119142201719978008_s.jpg,glass noodles,baby chinese cabbage,0.3743,False
+/115/01300001128119142201719978008_s.jpg,minced garlic,crushed garlic,0.7491,True
+/115/01300001128119142201719978008_s.jpg,red chili,crushed pepper,0.511,False
+/115/01300001128119142201719978008_s.jpg,green onion,minced green onion,0.8627,True
+/115/01300001128119142201719978008_s.jpg,soy sauce,crushed pepper,0.4362,False
+/115/01300001128119142201719978008_s.jpg,sesame oil,crushed garlic,0.3806,False
+/115/01300001128119142201719978008_s.jpg,salt,crushed pepper,0.4381,False
+/115/01300001128119142201719978008_s.jpg,sugar,crushed garlic,0.3284,False
+/115/01300001128119142201719978008_s.jpg,water,crushed pepper,0.3562,False
+/130/10_0.jpg,flatbread,crispbread,0.7951,True
+/130/10_0.jpg,meat filling,crispbread,0.3731,False
+/130/10_0.jpg,flour,pancakes,0.5217,False
+/130/10_0.jpg,water,pancakes,0.3077,False
+/130/10_0.jpg,salt,pancakes,0.3384,False
+/130/10_0.jpg,oil,pancakes,0.3468,False
+/130/10_0.jpg,spices,crispbread,0.3613,False
+/134/01300000329092127009257315588_s.jpg,noodles,noodles,1.0,True
+/134/01300000329092127009257315588_s.jpg,green onions,noodles,0.4778,False
+/134/01300000329092127009257315588_s.jpg,green beans,minced pickled beans,0.535,False
+/134/01300000329092127009257315588_s.jpg,sesame oil,noodles,0.47,False
+/134/01300000329092127009257315588_s.jpg,soy sauce,noodles,0.5082,False
+/134/01300000329092127009257315588_s.jpg,chili oil,noodles,0.3884,False
+/134/01300000329092127009257315588_s.jpg,salt,noodles,0.3757,False
+/134/01300000329092127009257315588_s.jpg,sugar,noodles,0.3095,False
+/134/01300000329092127009257315588_s.jpg,vinegar,noodles,0.2448,False
+/134/01300000329092127009257315588_s.jpg,garlic,noodles,0.454,False
+/134/01300000329092127009257315588_s.jpg,"},",noodles,0.1959,False
+/142/10_0.jpg,rice noodles,sweet potato starch noodles,0.7136,True
+/142/10_0.jpg,cilantro,chili oil,0.5409,False
+/142/10_0.jpg,chili oil,chili oil,1.0,True
+/142/10_0.jpg,peanuts,groundnut kernels,0.3988,False
+/142/10_0.jpg,vinegar,chili oil,0.3832,False
+/142/10_0.jpg,soy sauce,chili oil,0.5823,False
+/142/10_0.jpg,salt,chili oil,0.4322,False
+/142/10_0.jpg,sugar,sweet potato starch noodles,0.38,False
+/142/10_0.jpg,garlic,parsley,0.5175,False
+/142/10_0.jpg,ginger,chili oil,0.428,False
+/142/10_0.jpg,cornstarch,sweet potato starch noodles,0.4895,False
+/147/10_12.jpg,snails,river snail,0.7447,True
+/147/10_12.jpg,garlic,garlic clove,0.8575,True
+/147/10_12.jpg,green onions,minced green onion,0.8161,True
+/147/10_12.jpg,dried chili peppers,crushed pepper,0.5292,False
+/147/10_12.jpg,soy sauce,crushed pepper,0.4362,False
+/147/10_12.jpg,cooking oil,garlic clove,0.2924,False
+/147/10_12.jpg,sugar,garlic clove,0.3267,False
+/147/10_12.jpg,salt,crushed pepper,0.4381,False
+/147/10_12.jpg,ginger,crushed pepper,0.3516,False
+/162/1-14110512054R46.jpg,shrimp,lentinus edodes,0.3239,False
+/162/1-14110512054R46.jpg,tofu,chiba beancurd,0.3213,False
+/162/1-14110512054R46.jpg,red chili peppers,crushed hot and dry chili,0.5118,False
+/162/1-14110512054R46.jpg,cilantro,chinese parsleycoriander,0.3726,False
+/162/1-14110512054R46.jpg,garlic,chinese parsleycoriander,0.326,False
+/162/1-14110512054R46.jpg,soy sauce,crushed hot and dry chili,0.4662,False
+/162/1-14110512054R46.jpg,oil,crushed hot and dry chili,0.2361,False
+/162/1-14110512054R46.jpg,salt,crushed hot and dry chili,0.3029,False
+/162/1-14110512054R46.jpg,sugar,crushed hot and dry chili,0.2102,False
+/162/1-14110512054R46.jpg,sichuan pepper,chinese parsleycoriander,0.5279,False
+/162/1-14110512054R46.jpg,cornstarch,crushed hot and dry chili,0.2667,False
+/17/1274_N8ENs.jpg,lotus root,lotus root box,0.8649,True
+/17/1274_N8ENs.jpg,ketchup,ketchup,1.0,True
+/17/1274_N8ENs.jpg,batter,fried flour,0.3515,False
+/17/1274_N8ENs.jpg,flour,fried flour,0.8776,True
+/17/1274_N8ENs.jpg,eggs,fried flour,0.3934,False
+/17/1274_N8ENs.jpg,water,fried flour,0.3303,False
+/17/1274_N8ENs.jpg,salt,ketchup,0.3749,False
+/17/1274_N8ENs.jpg,oil,fried flour,0.4346,False
+/17/1274_N8ENs.jpg,cornstarch,ketchup,0.442,False
+/49/1-141205102R3J9.jpg,scrambled egg,scrambled egg,1.0,True
+/49/1-141205102R3J9.jpg,loofah,loofah,1.0,True
+/49/1-141205102R3J9.jpg,red chili,crushed pepper,0.511,False
+/49/1-141205102R3J9.jpg,oil,crushed pepper,0.3439,False
+/49/1-141205102R3J9.jpg,salt,crushed pepper,0.4381,False
+/49/1-141205102R3J9.jpg,sugar,crushed pepper,0.2984,False
+/49/1-141205102R3J9.jpg,pepper,crushed pepper,0.7985,True
+/27/0023aea9e73e0bf44bac03.jpg,boiled sliced chicken,boiled chicken slices,0.9136,True
+/27/0023aea9e73e0bf44bac03.jpg,soy sauce,chinese parsleycoriander,0.3572,False
+/27/0023aea9e73e0bf44bac03.jpg,cilantro,parsley,0.4387,False
+/27/0023aea9e73e0bf44bac03.jpg,parsley,parsley,1.0,True
+/27/0023aea9e73e0bf44bac03.jpg,purple orchid garnish,parsley,0.3519,False
+/27/0023aea9e73e0bf44bac03.jpg,salt,parsley,0.2474,False
+/27/0023aea9e73e0bf44bac03.jpg,ginger,parsley,0.386,False
+/27/0023aea9e73e0bf44bac03.jpg,oil,parsley,0.3307,False
+/27/0023aea9e73e0bf44bac03.jpg,sugar,parsley,0.2832,False
+/27/0023aea9e73e0bf44bac03.jpg,garlic,parsley,0.5175,False
+/60/10_0.jpg,beefsteak,steak,0.5878,False
+/60/10_0.jpg,bread,toast,0.5765,False
+/60/10_0.jpg,potatoes,steak,0.5445,False
+/60/10_0.jpg,compound butter,toast,0.2943,False
+/60/10_0.jpg,ketchup,toast,0.3551,False
+/60/10_0.jpg,salt,toast,0.3377,False
+/60/10_0.jpg,black pepper,steak,0.3938,False
+/60/10_0.jpg,oil,steak,0.3184,False
+/60/10_0.jpg,flour,toast,0.3251,False
+/60/10_0.jpg,yeast,toast,0.2524,False
+/60/10_0.jpg,milk,steak,0.3832,False
+/60/10_0.jpg,butter,steak,0.4848,False
+/62/10_14.jpg,lamb,black sesame,0.3755,False
+/62/10_14.jpg,green onions,onion slices,0.7204,True
+/62/10_14.jpg,garlic,onion slices,0.5164,False
+/62/10_14.jpg,onion,onion slices,0.8136,True
+/62/10_14.jpg,cumin,black sesame,0.262,False
+/62/10_14.jpg,soy sauce,black sesame,0.4739,False
+/62/10_14.jpg,cooking oil,onion slices,0.2462,False
+/62/10_14.jpg,salt,onion slices,0.3549,False
+/62/10_14.jpg,sugar,black sesame,0.338,False
+/62/10_14.jpg,cornstarch,black sesame,0.3208,False
+/61/10_13.jpg,raw beef,beef chunks,0.6964,False
+/61/10_13.jpg,cucumber,cucumber slices,0.7626,True
+/61/10_13.jpg,green leaves,green vegetables,0.6169,False
+/61/10_13.jpg,salt,beef chunks,0.2259,False
+/61/10_13.jpg,pepper,green vegetables,0.427,False
+/61/10_13.jpg,oil,green vegetables,0.2426,False
+/67/1058c5bcca04290ccdf2b774aa14d79d.jpg,potato,hob blocks of potato,0.5883,False
+/67/1058c5bcca04290ccdf2b774aa14d79d.jpg,green pepper,pepper slices,0.6457,False
+/67/1058c5bcca04290ccdf2b774aa14d79d.jpg,eggplant,hob blocks of eggplant,0.7044,True
+/67/1058c5bcca04290ccdf2b774aa14d79d.jpg,meat,pepper slices,0.3852,False
+/67/1058c5bcca04290ccdf2b774aa14d79d.jpg,oil,pepper slices,0.2628,False
+/67/1058c5bcca04290ccdf2b774aa14d79d.jpg,salt,pepper slices,0.4369,False
+/67/1058c5bcca04290ccdf2b774aa14d79d.jpg,soy sauce,pepper slices,0.3932,False
+/67/1058c5bcca04290ccdf2b774aa14d79d.jpg,sugar,pepper slices,0.2818,False
+/67/1058c5bcca04290ccdf2b774aa14d79d.jpg,garlic,pepper slices,0.4731,False
+/67/1058c5bcca04290ccdf2b774aa14d79d.jpg,ginger,pepper slices,0.3157,False
+/71/0I42JJ2-0.jpg,cabbage,cabbage,1.0,True
+/71/0I42JJ2-0.jpg,dried red chili peppers,crushed hot and dry chili,0.7259,True
+/71/0I42JJ2-0.jpg,oil,cabbage,0.3703,False
+/71/0I42JJ2-0.jpg,salt,crushed hot and dry chili,0.3029,False
+/71/0I42JJ2-0.jpg,soy sauce,crushed hot and dry chili,0.4662,False
+/71/0I42JJ2-0.jpg,garlic,cabbage,0.5097,False
+/71/0I42JJ2-0.jpg,ginger,cabbage,0.3862,False
+/73/10_12.jpg,green peppers,whole green pepper,0.7433,True
+/73/10_12.jpg,vegetable oil,whole green pepper,0.3638,False
+/73/10_12.jpg,salt,whole green pepper,0.3147,False
+/73/10_12.jpg,soy sauce,whole green pepper,0.3807,False
+/73/10_12.jpg,garlic,whole green pepper,0.4034,False
+/73/10_12.jpg,sugar,whole green pepper,0.2774,False
+/76/xiachufang_1.jpg,lotus root,lotus root slices,0.7716,True
+/76/xiachufang_1.jpg,green onion,lotus root slices,0.2393,False
+/76/xiachufang_1.jpg,vegetable oil,lotus root slices,0.1779,False
+/76/xiachufang_1.jpg,salt,lotus root slices,0.1121,False
+/76/xiachufang_1.jpg,sugar,lotus root slices,0.141,False
+/76/xiachufang_1.jpg,soy sauce,lotus root slices,0.1305,False
+/76/xiachufang_1.jpg,sesame oil,lotus root slices,0.1448,False
+/78/10_0.jpg,snow peas,snow peas,1.0,True
+/78/10_0.jpg,sausage,sausage slices,0.8373,True
+/78/10_0.jpg,oil,snow peas,0.2644,False
+/78/10_0.jpg,salt,snow peas,0.3648,False
+/78/10_0.jpg,black pepper,snow peas,0.4224,False
+/78/10_0.jpg,garlic,sausage slices,0.4318,False
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,yuba (tofu skin),yuba,0.6991,False
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,black fungus,black fungus,1.0,True
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,celery,celery stalk slices,0.6502,False
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,red chili,crushed pepper,0.511,False
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,cilantro,crushed pepper,0.3957,False
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,soy sauce,crushed pepper,0.4362,False
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,sesame oil,chinese parsleycoriander,0.404,False
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,vinegar,black fungus,0.4243,False
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,sugar,crushed pepper,0.2984,False
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,salt,crushed pepper,0.4381,False
+/79/05d3d1a68945f1c5eeae9a166567db0f.jpg,garlic,crushed pepper,0.457,False
+/88/014RZ1A8A07D5B8AF0D8BDmx.jpg,squid tentacles,tentacles of squid,0.9712,True
+/88/014RZ1A8A07D5B8AF0D8BDmx.jpg,celery,celery,1.0,True
+/88/014RZ1A8A07D5B8AF0D8BDmx.jpg,dried red chilies,crushed hot and dry chili,0.7275,True
+/88/014RZ1A8A07D5B8AF0D8BDmx.jpg,garlic,tentacles of squid,0.3492,False
+/88/014RZ1A8A07D5B8AF0D8BDmx.jpg,vegetable oil,celery,0.351,False
+/88/014RZ1A8A07D5B8AF0D8BDmx.jpg,soy sauce,crushed hot and dry chili,0.4662,False
+/88/014RZ1A8A07D5B8AF0D8BDmx.jpg,salt,crushed hot and dry chili,0.3029,False
+/88/014RZ1A8A07D5B8AF0D8BDmx.jpg,sugar,celery,0.3208,False
+/88/014RZ1A8A07D5B8AF0D8BDmx.jpg,sichuan peppercorns,crushed hot and dry chili,0.4122,False
