@@ -304,11 +304,77 @@ class AnalyzeDataset:
         plt.axis("off")
         plt.tight_layout()
 
+    def _analyze_test_set_challenges(self):
+        """
+        Analyzes the challenges the model will face on the Test Set:
+        1. Out-Of-Vocabulary (OOV) ingredients.
+        2. Percentage of unseen/novel recipe combinations per category.
+        """
+        if self.concatenated_dataset is None:
+            self.get_concatenated_dataframe()
+
+        df_challenges = self.concatenated_dataset.dropna(subset=["ingredients"]).copy()
+
+        def clean_list(lst):
+            return tuple(sorted([str(i).lower().strip() for i in lst])) if isinstance(lst, list) else ()
+
+        df_challenges["recipe_signature"] = df_challenges["ingredients"].apply(clean_list)
+        df_challenges["exploded_ingredients"] = df_challenges["recipe_signature"].apply(list)
+
+        train_df = df_challenges[df_challenges["dataset_split"] == "train"]
+        test_df = df_challenges[df_challenges["dataset_split"] == "test"].copy()
+
+        # --- OUT-OF-VOCABULARY ---
+        train_vocab = set(train_df["exploded_ingredients"].explode().dropna())
+        test_vocab = set(test_df["exploded_ingredients"].explode().dropna())
+
+        oov_ingredients = test_vocab - train_vocab
+
+        if oov_ingredients:
+            test_exploded = test_df.explode("exploded_ingredients")
+            oov_counts = test_exploded[test_exploded["exploded_ingredients"].isin(oov_ingredients)][
+                "exploded_ingredients"].value_counts()
+
+            self._plot_horizontal_bar(
+                data=oov_counts.head(20)[::-1],
+                window_title="Ingredienti OOV nel Test Set",
+                plot_title="Top 20 Ingredienti nel Test Mai Visti nel Train (OOV)",
+                xlabel="Numero di Apparizioni nel Test Set",
+                ylabel="Ingrediente OOV",
+                stacked=False
+            )
+        else:
+            print("Risultato: Non ci sono ingredienti OOV nel Test Set!")
+
+        # --- VARIANZA INTRA-CLASSE ---
+        train_recipes_by_category = train_df.groupby("food_category")["recipe_signature"].apply(set).to_dict()
+
+        def is_novel_recipe(row):
+            cat = row["food_category"]
+            sig = row["recipe_signature"]
+            if cat in train_recipes_by_category and sig in train_recipes_by_category[cat]:
+                return False
+            return True
+
+        test_df["is_novel_recipe"] = test_df.apply(is_novel_recipe, axis=1)
+        novelty_percentage = (test_df.groupby("food_category")["is_novel_recipe"].mean() * 100).sort_values(
+            ascending=False)
+
+        self._plot_horizontal_bar(
+            data=novelty_percentage.head(20)[::-1],
+            window_title="Varianza Test vs Train",
+            plot_title="Top 20 Categorie con Ricette Inedite nel Test Set (%)",
+            xlabel="Percentuale di Ricette Mai Viste nel Train (%)",
+            ylabel="Categoria di Cibo",
+            stacked=False
+        )
+
     def plot_dataset_analysis(self):
         self._plot_dataset_distribution()
         self._plot_ingredients_distribution()
         self._plot_ingredients_distribution_per_dish()
         self._plot_ingredient_cooccurrence_network()
+        self._analyze_test_set_challenges()
 
         plt.show()
 
