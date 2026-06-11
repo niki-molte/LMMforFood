@@ -148,7 +148,7 @@ class EvaluatePredictions:
 
 if __name__ == "__main__":
     base_dir = "VireoFood172/data/"
-    pred_file = os.path.join(base_dir, "prediction/test_predictions.json")
+    pred_file = os.path.join(base_dir, "/home/niki/PycharmProjects/LLMforFood/datasets/VireoFood172/data/prediction/test_predictions_noex_np_gemma26B.json")
 
     try:
         evaluator = EvaluatePredictions(pred_file, threshold=0.8)
@@ -160,7 +160,7 @@ if __name__ == "__main__":
                 print(f"{m_name}: {val:.4f}")
 
         evaluator.print_similarity_summary()
-        evaluator.export_similarity_log_to_json(os.path.join(base_dir, "prediction/similarity_analysis.json"))
+        evaluator.export_similarity_log_to_json(os.path.join(base_dir, "prediction/similarity_analysis_noex_np_gemma26B.json"))
 
     except FileNotFoundError as e:
         print(f"Errore: {e}. Verifica i percorsi dei file.")

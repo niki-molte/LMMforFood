@@ -22,7 +22,7 @@ MAX_ITEMS_TO_TEST = None
 # --- CONFIGURATION PATHS ---
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/VireoFood172/VireoFood172/ready_chinese_food"
 TEST_DATASET_PATH = "data/ground truth/test_dataset.json"
-OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions.json"
+OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_np_gemma31B.json"
 
 # --- LOCKS E VARIABILI GLOBALI ---
 file_write_lock = Lock()
@@ -55,7 +55,7 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
         return None
 
     prompt = (
-        f"This is an image of a dish called '{item['food_category']}'. "
+        f"This is an image of a dish.\n"
         "Extract the ingredients and deduce the allergens from this dish."
     )
 
