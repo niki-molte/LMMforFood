@@ -380,9 +380,9 @@ class AnalyzeDataset:
 
 
 if __name__ == "__main__":
-    TRAIN_PATH = "VireoFood172/data/ground truth/train_dataset.json"
-    VAL_PATH = "VireoFood172/data/ground truth/val_dataset.json"
-    TEST_PATH = "VireoFood172/data/ground truth/test_dataset.json"
+    TRAIN_PATH = "data/ground truth/train_dataset.json"
+    VAL_PATH = "data/ground truth/val_dataset.json"
+    TEST_PATH = "data/ground truth/test_dataset.json"
 
     VireoFood = AnalyzeDataset(TRAIN_PATH, VAL_PATH, TEST_PATH)
     VireoFood.plot_dataset_analysis()
