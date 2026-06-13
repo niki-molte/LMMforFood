@@ -32,7 +32,7 @@ def save_json_safely(data, filepath):
 
 
 def process_single_image(item, client, system_instruction, few_shot_examples, processed_images):
-    """Processes a single image sequentially."""
+    """Processes a single image sequentially with extreme debug logging."""
     img_path = item["image_path"]
 
     if img_path in processed_images:
@@ -50,35 +50,57 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
         "and their specific macronutrients, and finally deduce the total macronutrients for the entire dish."
     )
 
-    print(f"Processing: {img_path}...")
+    print(f"\n[{time.strftime('%H:%M:%S')}] Processing: {img_path}...")
 
-    result = client.ask(
-        image_path=full_image_path,
-        prompt=prompt,
-        system_instruction=system_instruction,
-        response_schema=NutritionExtraction,
-        examples=few_shot_examples,
-    )
+    # --- START OLLAMA CALL ---
+    start_inference = time.time()
+    try:
+        result = client.ask(
+            image_path=full_image_path,
+            prompt=prompt,
+            system_instruction=system_instruction,
+            response_schema=NutritionExtraction,
+            examples=few_shot_examples,
+        )
+    except Exception as e:
+        print(f"[CRITICAL ERROR] Ollama client crashed during ask(): {e}")
+        return None
 
-    if result:
-        try:
-            cleaned_result = result.replace("```json", "").replace("```", "").strip()
-            parsed_result = NutritionExtraction.model_validate_json(cleaned_result)
+    elapsed = time.time() - start_inference
+    print(f"[{time.strftime('%H:%M:%S')}] Inference finished in {elapsed:.2f}s")
+    # --- END OLLAMA CALL ---
 
-            prediction_record = {
-                "image_path": img_path,
-                "food_id": item["food_id"],
-                "food_category": item["food_category"],
-                "ground_truth_ingredients": item.get("ingredients", []),
-                "predicted_nutrition": parsed_result.model_dump()
-            }
-            return prediction_record
+    # --- CHECK RESULT CONTENT ---
+    if result is None:
+        print(f"[DEBUG] -> result is exactly None.")
+        return None
 
-        except Exception as e:
-            print(f"[Parse Error] {img_path}: Unable to parse JSON output. Error: {e}")
-            return None
+    if isinstance(result, str) and result.strip() == "":
+        print(f"[DEBUG] -> result is an empty string.")
+        return None
 
-    return None
+    print(f"[DEBUG] -> result length: {len(str(result))} chars.")
+    print(f"[DEBUG] -> Raw result snippet (first 300 chars):\n{str(result)[:300]}\n...")
+
+    # --- PARSING PHASE ---
+    try:
+        cleaned_result = result.replace("```json", "").replace("```", "").strip()
+        parsed_result = NutritionExtraction.model_validate_json(cleaned_result)
+
+        prediction_record = {
+            "image_path": img_path,
+            "food_id": item["food_id"],
+            "food_category": item["food_category"],
+            "ground_truth_ingredients": item.get("ingredients", []),
+            "predicted_nutrition": parsed_result.model_dump()
+        }
+        print(f"[SUCCESS] Parsed successfully!")
+        return prediction_record
+
+    except Exception as e:
+        print(f"[Parse Error] Unable to parse JSON output.")
+        print(f"Pydantic Error Details: {e}")
+        return None
 
 
 def main():
