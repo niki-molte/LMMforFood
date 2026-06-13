@@ -1,6 +1,13 @@
+import os
+import csv
+
+from datasets.BaseDataset import BaseFoodDatasetLoader
+
+
 class LoadNutrition5kDataset(BaseFoodDatasetLoader):
     """
     Dataset loader specific to the Nutrition5k format.
+    Extracts complete macronutrient profiles for both the total dish and individual ingredients.
     """
 
     def __init__(self, dataset_dir, output_dir):
@@ -24,7 +31,7 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
 
     def process(self):
         """
-        Parses CSV metadata and builds the record dictionaries including multi-angle videos.
+        Parses CSV metadata and builds the record dictionaries including macronutrients and multi-angle videos.
         """
         print("Starting metadata processing...")
         for csv_path in self.dish_metadata_paths:
@@ -38,32 +45,70 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
                     if not row:
                         continue
 
-                    dish_id = row[0]
+                    dish_id = row[0].strip()
                     split = self.get_split_for_item(dish_id)
 
                     if not split:
                         continue
 
                     try:
-                        num_ingrs = int(float(row[6]))
+                        # total macronutrients
+                        total_calories = float(row[1])
+                        total_mass_grams = float(row[2])
+                        total_fat = float(row[3])
+                        total_carbohydrates = float(row[4])
+                        total_protein = float(row[5])
                     except ValueError:
+                        print(f"WARNING: Invalid numeric data for dish {dish_id}. Skipping.")
                         continue
 
-                    ingredient_data = row[7:]
+                    ingredient_data = row[6:]
                     ingredients = []
 
-                    if num_ingrs > 0 and len(ingredient_data) > 0:
-                        step = len(ingredient_data) // num_ingrs
+                    # number of ingredients in dish
+                    step = 7
+                    num_ingrs = len(ingredient_data) // step
+
+                    if num_ingrs > 0:
                         for i in range(num_ingrs):
-                            ingr_name_idx = i * step + 1
-                            if ingr_name_idx < len(ingredient_data):
-                                ingredients.append(ingredient_data[ingr_name_idx])
+                            base_idx = i * step
+
+                            if base_idx + 6 < len(ingredient_data):
+                                # id ingredient
+                                ingr_name = ingredient_data[base_idx + 1]
+
+                                try:
+                                    ingr_grams = float(ingredient_data[base_idx + 2])
+                                    ingr_cal = float(ingredient_data[base_idx + 3])
+                                    ingr_fat = float(ingredient_data[base_idx + 4])
+                                    ingr_carb = float(ingredient_data[base_idx + 5])
+                                    ingr_prot = float(ingredient_data[base_idx + 6])
+
+                                    ingredients.append({
+                                        "name": ingr_name,
+                                        "weight_grams": ingr_grams,
+                                        "macronutrients": {
+                                            "calories": ingr_cal,
+                                            "fat": ingr_fat,
+                                            "carbohydrates": ingr_carb,
+                                            "protein": ingr_prot
+                                        }
+                                    })
+                                except ValueError:
+                                    continue
 
                     record = {
                         "image_path": f"imagery/realsense_overhead/{dish_id}/rgb.png",
                         "depth_path": f"imagery/realsense_overhead/{dish_id}/depth.png",
                         "food_id": dish_id,
                         "food_category": "Nutrition5k Plate",
+                        "total_macronutrients": {
+                            "calories": total_calories,
+                            "total_mass_grams": total_mass_grams,
+                            "fat": total_fat,
+                            "carbohydrates": total_carbohydrates,
+                            "protein": total_protein
+                        },
                         "ingredients": ingredients,
                         "side_angles_videos": [
                             f"imagery/side_angles/{dish_id}/camera_{cam}.h264"
@@ -79,9 +124,10 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
 # ======= USAGE EXAMPLE =======
 if __name__ == "__main__":
     OUTPUT_DIRECTORY = "data/"
+    os.makedirs(OUTPUT_DIRECTORY, exist_ok=True)
 
     # Nutrition5k Processing
-    NUTRITION_DIR = "/percorso/del/tuo/dataset/Nutrition5k"
+    NUTRITION_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
     nutrition_loader = LoadNutrition5kDataset(NUTRITION_DIR, OUTPUT_DIRECTORY)
     nutrition_loader.load_metadata()
     nutrition_loader.process()
