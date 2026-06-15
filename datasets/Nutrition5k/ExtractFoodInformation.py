@@ -1,47 +1,59 @@
 import json
 import os
 import time
+import unicodedata
 
 from OllamaClient.client import OllamaClient
 from answer_schema.extraction import Macronutrients, IngredientWithNutrition, NutritionExtraction
 
 PROVIDER = "ollama"
 
-# Checkpoint settings
+# Impostazioni checkpoint
 SAVE_EVERY_N_ITEMS = 5
 MAX_ITEMS_TO_TEST = 5
 
-# PATHS
+# PERCORSI
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
 TEST_DATASET_PATH = "data/ground truth/test_dataset.json"
-OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_qwen08B.json"
+OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_gemma4e2b.json"
 
 
 # ==========================================
-# --- EXECUTION LOGIC ---
+# --- LOGICA DI ESECUZIONE ---
 # ==========================================
+def normalize_path(path: str) -> str:
+    """
+    Normalizza i caratteri Unicode nel percorso (NFC) per evitare
+    mismatch di encoding tra il filesystem e le stringhe Python.
+    """
+    return unicodedata.normalize("NFC", path)
+
+
 def save_json_safely(data, filepath):
-    """Atomic function to save JSON data safely."""
+    """Funzione atomica per salvare dati JSON in modo sicuro."""
     temp_filepath = filepath + ".tmp"
     try:
         with open(temp_filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
         os.replace(temp_filepath, filepath)
     except Exception as e:
-        print(f"[ERROR] Unable to save the JSON file: {e}")
+        print(f"[ERRORE] Impossibile salvare il file JSON: {e}")
 
 
 def process_single_image(item, client, system_instruction, few_shot_examples, processed_images):
-    """Processes a single image sequentially with extreme debug logging."""
+    """Processa una singola immagine in modo sequenziale con logging di debug dettagliato."""
     img_path = item["image_path"]
 
     if img_path in processed_images:
         return None
 
-    full_image_path = os.path.join(IMAGES_BASE_DIR, img_path.lstrip('/'))
+    # BUGFIX: normalizzazione Unicode del percorso per evitare mismatch di encoding
+    # (es. 'università' che diventa 'universit?' su certi filesystem/terminali)
+    raw_full_path = os.path.join(IMAGES_BASE_DIR, img_path.lstrip('/'))
+    full_image_path = normalize_path(raw_full_path)
 
     if not os.path.exists(full_image_path):
-        print(f"[Warning] File not found: {full_image_path}")
+        print(f"[Avviso] File non trovato: {full_image_path}")
         return None
 
     prompt = (
@@ -50,9 +62,9 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
         "and their specific macronutrients, and finally deduce the total macronutrients for the entire dish."
     )
 
-    print(f"\n[{time.strftime('%H:%M:%S')}] Processing: {img_path}...")
+    print(f"\n[{time.strftime('%H:%M:%S')}] Elaborazione in corso: {img_path}...")
 
-    # --- START OLLAMA CALL ---
+    # --- INIZIO CHIAMATA OLLAMA ---
     start_inference = time.time()
     try:
         result = client.ask(
@@ -63,26 +75,26 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
             examples=few_shot_examples,
         )
     except Exception as e:
-        print(f"[CRITICAL ERROR] Ollama client crashed during ask(): {e}")
+        print(f"[ERRORE CRITICO] Il client Ollama è crashato durante ask(): {e}")
         return None
 
     elapsed = time.time() - start_inference
-    print(f"[{time.strftime('%H:%M:%S')}] Inference finished in {elapsed:.2f}s")
-    # --- END OLLAMA CALL ---
+    print(f"[{time.strftime('%H:%M:%S')}] Inferenza completata in {elapsed:.2f}s")
+    # --- FINE CHIAMATA OLLAMA ---
 
-    # --- CHECK RESULT CONTENT ---
+    # --- CONTROLLO CONTENUTO RISULTATO ---
     if result is None:
-        print(f"[DEBUG] -> result is exactly None.")
+        print(f"[DEBUG] -> Il risultato è esattamente None.")
         return None
 
     if isinstance(result, str) and result.strip() == "":
-        print(f"[DEBUG] -> result is an empty string.")
+        print(f"[DEBUG] -> Il risultato è una stringa vuota.")
         return None
 
-    print(f"[DEBUG] -> result length: {len(str(result))} chars.")
-    print(f"[DEBUG] -> Raw result snippet (first 300 chars):\n{str(result)[:300]}\n...")
+    print(f"[DEBUG] -> Lunghezza risultato: {len(str(result))} caratteri.")
+    print(f"[DEBUG] -> Snippet grezzo (primi 300 caratteri):\n{str(result)[:300]}\n...")
 
-    # --- PARSING PHASE ---
+    # --- FASE DI PARSING ---
     try:
         cleaned_result = result.replace("```json", "").replace("```", "").strip()
         parsed_result = NutritionExtraction.model_validate_json(cleaned_result)
@@ -94,17 +106,17 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
             "ground_truth_ingredients": item.get("ingredients", []),
             "predicted_nutrition": parsed_result.model_dump()
         }
-        print(f"[SUCCESS] Parsed successfully!")
+        print(f"[SUCCESSO] Parsing completato correttamente!")
         return prediction_record
 
     except Exception as e:
-        print(f"[Parse Error] Unable to parse JSON output.")
-        print(f"Pydantic Error Details: {e}")
+        print(f"[Errore di Parsing] Impossibile analizzare l'output JSON.")
+        print(f"Dettagli errore Pydantic: {e}")
         return None
 
 
 def main():
-    print(f"Starting sequential execution with {PROVIDER.upper()} client...")
+    print(f"Avvio esecuzione sequenziale con client {PROVIDER.upper()}...")
 
     schema_dict = NutritionExtraction.model_json_schema()
 
@@ -117,12 +129,12 @@ def main():
     )
 
     if PROVIDER == "ollama":
-        model = os.environ.get("OLLAMA_QWEN_3.5_0.8B", "qwen3.5:0.8b")
+        model = os.environ.get("OLLAMA_GEMMA_4_E2B", "qwen3.5:0.8b")
         client = OllamaClient(model_name=model)
     else:
-        raise ValueError(f"Provider '{PROVIDER}' not supported.")
+        raise ValueError(f"Provider '{PROVIDER}' non supportato.")
 
-    # --- FEW-SHOT EXAMPLES SKELETON ---
+    # --- SKELETON ESEMPI FEW-SHOT ---
     example_output = NutritionExtraction(
         visible_ingredients=[
             IngredientWithNutrition(
@@ -188,21 +200,21 @@ def main():
     ).model_dump_json()
 
     few_shot_examples = [
-        {"image_path": os.path.join(IMAGES_BASE_DIR, "imagery/realsense_overhead/dish_1562012076/rgb.png"),
+        {"image_path": normalize_path(os.path.join(IMAGES_BASE_DIR, "imagery/realsense_overhead/dish_1562012076/rgb.png")),
          "output": example_output}
     ]
 
     os.makedirs(os.path.dirname(OUTPUT_PREDICTIONS_PATH), exist_ok=True)
 
-    # --- DATA LOADING AND FILTERING ---
+    # --- CARICAMENTO DATI E FILTRAGGIO ---
     with open(TEST_DATASET_PATH, 'r', encoding='utf-8') as f:
         test_data = json.load(f)
 
     if MAX_ITEMS_TO_TEST:
         test_data = test_data[:MAX_ITEMS_TO_TEST]
-        print(f"[*] MAX_ITEMS_TO_TEST enabled: Limiting execution to {MAX_ITEMS_TO_TEST} items.")
+        print(f"[*] MAX_ITEMS_TO_TEST attivo: esecuzione limitata a {MAX_ITEMS_TO_TEST} elementi.")
 
-    # --- CHECKPOINT RESUMPTION ---
+    # --- RIPRESA DA CHECKPOINT ---
     existing_predictions = []
     processed_images = set()
 
@@ -213,16 +225,16 @@ def main():
                 if content.strip():
                     existing_predictions = json.loads(content)
                     processed_images = {item["image_path"] for item in existing_predictions}
-            print(f"Resuming progress: Found {len(processed_images)} already processed items.")
+            print(f"Ripresa in corso: trovati {len(processed_images)} elementi già processati.")
         except Exception as e:
-            print(f"Error reading checkpoint: {e}")
+            print(f"Errore nella lettura del checkpoint: {e}")
 
-    # --- SEQUENTIAL EXECUTION LOOP ---
+    # --- LOOP DI ESECUZIONE SEQUENZIALE ---
     start_time = time.time()
     successful_count = 0
     total_to_process = len([item for item in test_data if item["image_path"] not in processed_images])
 
-    print(f"\nStarting inference loop. {total_to_process} images left to process.")
+    print(f"\nAvvio loop di inferenza. {total_to_process} immagini rimanenti da processare.")
 
     try:
         for idx, item in enumerate(test_data, 1):
@@ -233,21 +245,22 @@ def main():
                 existing_predictions.append(record)
                 processed_images.add(record["image_path"])
 
-                # Item-based saving logic
+                # Logica di salvataggio basata sul numero di elementi
                 if successful_count % SAVE_EVERY_N_ITEMS == 0:
                     save_json_safely(existing_predictions, OUTPUT_PREDICTIONS_PATH)
-                    print(f"[{successful_count} items processed] Checkpoint saved successfully.")
+                    print(f"[{successful_count} elementi processati] Checkpoint salvato con successo.")
 
     except KeyboardInterrupt:
-        print("\n[!] Execution interrupted by user (Ctrl+C). Initiating emergency save...")
+        print("\n[!] Esecuzione interrotta dall'utente (Ctrl+C). Salvataggio di emergenza in corso...")
 
     finally:
         if existing_predictions:
             save_json_safely(existing_predictions, OUTPUT_PREDICTIONS_PATH)
-            print(f"Final save completed. Total predictions saved: {len(existing_predictions)}")
+            print(f"Salvataggio finale completato. Predizioni totali salvate: {len(existing_predictions)}")
 
         end_time = time.time()
-        print(f"\nBatch complete! Processed {successful_count} new images in {end_time - start_time:.2f} seconds.")
+        print(f"\nBatch completato! Processate {successful_count} nuove immagini in {end_time - start_time:.2f} secondi.")
+
 
 if __name__ == "__main__":
     main()
