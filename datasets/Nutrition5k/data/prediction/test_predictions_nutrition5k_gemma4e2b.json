@@ -230,5 +230,197 @@
                 "protein": 25.42
             }
         }
+    },
+    {
+        "image_path": "imagery/realsense_overhead/dish_1562008979/rgb.png",
+        "food_id": "dish_1562008979",
+        "food_category": "Nutrition5k Plate",
+        "ground_truth_ingredients": [
+            {
+                "name": "jalapenos",
+                "weight_grams": 0.192961,
+                "macronutrients": {
+                    "calories": 0.05595869,
+                    "fat": 0.000771844,
+                    "carbohydrates": 0.012542465,
+                    "protein": 0.001736649
+                }
+            },
+            {
+                "name": "lemon juice",
+                "weight_grams": 1.543689,
+                "macronutrients": {
+                    "calories": 0.26242713,
+                    "fat": 0.0,
+                    "carbohydrates": 0.086446584,
+                    "protein": 0.006174756
+                }
+            },
+            {
+                "name": "pork",
+                "weight_grams": 115.776695,
+                "macronutrients": {
+                    "calories": 275.5485341,
+                    "fat": 16.2087373,
+                    "carbohydrates": 0.0,
+                    "protein": 30.1019407
+                }
+            },
+            {
+                "name": "wheat berry",
+                "weight_grams": 15.436893,
+                "macronutrients": {
+                    "calories": 14.04757263,
+                    "fat": 0.077184465,
+                    "carbohydrates": 2.948446563,
+                    "protein": 0.648349506
+                }
+            },
+            {
+                "name": "cabbage",
+                "weight_grams": 15.436893,
+                "macronutrients": {
+                    "calories": 3.24174753,
+                    "fat": 0.077184465,
+                    "carbohydrates": 0.493980576,
+                    "protein": 0.200679609
+                }
+            },
+            {
+                "name": "pepper",
+                "weight_grams": 0.385922,
+                "macronutrients": {
+                    "calories": 0.1543688,
+                    "fat": 0.000771844,
+                    "carbohydrates": 0.035890746,
+                    "protein": 0.00771844
+                }
+            },
+            {
+                "name": "salt",
+                "weight_grams": 0.192961,
+                "macronutrients": {
+                    "calories": 0.0,
+                    "fat": 0.0,
+                    "carbohydrates": 0.0,
+                    "protein": 0.0
+                }
+            },
+            {
+                "name": "carrot",
+                "weight_grams": 3.859223,
+                "macronutrients": {
+                    "calories": 1.58228143,
+                    "fat": 0.007718446,
+                    "carbohydrates": 0.3859223,
+                    "protein": 0.034733007
+                }
+            },
+            {
+                "name": "garlic",
+                "weight_grams": 1.543689,
+                "macronutrients": {
+                    "calories": 2.30009661,
+                    "fat": 0.007718445,
+                    "carbohydrates": 0.50941737,
+                    "protein": 0.098796096
+                }
+            },
+            {
+                "name": "caesar salad",
+                "weight_grams": 131.0,
+                "macronutrients": {
+                    "calories": 57.64,
+                    "fat": 2.751,
+                    "carbohydrates": 5.633,
+                    "protein": 4.192
+                }
+            },
+            {
+                "name": "olive oil",
+                "weight_grams": 0.771845,
+                "macronutrients": {
+                    "calories": 6.8231098,
+                    "fat": 0.771845,
+                    "carbohydrates": 0.0,
+                    "protein": 0.0
+                }
+            },
+            {
+                "name": "parsley",
+                "weight_grams": 0.771845,
+                "macronutrients": {
+                    "calories": 0.286354495,
+                    "fat": 0.00617476,
+                    "carbohydrates": 0.04939808,
+                    "protein": 0.022383505
+                }
+            },
+            {
+                "name": "mayonnaise",
+                "weight_grams": 3.087379,
+                "macronutrients": {
+                    "calories": 20.9941772,
+                    "fat": 2.31553425,
+                    "carbohydrates": 0.018524274,
+                    "protein": 0.03087379
+                }
+            }
+        ],
+        "predicted_nutrition": {
+            "visible_ingredients": [
+                {
+                    "name": "lettuce",
+                    "weight_grams": 21.13,
+                    "macronutrients": {
+                        "calories": 5.28,
+                        "fat": 0.15,
+                        "carbohydrates": 0.78,
+                        "protein": 0.55
+                    }
+                },
+                {
+                    "name": "quinoa",
+                    "weight_grams": 69.41,
+                    "macronutrients": {
+                        "calories": 266.31,
+                        "fat": 4.01,
+                        "carbohydrates": 44.37,
+                        "protein": 9.3
+                    }
+                }
+            ],
+            "hidden_ingredients": [
+                {
+                    "name": "olive oil",
+                    "weight_grams": 5.87,
+                    "macronutrients": {
+                        "calories": 58.45,
+                        "fat": 2.66,
+                        "carbohydrates": 0.01,
+                        "protein": 0.0
+                    }
+                },
+                {
+                    "name": "breaded chicken breast",
+                    "weight_grams": 39.6,
+                    "macronutrients": {
+                        "calories": 182.74,
+                        "fat": 2.66,
+                        "carbohydrates": 5.13,
+                        "protein": 32.9
+                    }
+                }
+            ],
+            "allergens": [
+                "None"
+            ],
+            "total_macronutrients": {
+                "calories": 506.61,
+                "fat": 11.88,
+                "carbohydrates": 83.67,
+                "protein": 46.56
+            }
+        }
     }
 ]

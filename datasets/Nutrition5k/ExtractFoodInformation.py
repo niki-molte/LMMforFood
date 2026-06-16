@@ -10,7 +10,7 @@ PROVIDER = "ollama"
 
 # Impostazioni checkpoint
 SAVE_EVERY_N_ITEMS = 5
-MAX_ITEMS_TO_TEST = 5
+MAX_ITEMS_TO_TEST = 3
 
 # PERCORSI
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
@@ -47,10 +47,9 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
     if img_path in processed_images:
         return None
 
-    # BUGFIX: normalizzazione Unicode del percorso per evitare mismatch di encoding
-    # (es. 'università' che diventa 'universit?' su certi filesystem/terminali)
-    raw_full_path = os.path.join(IMAGES_BASE_DIR, img_path.lstrip('/'))
-    full_image_path = normalize_path(raw_full_path)
+    # Ricostruisce il path assoluto unendo la base dir al path relativo salvato nel JSON.
+    # normalize_path evita mismatch Unicode (es. 'università' → 'universit?' su certi terminali).
+    full_image_path = normalize_path(os.path.join(IMAGES_BASE_DIR, img_path))
 
     if not os.path.exists(full_image_path):
         print(f"[Avviso] File non trovato: {full_image_path}")
