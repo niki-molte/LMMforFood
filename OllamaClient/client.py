@@ -24,7 +24,7 @@ class OllamaClient:
 
         config_kwargs["options"] = {
             "num_predict": 32768,
-            "num_ctx": 32768,
+            "num_ctx": 8192,
             "temperature": 0.8
         }
 
