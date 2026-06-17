@@ -30,15 +30,15 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
         self.load_splits_from_files(self.split_paths)
 
     def process(self):
-        """
-        Parses CSV metadata and builds the record dictionaries including macronutrients and multi-angle videos.
-        """
         print("Starting metadata processing...")
         for csv_path in self.dish_metadata_paths:
+
+            # check if metadata CSV exists
             if not os.path.exists(csv_path):
                 print(f"WARNING: CSV file not found -> {csv_path}")
                 continue
 
+            # start reading CSV metadata files
             with open(csv_path, 'r', encoding='utf-8') as f:
                 reader = csv.reader(f)
                 for row in reader:
@@ -49,10 +49,10 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
                     split = self.get_split_for_item(dish_id)
 
                     if not split:
+                        print(f"INFO: dish_id '{dish_id}' not found in any split, skipping.")
                         continue
 
                     try:
-                        # total macronutrients
                         total_calories = float(row[1])
                         total_mass_grams = float(row[2])
                         total_fat = float(row[3])
@@ -64,42 +64,41 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
 
                     ingredient_data = row[6:]
                     ingredients = []
-
-                    # number of ingredients in dish
                     step = 7
-                    num_ingrs = len(ingredient_data) // step
 
-                    if num_ingrs > 0:
-                        for i in range(num_ingrs):
-                            base_idx = i * step
+                    i = 0
+                    while i + step <= len(ingredient_data):
+                        base_idx = i
+                        try:
+                            ingr_id = ingredient_data[base_idx + 0]
+                            ingr_name = ingredient_data[base_idx + 1]
+                            ingr_grams = float(ingredient_data[base_idx + 2])
+                            ingr_cal = float(ingredient_data[base_idx + 3])
+                            ingr_fat = float(ingredient_data[base_idx + 4])
+                            ingr_carb = float(ingredient_data[base_idx + 5])
+                            ingr_prot = float(ingredient_data[base_idx + 6])
 
-                            if base_idx + 6 < len(ingredient_data):
-                                # id ingredient
-                                ingr_name = ingredient_data[base_idx + 1]
+                            ingredients.append({
+                                "name": ingr_name,
+                                "weight_grams": ingr_grams,
+                                "macronutrients": {
+                                    "calories": ingr_cal,
+                                    "fat": ingr_fat,
+                                    "carbohydrates": ingr_carb,
+                                    "protein": ingr_prot
+                                }
+                            })
+                        except ValueError:
+                            print(f"WARNING: Invalid ingredient data at block {i // step} for dish {dish_id}.")
+                        i += step
 
-                                try:
-                                    ingr_grams = float(ingredient_data[base_idx + 2])
-                                    ingr_cal = float(ingredient_data[base_idx + 3])
-                                    ingr_fat = float(ingredient_data[base_idx + 4])
-                                    ingr_carb = float(ingredient_data[base_idx + 5])
-                                    ingr_prot = float(ingredient_data[base_idx + 6])
-
-                                    ingredients.append({
-                                        "name": ingr_name,
-                                        "weight_grams": ingr_grams,
-                                        "macronutrients": {
-                                            "calories": ingr_cal,
-                                            "fat": ingr_fat,
-                                            "carbohydrates": ingr_carb,
-                                            "protein": ingr_prot
-                                        }
-                                    })
-                                except ValueError:
-                                    continue
+                    residuo = len(ingredient_data) % step
+                    if residuo != 0:
+                        print(f"WARNING: dish {dish_id} has {residuo} trailing ingredient field(s) ignored.")
 
                     record = {
                         "image_path": f"imagery/realsense_overhead/{dish_id}/rgb.png",
-                        "depth_path": f"imagery/realsense_overhead/{dish_id}/depth.png",
+                        "depth_path": f"imagery/realsense_overhead/{dish_id}/depth_color.png",
                         "food_id": dish_id,
                         "food_category": "Nutrition5k Plate",
                         "total_macronutrients": {
@@ -116,6 +115,11 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
                         ]
                     }
 
+                    image_full_path = os.path.join(self.dataset_dir, record["image_path"])
+                    if not os.path.exists(image_full_path):
+                        print(f"WARNING: immagine non trovata su disco per {dish_id}, record scartato.")
+                        continue
+
                     self.dataset_records[split].append(record)
 
             print(f"Successfully processed file {csv_path}")
@@ -123,12 +127,13 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
 
 # ======= USAGE EXAMPLE =======
 if __name__ == "__main__":
-    OUTPUT_DIRECTORY = "data/"
+    OUTPUT_DIRECTORY = "data/ground truth/"
     os.makedirs(OUTPUT_DIRECTORY, exist_ok=True)
 
     # Nutrition5k Processing
     NUTRITION_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
     nutrition_loader = LoadNutrition5kDataset(NUTRITION_DIR, OUTPUT_DIRECTORY)
     nutrition_loader.load_metadata()
+
     nutrition_loader.process()
-    nutrition_loader.save_json()
+    #nutrition_loader.save_json()
