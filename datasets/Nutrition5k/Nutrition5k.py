@@ -32,10 +32,13 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
     def process(self):
         print("Starting metadata processing...")
         for csv_path in self.dish_metadata_paths:
+
+            # check if metadata CSV exists
             if not os.path.exists(csv_path):
                 print(f"WARNING: CSV file not found -> {csv_path}")
                 continue
 
+            # start reading CSV metadata files
             with open(csv_path, 'r', encoding='utf-8') as f:
                 reader = csv.reader(f)
                 for row in reader:
@@ -67,7 +70,7 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
                     while i + step <= len(ingredient_data):
                         base_idx = i
                         try:
-                            ingr_id = ingredient_data[base_idx + 0]  # ora esplicito
+                            ingr_id = ingredient_data[base_idx + 0]
                             ingr_name = ingredient_data[base_idx + 1]
                             ingr_grams = float(ingredient_data[base_idx + 2])
                             ingr_cal = float(ingredient_data[base_idx + 3])
@@ -131,5 +134,6 @@ if __name__ == "__main__":
     NUTRITION_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
     nutrition_loader = LoadNutrition5kDataset(NUTRITION_DIR, OUTPUT_DIRECTORY)
     nutrition_loader.load_metadata()
+
     nutrition_loader.process()
-    nutrition_loader.save_json()
+    #nutrition_loader.save_json()
