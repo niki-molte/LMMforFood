@@ -14,7 +14,7 @@ MAX_ITEMS_TO_TEST = 3
 
 # percorsi
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
-TEST_DATASET_PATH = "dataset/Nutrition5k/data/ground truth/test_dataset.json"
+TEST_DATASET_PATH = "datasets/Nutrition5k/data/ground truth/test_dataset.json"
 OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_gemma4e2b.json"
 
 
