@@ -8,11 +8,11 @@ from answer_schema.extraction import Macronutrients, IngredientWithNutrition, Nu
 
 PROVIDER = "ollama"
 
-# Impostazioni checkpoint
+# impostazioni checkpoint
 SAVE_EVERY_N_ITEMS = 5
 MAX_ITEMS_TO_TEST = 3
 
-# PERCORSI
+# percorsi
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
 TEST_DATASET_PATH = "data/ground truth/test_dataset.json"
 OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_gemma4e2b.json"
@@ -56,9 +56,8 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
         return None
 
     prompt = (
-        "This is an overhead RGB image of a dish.\n"
-        "Extract the visible and hidden ingredients, estimate their individual weight in grams "
-        "and their specific macronutrients, and finally deduce the total macronutrients for the entire dish."
+        "Analyze this dish. Provide the full breakdown of visible/hidden ingredients, "
+        "estimated weights, nutritional values and allergens. Output ONLY the JSON."
     )
 
     print(f"\n[{time.strftime('%H:%M:%S')}] Elaborazione in corso: {img_path}...")
@@ -95,7 +94,15 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
 
     # --- FASE DI PARSING ---
     try:
+        # 1. RIMOSSA LA PARTE DI THINKING
+        if "<channel|>" in result:
+            # Divide la stringa in due parti usando "<channel|>" e prende l'ultima parte (il JSON)
+            result = result.split("<channel|>")[-1]
+
+            # 2. Pulizia standard del markdown
         cleaned_result = result.replace("```json", "").replace("```", "").strip()
+
+        # 3. Validazione
         parsed_result = NutritionExtraction.model_validate_json(cleaned_result)
 
         prediction_record = {
@@ -120,15 +127,22 @@ def main():
     schema_dict = NutritionExtraction.model_json_schema()
 
     system_instruction = (
-        "You are an expert nutritionist and food analyst.\n"
-        "You must analyze the dish shown in the image from a top-down perspective.\n"
-        "You must extract visible and invisible ingredients.\n"
-        "You must respond ONLY in valid JSON format respecting the following schema:\n"
+        "<|think|>\n"
+        "You are an expert nutritionist and food vision analyst. "
+        "Your task is to analyze top-down RGB images of dishes to perform a precise nutritional breakdown.\n\n"
+        "CORE DIRECTIVES:\n"
+        "1. Identify all visible ingredients.\n"
+        "2. Deduce logically necessary hidden ingredients (e.g., cooking oils, butter, salt, sauces) based on the preparation method of the visible food.\n"
+        "3. Extract all the possibile allergenes (e.g. gluten, dairy products) based on the visible and hidden ingredients extracted before.\n"
+        "4. Estimate realistic portion sizes (weight in grams) for each identified item.\n"
+        "5. Calculate exact macronutrients based on the estimated weights.\n"
+        "6. Sum the total macronutrients accurately.\n\n"
+        "You MUST respond ONLY with a valid JSON strictly adhering to this schema:\n"
         f"{json.dumps(schema_dict)}"
     )
 
     if PROVIDER == "ollama":
-        model = os.environ.get("OLLAMA_GEMMA_4_E2B", "qwen3.5:0.8b")
+        model = os.environ.get("OLLAMA_GEMMA_4_E2B_Q4", "qwen3.5:0.8b")
         client = OllamaClient(model_name=model)
     else:
         raise ValueError(f"Provider '{PROVIDER}' non supportato.")
