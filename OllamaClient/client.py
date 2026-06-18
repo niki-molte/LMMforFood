@@ -23,9 +23,11 @@ class OllamaClient:
             config_kwargs["format"] = "json"
 
         config_kwargs["options"] = {
+            "temperature": 1.0,
+            "top_p": 0.95,
+            "top_k": 64,
             "num_predict": 32768,
-            "num_ctx": 32768,
-            "temperature": 0.8
+            "num_ctx": 32768, # massimo contesto gemma4 131072
         }
 
         return config_kwargs
@@ -52,7 +54,7 @@ class OllamaClient:
                 if ex_img_path and not os.path.exists(ex_img_path):
                     raise FileNotFoundError(f"Immagine dell'esempio non trovata: {ex_img_path}")
 
-                user_msg = {"role": "user", "content": f"--- ESEMPIO {idx} INPUT ---"}
+                user_msg = {"role": "user", "content": f"--- EXAMPLE {idx} INPUT ---"}
                 if ex_img_path:
                     user_msg["images"] = [ex_img_path]
 
@@ -60,12 +62,12 @@ class OllamaClient:
 
                 messages.append({
                     "role": "assistant",
-                    "content": f"--- ESEMPIO {idx} OUTPUT ATTESO ---\n{ex_output}"
+                    "content": f"--- EXPECTED OUTPUT EXAMPLE {idx} ---\n{ex_output}"
                 })
 
         target_msg = {
             "role": "user",
-            "content": f"--- INPUT TARGET ---\n{prompt}",
+            "content": f"--- TARGET INPUT ---\n{prompt}",
             "images": [image_path]
         }
         messages.append(target_msg)
