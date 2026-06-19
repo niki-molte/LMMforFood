@@ -3,19 +3,19 @@ import os
 import time
 import unicodedata
 
-from OllamaClient.client import OllamaClient
+from OllamaClient.gemma_client import GemmaClient
 from answer_schema.extraction import Macronutrients, IngredientWithNutrition, NutritionExtraction
 
 PROVIDER = "ollama"
 
 # impostazioni checkpoint
 SAVE_EVERY_N_ITEMS = 5
-MAX_ITEMS_TO_TEST = 5
+MAX_ITEMS_TO_TEST = 3
 
 # percorsi
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
-TEST_DATASET_PATH = "data/ground truth/test_dataset.json"
-OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_gemma4e2b.json"
+TEST_DATASET_PATH = "datasets/Nutrition5k/data/ground truth/test_dataset.json"
+OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_gemma4e2b_prova.json"
 
 
 # ==========================================
@@ -47,10 +47,9 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
     if img_path in processed_images:
         return None
 
-    # BUGFIX: normalizzazione Unicode del percorso per evitare mismatch di encoding
-    # (es. 'università' che diventa 'universit?' su certi filesystem/terminali)
-    raw_full_path = os.path.join(IMAGES_BASE_DIR, img_path.lstrip('/'))
-    full_image_path = normalize_path(raw_full_path)
+    # Ricostruisce il path assoluto unendo la base dir al path relativo salvato nel JSON.
+    # normalize_path evita mismatch Unicode (es. 'università' → 'universit?' su certi terminali).
+    full_image_path = normalize_path(os.path.join(IMAGES_BASE_DIR, img_path))
 
     if not os.path.exists(full_image_path):
         print(f"[Avviso] File non trovato: {full_image_path}")
@@ -144,7 +143,7 @@ def main():
 
     if PROVIDER == "ollama":
         model = os.environ.get("OLLAMA_GEMMA_4_E2B_Q4", "qwen3.5:0.8b")
-        client = OllamaClient(model_name=model)
+        client = GemmaClient(model_name=model)
     else:
         raise ValueError(f"Provider '{PROVIDER}' non supportato.")
 
