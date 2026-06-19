@@ -1,20 +1,16 @@
 import os
 import ollama
-from sympy.physics.units import temperature
+from OllamaClient.ollama_client import BaseVisionClient
 
 
-class OllamaClient:
+class GemmaClient(BaseVisionClient):
     """
-    Client wrapper per interagire con modelli di visione Ollama in locale.
-    Supporta il Few-Shot Prompting tramite esempi multimodali.
-    Progettato per esecuzione locale: nessuna logica di retry o cleanup cloud necessaria.
+    Client concreto per interagire con i modelli della famiglia Ollama/Gemma4.
+    Eredita da BaseVisionClient e ne implementa i metodi astratti.
     """
-
-    def __init__(self, model_name: str):
-        self.model_name = model_name
 
     def _define_model_configuration(self, response_schema: any = None) -> dict:
-        """Costruisce i kwargs di configurazione per il modello Ollama."""
+        """Costruisce i kwargs di configurazione specifici per Ollama."""
         config_kwargs = {}
 
         if response_schema:
@@ -27,17 +23,14 @@ class OllamaClient:
             "top_p": 0.95,
             "top_k": 64,
             "num_predict": 32768,
-            "num_ctx": 32768, # massimo contesto gemma4 131072
+            "num_ctx": 32768,  # Finestra di contesto allocata localmente
         }
 
         return config_kwargs
 
     def _prepare_contents(self, image_path: str, prompt: str, system_instruction: str = None,
-                          examples: list[dict] = None) -> list[dict]:
-        """
-        Costruisce l'array di messaggi per Ollama.
-        Verifica le immagini localmente e formatta gli esempi few-shot come turni conversazionali.
-        """
+                         examples: list[dict] = None) -> list[dict]:
+        """Costruisce l'array di messaggi specifico per il formato chat di Ollama."""
         if not os.path.exists(image_path):
             raise FileNotFoundError(f"Immagine target non trovata: {image_path}")
 
@@ -75,7 +68,7 @@ class OllamaClient:
         return messages
 
     def _execute(self, model_kwargs: dict, messages: list[dict]) -> str | None:
-        """Esegue la chiamata API locale a Ollama senza logica di retry."""
+        """Esegue la chiamata API locale a Ollama."""
         try:
             response = ollama.chat(
                 model=self.model_name,
@@ -83,25 +76,18 @@ class OllamaClient:
                 **model_kwargs
             )
 
-            # --- DEEP DEBUG: mostra il tipo e il repr grezzo della risposta ---
+            # --- DEEP DEBUG ---
             print(f"[OllamaClient DEBUG] Tipo risposta: {type(response)}")
             print(f"[OllamaClient DEBUG] repr(response): {repr(response)[:500]}")
 
             if hasattr(response, "message"):
                 raw_message = response.message
-                print(f"[OllamaClient DEBUG] Tipo message: {type(raw_message)}")
-                print(f"[OllamaClient DEBUG] repr(message): {repr(raw_message)[:300]}")
                 content = raw_message.content if hasattr(raw_message, "content") else None
             elif isinstance(response, dict):
-                # Fallback per versioni legacy della libreria che restituiscono un dict
                 content = response.get("message", {}).get("content")
             else:
                 print("[OllamaClient ERRORE] Formato di risposta non riconosciuto.")
                 return None
-
-            # --- DEEP DEBUG: mostra tipo e valore esatto di content ---
-            print(f"[OllamaClient DEBUG] Tipo content: {type(content)}")
-            print(f"[OllamaClient DEBUG] repr(content): {repr(content)[:300]}")
 
             if not content or not content.strip():
                 print("[OllamaClient AVVISO] Il modello ha restituito una risposta vuota.")
@@ -112,13 +98,3 @@ class OllamaClient:
         except Exception as e:
             print(f"[OllamaClient ERRORE] Esecuzione fallita: {e}")
             return None
-
-    def ask(self, image_path: str, prompt: str, system_instruction: str = None,
-            response_schema: any = None, examples: list[dict] = None) -> str | None:
-        """
-        Orchestratore pubblico: prepara la configurazione, costruisce i messaggi ed esegue la chiamata locale.
-        """
-        model_kwargs = self._define_model_configuration(response_schema)
-        messages = self._prepare_contents(image_path, prompt, system_instruction, examples)
-
-        return self._execute(model_kwargs, messages)

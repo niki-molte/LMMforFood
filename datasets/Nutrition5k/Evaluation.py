@@ -3,28 +3,35 @@ import os
 import csv
 import statistics
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
+def load_vocabulary(path: str) -> list:
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"File CSV non trovato: {path}")
+
+    vocab = set()
+    with open(path, 'r', encoding='utf-8-sig') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            ing = row.get('ingr', '').strip().lower()
+            if ing:
+                vocab.add(ing)
+    return list(vocab)
+
+
 class Nutrition5kEvaluator:
-    def __init__(self, pred_json_path: str, ingredients_csv_path: str, model_name: str = 'all-MiniLM-L6-v2',
-                 threshold: float = 0.8):
+    def __init__(self, pred_json_path: str, nlp_model, vocabulary: list, vocab_embeddings, threshold: float):
         self.pred_path = pred_json_path
-        self.ingredients_csv_path = ingredients_csv_path
         self.threshold = threshold
+        self.nlp_model = nlp_model
+        self.vocabulary = vocabulary
+        self.vocab_embeddings = vocab_embeddings
 
         self.predictions = self._load_json(self.pred_path)
-
-        print("Caricamento del vocabolario da CSV...")
-        self.vocabulary = self._load_vocabulary(self.ingredients_csv_path)
-
-        print(f"Caricamento del modello NLP: {model_name}...")
-        self.nlp_model = SentenceTransformer(model_name)
-
-        print("Calcolo degli embedding per il vocabolario base (potrebbe richiedere qualche secondo)...")
-        self.vocab_embeddings = self.nlp_model.encode(self.vocabulary)
-
         self.similarity_log = []
 
     def _load_json(self, path: str) -> list:
@@ -33,41 +40,22 @@ class Nutrition5kEvaluator:
         with open(path, 'r', encoding='utf-8') as f:
             return json.load(f)
 
-    def _load_vocabulary(self, path: str) -> list:
-        """Legge la colonna 'ingr' dal file ingredients_metadata.csv."""
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"File CSV non trovato: {path}")
-
-        vocab = set()
-        with open(path, 'r', encoding='utf-8-sig') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                ing = row.get('ingr', '').strip().lower()
-                if ing:
-                    vocab.add(ing)
-        return list(vocab)
-
     def _clean_ingredients(self, ingredients: list) -> list:
-        """Estrae e pulisce il nome dell'ingrediente dalla lista di dizionari."""
         return [str(ing.get("name", "")).strip().lower()
                 for ing in ingredients
                 if isinstance(ing, dict) and str(ing.get("name", "")).strip()]
 
     def _standardize_list(self, pred_list: list, recipe_id: str = "N/A") -> set:
-        """Standardizza gli ingredienti predetti confrontandoli con l'intero vocabolario CSV."""
         if not pred_list:
             return set()
 
         pred_embeddings = self.nlp_model.encode(pred_list)
-        # Confrontiamo le predizioni con TUTTO il vocabolario CSV
         sim_matrix = cosine_similarity(pred_embeddings, self.vocab_embeddings)
-
         standardized_preds = set()
 
         for i, pred_ing in enumerate(pred_list):
             best_match_idx = np.argmax(sim_matrix[i])
             best_score = float(sim_matrix[i][best_match_idx])
-
             accepted = best_score >= self.threshold
             best_vocab_match = self.vocabulary[best_match_idx]
 
@@ -98,7 +86,6 @@ class Nutrition5kEvaluator:
         return {"P": precision, "R": recall, "F1": f1, "IoU": iou}
 
     def evaluate_nlp_metrics(self) -> dict:
-        print("\nCalcolo metriche NLP (P, R, F1, IoU)...")
         sums = {
             "non_std": {"P": 0.0, "R": 0.0, "F1": 0.0, "IoU": 0.0},
             "std": {"P": 0.0, "R": 0.0, "F1": 0.0, "IoU": 0.0}
@@ -112,7 +99,6 @@ class Nutrition5kEvaluator:
             pred_raw = pred_dict.get("visible_ingredients", []) + pred_dict.get("hidden_ingredients", [])
 
             recipe_id = item.get("food_id", "unknown")
-
             gt_list = self._clean_ingredients(gt_raw)
             pred_list = self._clean_ingredients(pred_raw)
 
@@ -122,11 +108,9 @@ class Nutrition5kEvaluator:
             gt_set = set(gt_list)
             pred_set_exact = set(pred_list)
 
-            # nlp non standardizzate
             m_exact = self._compute_set_metrics(pred_set_exact, gt_set)
             for k in sums["non_std"]: sums["non_std"][k] += m_exact[k]
 
-            # nlp standardizzate
             pred_set_std = self._standardize_list(pred_list, recipe_id)
             m_std = self._compute_set_metrics(pred_set_std, gt_set)
             for k in sums["std"]: sums["std"][k] += m_std[k]
@@ -138,19 +122,15 @@ class Nutrition5kEvaluator:
 
         return {
             "Non-Standardized": {k: v / valid_items for k, v in sums["non_std"].items()},
-            "Standardized (NLP)": {k: v / valid_items for k, v in sums["std"].items()}
+            "Standardized": {k: v / valid_items for k, v in sums["std"].items()}
         }
 
     def evaluate_macronutrients(self) -> dict:
-        print("\nCalcolo statistiche Macronutrienti (MAE e MAE%)...")
         DATA_FIELDNAMES = ["calories", "mass", "fat", "carbohydrates", "protein"]
-
         groundtruth_values = {field: [] for field in DATA_FIELDNAMES}
         err_values = {field: [] for field in DATA_FIELDNAMES}
 
         for item in self.predictions:
-
-            # calcolo ground truth
             gt_cal = gt_mass = gt_fat = gt_carbs = gt_prot = 0.0
             for ing in item.get("ground_truth_ingredients", []):
                 gt_mass += ing.get("weight_grams", 0.0)
@@ -160,7 +140,6 @@ class Nutrition5kEvaluator:
                 gt_carbs += macros.get("carbohydrates", 0.0)
                 gt_prot += macros.get("protein", 0.0)
 
-            # calcolo dei macro
             pred_nut = item.get("predicted_nutrition", {})
             pred_macros = pred_nut.get("total_macronutrients", {})
 
@@ -186,36 +165,276 @@ class Nutrition5kEvaluator:
         for field in DATA_FIELDNAMES:
             mean_err = statistics.mean(err_values[field])
             mean_gt = statistics.mean(groundtruth_values[field])
-
             output_stats[f"{field}_MAE"] = mean_err
             output_stats[f"{field}_MAE_%"] = (100 * mean_err / mean_gt) if mean_gt > 0 else 0.0
 
         return output_stats
 
 
+# ==========================================
+# FUNZIONI PER I GRAFICI
+# ==========================================
+
+def plot_nlp_metrics(all_nlp_results: dict, show_standardized: bool, output_dir: str):
+    metrics = ["P", "R", "F1", "IoU"]
+    models = list(all_nlp_results.keys())
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
+    model_colors = {model: colors[i % len(colors)] for i, model in enumerate(models)}
+
+    # --- PLOT COMBINATO (SUBPLOTS) ---
+    fig_combined, axes = plt.subplots(2, 2, figsize=(14, 10))
+    axes = axes.flatten()
+
+    for idx, m in enumerate(metrics):
+        ax = axes[idx]
+        x = np.arange(len(models))
+
+        if show_standardized:
+            width = 0.35
+            non_std_vals = [all_nlp_results[mod]["Non-Standardized"][m] for mod in models]
+            std_vals = [all_nlp_results[mod]["Standardized"][m] for mod in models]
+
+            for i, mod in enumerate(models):
+                ax.bar(x[i] - width / 2, non_std_vals[i], width, color=model_colors[mod], edgecolor='black')
+                ax.bar(x[i] + width / 2, std_vals[i], width, color=model_colors[mod], alpha=0.5, hatch='//',
+                       edgecolor='black')
+        else:
+            width = 0.5
+            non_std_vals = [all_nlp_results[mod]["Non-Standardized"][m] for mod in models]
+            for i, mod in enumerate(models):
+                ax.bar(x[i], non_std_vals[i], width, color=model_colors[mod], edgecolor='black')
+
+        ax.set_ylabel('Score')
+        ax.set_title(f'Metrica NLP: {m}', fontweight='bold')
+        ax.set_xticks(x)
+        ax.set_xticklabels(models, rotation=15, ha="right")
+        ax.grid(False)
+        ax.set_ylim(0, 1.05)
+
+    legend_elements = []
+    for mod in models:
+        if show_standardized:
+            legend_elements.append(Patch(facecolor=model_colors[mod], edgecolor='black', label=f"{mod} (Non-Std)"))
+            legend_elements.append(
+                Patch(facecolor=model_colors[mod], alpha=0.5, hatch='//', edgecolor='black', label=f"{mod} (Std)"))
+        else:
+            legend_elements.append(Patch(facecolor=model_colors[mod], edgecolor='black', label=mod))
+
+    fig_combined.legend(handles=legend_elements, loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=4)
+    plt.suptitle("Confronto Riepilogativo delle Metriche NLP", fontsize=16, fontweight='bold', y=0.98)
+    plt.tight_layout()
+    comb_path = os.path.join(output_dir, 'nlp_metrics_combined.png')
+    plt.savefig(comb_path, bbox_inches='tight', dpi=300)
+    plt.close()
+
+    # --- PLOT SINGOLI ---
+    for m in metrics:
+        fig_single, ax_single = plt.subplots(figsize=(8, 6))
+        x = np.arange(len(models))
+
+        if show_standardized:
+            width = 0.35
+            non_std_vals = [all_nlp_results[mod]["Non-Standardized"][m] for mod in models]
+            std_vals = [all_nlp_results[mod]["Standardized"][m] for mod in models]
+
+            for i, mod in enumerate(models):
+                ax_single.bar(x[i] - width / 2, non_std_vals[i], width, color=model_colors[mod], edgecolor='black')
+                ax_single.bar(x[i] + width / 2, std_vals[i], width, color=model_colors[mod], alpha=0.5, hatch='//',
+                              edgecolor='black')
+        else:
+            width = 0.5
+            non_std_vals = [all_nlp_results[mod]["Non-Standardized"][m] for mod in models]
+            for i, mod in enumerate(models):
+                ax_single.bar(x[i], non_std_vals[i], width, color=model_colors[mod], edgecolor='black')
+
+        ax_single.set_ylabel('Score')
+        ax_single.set_title(f'Metrica NLP: {m}', fontweight='bold')
+        ax_single.set_xticks(x)
+        ax_single.set_xticklabels(models, rotation=15, ha="right")
+        ax_single.grid(False)
+        ax_single.set_ylim(0, 1.05)
+
+        ax_single.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.2), ncol=2)
+        plt.tight_layout()
+        single_path = os.path.join(output_dir, f'nlp_metric_{m}.png')
+        plt.savefig(single_path, bbox_inches='tight', dpi=300)
+        plt.close()
+
+
+def plot_macro_metrics(all_macro_results: dict, show_mae_percentage: bool, output_dir: str):
+    fields = ["calories", "mass", "fat", "carbohydrates", "protein"]
+
+    # Creazione dei dati per il plot includendo i due modelli "baseline" presi dalla Tabella 3 del paper
+    plot_data = dict(all_macro_results)
+
+    plot_data["Paper 2D Direct"] = {
+        "calories_MAE": 70.6, "calories_MAE_%": 26.1,
+        "mass_MAE": 40.4, "mass_MAE_%": 18.8,
+        "fat_MAE": 5.0, "fat_MAE_%": 34.2,
+        "carbohydrates_MAE": 6.1, "carbohydrates_MAE_%": 31.9,
+        "protein_MAE": 5.5, "protein_MAE_%": 29.5
+    }
+
+    plot_data["Paper Baseline (Std)"] = {
+        "calories_MAE": 150.8, "calories_MAE_%": 60.2,
+        "mass_MAE": 124.6, "mass_MAE_%": 58.5,
+        "fat_MAE": 8.2, "fat_MAE_%": 67.6,
+        "carbohydrates_MAE": 12.5, "carbohydrates_MAE_%": 62.1,
+        "protein_MAE": 10.5, "protein_MAE_%": 62.1
+    }
+
+    models = list(plot_data.keys())
+
+    # Colori: 4 per gemma, e 2 dedicati per le baseline del paper
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
+    model_colors = {model: colors[i % len(colors)] for i, model in enumerate(models)}
+
+    # Preparazione legenda combinata/singola
+    legend_elements = []
+    for mod in models:
+        if show_mae_percentage:
+            legend_elements.append(Patch(facecolor=model_colors[mod], edgecolor='black', label=f"{mod} (Abs)"))
+            legend_elements.append(
+                Patch(facecolor=model_colors[mod], alpha=0.5, hatch='//', edgecolor='black', label=f"{mod} (%)"))
+        else:
+            legend_elements.append(Patch(facecolor=model_colors[mod], edgecolor='black', label=mod))
+
+    # --- PLOT COMBINATO (SUBPLOTS) ---
+    fig_combined, axes = plt.subplots(2, 3, figsize=(18, 12))
+    axes = axes.flatten()
+
+    for idx, f in enumerate(fields):
+        ax = axes[idx]
+        x = np.arange(len(models))
+
+        if show_mae_percentage:
+            width = 0.35
+            for i, mod in enumerate(models):
+                # Colonna MAE Assoluto (Piena)
+                ax.bar(x[i] - width / 2, plot_data[mod][f"{f}_MAE"], width, color=model_colors[mod], edgecolor='black',
+                       zorder=2)
+                # Colonna MAE % (Tratteggiata, vicina a quella assoluta)
+                ax.bar(x[i] + width / 2, plot_data[mod][f"{f}_MAE_%"], width, color=model_colors[mod], alpha=0.5,
+                       hatch='//', edgecolor='black', zorder=2)
+        else:
+            width = 0.5
+            for i, mod in enumerate(models):
+                ax.bar(x[i], plot_data[mod][f"{f}_MAE"], width, color=model_colors[mod], edgecolor='black', zorder=2)
+
+        ax.set_ylabel('Errore Medio Assoluto (Valore e %)')
+        ax.set_title(f'MAE & MAE%: {f.capitalize()}', fontweight='bold')
+        ax.set_xticks(x)
+        ax.set_xticklabels(models, rotation=30, ha="right")
+        ax.grid(False)
+
+    axes[5].axis('off')
+
+    # Aggiusta il numero di colonne nella legenda in base a quanti elementi ci sono
+    ncols_legend = 4 if show_mae_percentage else 3
+    fig_combined.legend(handles=legend_elements, loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=ncols_legend)
+
+    plt.suptitle("Confronto Errore Medio Assoluto (MAE) dei Macronutrienti", fontsize=16, fontweight='bold', y=0.98)
+    plt.tight_layout()
+    comb_path = os.path.join(output_dir, 'macro_mae_combined.png')
+    plt.savefig(comb_path, bbox_inches='tight', dpi=300)
+    plt.close()
+
+    # --- PLOT SINGOLI ---
+    for f in fields:
+        fig_single, ax_single = plt.subplots(figsize=(10, 8))
+        x = np.arange(len(models))
+
+        if show_mae_percentage:
+            width = 0.35
+            for i, mod in enumerate(models):
+                ax_single.bar(x[i] - width / 2, plot_data[mod][f"{f}_MAE"], width, color=model_colors[mod],
+                              edgecolor='black', zorder=2)
+                ax_single.bar(x[i] + width / 2, plot_data[mod][f"{f}_MAE_%"], width, color=model_colors[mod], alpha=0.5,
+                              hatch='//', edgecolor='black', zorder=2)
+        else:
+            width = 0.5
+            for i, mod in enumerate(models):
+                ax_single.bar(x[i], plot_data[mod][f"{f}_MAE"], width, color=model_colors[mod], edgecolor='black',
+                              zorder=2)
+
+        ax_single.set_ylabel('Errore Medio Assoluto (Valore e %)')
+        ax_single.set_title(f'MAE & MAE%: {f.capitalize()}', fontweight='bold')
+        ax_single.set_xticks(x)
+        ax_single.set_xticklabels(models, rotation=25, ha="right")
+        ax_single.grid(False)
+
+        ax_single.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.2), ncol=ncols_legend)
+
+        plt.tight_layout()
+        single_path = os.path.join(output_dir, f'macro_mae_{f}.png')
+        plt.savefig(single_path, bbox_inches='tight', dpi=300)
+        plt.close()
+
+
 if __name__ == "__main__":
 
-    PRED_JSON_PATH = "data/prediction/test_predictions_nutrition5k_gemma4e2b.json"
-    #PRED_JSON_PATH = "data/prediction/perfect_predictions.json"
-    INGREDIENTS_CSV_PATH = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset/metadata/ingredients_metadata.csv"
+    # ================= CONFIGURAZIONI =================
+    THRESHOLD = 0.7
+    SHOW_STANDARDIZED_METRICS = True  # Attiva/Disattiva NLP Standardizzate (IoU, F1...)
+    SHOW_MAE_PERCENTAGE = True  # Attiva/Disattiva plotting del MAE% affiancato al MAE
+    OUTPUT_DIR = "data/evaluation"
 
-    try:
-        evaluator = Nutrition5kEvaluator(
-            pred_json_path=PRED_JSON_PATH,
-            ingredients_csv_path=INGREDIENTS_CSV_PATH,
-            threshold=0.8
-        )
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-        nlp_results = evaluator.evaluate_nlp_metrics()
-        for mode, metrics in nlp_results.items():
-            print(f"\n--- NLP {mode} Metrics ---")
-            for m_name, val in metrics.items():
-                print(f"{m_name}: {val:.4f}")
+    PRED_JSON_PATHS = [
+        "data/prediction/test_predictions_nutrition5k_gemma4e2b_q4.json",
+        "data/prediction/test_predictions_nutrition5k_gemma4e2b_q8.json",
+        "data/prediction/test_predictions_nutrition5k_gemma4e4b_q4.json",
+        "data/prediction/test_predictions_nutrition5k_gemma4e4b_q8.json"
+    ]
+    INGREDIENTS_CSV_PATH = "data/metadata/ingredients_metadata.csv"
+    # ==================================================
 
-        macro_results = evaluator.evaluate_macronutrients()
-        print("\n--- Macronutrients Error (MAE & MAE%) ---")
-        for m_name, val in macro_results.items():
-            print(f"{m_name}: {val:.2f}")
+    print("Caricamento del vocabolario da CSV...")
+    vocabulary = load_vocabulary(INGREDIENTS_CSV_PATH)
 
-    except Exception as e:
-        print(f"Errore durante l'esecuzione: {e}")
+    print("Caricamento del modello NLP: all-MiniLM-L6-v2... (Avviene una singola volta)")
+    nlp_model = SentenceTransformer('all-MiniLM-L6-v2')
+
+    print("Calcolo degli embedding per il vocabolario base...")
+    vocab_embeddings = nlp_model.encode(vocabulary)
+
+    all_nlp_results = {}
+    all_macro_results = {}
+
+    for pred_path in PRED_JSON_PATHS:
+        model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
+
+        print(f"\n{'=' * 70}")
+        print(f"VALUTAZIONE MODELLO: {model_name}")
+        print(f"{'=' * 70}")
+
+        try:
+            evaluator = Nutrition5kEvaluator(
+                pred_json_path=pred_path,
+                nlp_model=nlp_model,
+                vocabulary=vocabulary,
+                vocab_embeddings=vocab_embeddings,
+                threshold=THRESHOLD
+            )
+
+            nlp_res = evaluator.evaluate_nlp_metrics()
+            all_nlp_results[model_name] = nlp_res
+
+            macro_res = evaluator.evaluate_macronutrients()
+            all_macro_results[model_name] = macro_res
+
+        except Exception as e:
+            print(f"\n[!] Errore durante l'esecuzione del file {pred_path}:\n{e}")
+
+    print(f"\n{'=' * 70}")
+    print("VALUTAZIONE COMPLETATA. GENERAZIONE GRAFICI IN CORSO...")
+    print(f"{'=' * 70}")
+
+    if all_nlp_results:
+        plot_nlp_metrics(all_nlp_results, show_standardized=SHOW_STANDARDIZED_METRICS, output_dir=OUTPUT_DIR)
+    if all_macro_results:
+        # Passiamo la nuova variabile SHOW_MAE_PERCENTAGE
+        plot_macro_metrics(all_macro_results, show_mae_percentage=SHOW_MAE_PERCENTAGE, output_dir=OUTPUT_DIR)
+
+    print(f"\nTutti i grafici (singoli e combinati) sono stati salvati nella cartella: {OUTPUT_DIR}")

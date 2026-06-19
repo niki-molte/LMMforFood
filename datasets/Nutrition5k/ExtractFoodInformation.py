@@ -3,7 +3,7 @@ import os
 import time
 import unicodedata
 
-from OllamaClient.client import OllamaClient
+from OllamaClient.gemma_client import GemmaClient
 from answer_schema.extraction import Macronutrients, IngredientWithNutrition, NutritionExtraction
 
 PROVIDER = "ollama"
@@ -15,7 +15,7 @@ MAX_ITEMS_TO_TEST = 3
 # percorsi
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
 TEST_DATASET_PATH = "datasets/Nutrition5k/data/ground truth/test_dataset.json"
-OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_gemma4e2b.json"
+OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_gemma4e2b_prova.json"
 
 
 # ==========================================
@@ -143,7 +143,7 @@ def main():
 
     if PROVIDER == "ollama":
         model = os.environ.get("OLLAMA_GEMMA_4_E2B_Q4", "qwen3.5:0.8b")
-        client = OllamaClient(model_name=model)
+        client = GemmaClient(model_name=model)
     else:
         raise ValueError(f"Provider '{PROVIDER}' non supportato.")
 
