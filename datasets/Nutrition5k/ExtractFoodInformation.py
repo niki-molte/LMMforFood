@@ -4,9 +4,11 @@ import time
 import unicodedata
 
 from OllamaClient.gemma_client import GemmaClient
+from OllamaClient.qwen_client import QwenClient
+from OllamaClient.miniCPM_client import MiniCPMClient
 from answer_schema.extraction import Macronutrients, IngredientWithNutrition, NutritionExtraction
 
-PROVIDER = "ollama"
+PROVIDER = "minicpm"
 
 # impostazioni checkpoint
 SAVE_EVERY_N_ITEMS = 5
@@ -94,12 +96,12 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
 
     # --- FASE DI PARSING ---
     try:
-        # 1. RIMOSSA LA PARTE DI THINKING
+        # 1. RIMOSSA LA PARTE DI THINKING (solo se esiste, come in Gemma)
         if "<channel|>" in result:
             # Divide la stringa in due parti usando "<channel|>" e prende l'ultima parte (il JSON)
             result = result.split("<channel|>")[-1]
 
-            # 2. Pulizia standard del markdown
+        # 2. Pulizia standard del markdown (DA ESEGUIRE SEMPRE)
         cleaned_result = result.replace("```json", "").replace("```", "").strip()
 
         # 3. Validazione
@@ -122,12 +124,12 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
 
 
 def main():
-    print(f"Avvio esecuzione sequenziale con client {PROVIDER.upper()}...")
+    print(f"Avvio esecuzione sequenziale con provider: {PROVIDER.upper()}...")
 
     schema_dict = NutritionExtraction.model_json_schema()
 
-    system_instruction = (
-        "<|think|>\n"
+    # 1. System Instruction BASE (Senza token specifici di modello)
+    base_system_instruction = (
         "You are an expert nutritionist and food vision analyst. "
         "Your task is to analyze top-down RGB images of dishes to perform a precise nutritional breakdown.\n\n"
         "CORE DIRECTIVES:\n"
@@ -141,11 +143,32 @@ def main():
         f"{json.dumps(schema_dict)}"
     )
 
-    if PROVIDER == "ollama":
-        model = os.environ.get("OLLAMA_GEMMA_4_E2B_Q4", "qwen3.5:0.8b")
+    # 2. Configurazione Dinamica del Provider
+    system_instruction = base_system_instruction
+
+    if PROVIDER == "gemma":
+        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e2b-it-q8_0")
         client = GemmaClient(model_name=model)
+        # Solo Gemma 4 richiede il token esplicito per il thinking
+        system_instruction = "<|think|>\n" + base_system_instruction
+        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_gemma.json"
+
+    elif PROVIDER == "qwen":
+        model = os.environ.get("OLLAMA_QWEN_MODEL", "qwen3.5:4b") # o "qwen3.5:9b"
+        client = QwenClient(model_name=model)
+        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_qwen.json"
+
+    elif PROVIDER == "minicpm":
+        model = os.environ.get("OLLAMA_MINICPM_MODEL", "minicpm-v4.5")
+        # Attiviamo la modalità Deep Thinking come default per questo task complesso
+        client = MiniCPMClient(model_name=model, thinking_mode="deep")
+        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_minicpm.json"
+
     else:
-        raise ValueError(f"Provider '{PROVIDER}' non supportato.")
+        raise ValueError(f"Provider '{PROVIDER}' non supportato. Scegli tra 'gemma', 'qwen', 'minicpm'.")
+
+    print(f"[*] Modello selezionato: {model}")
+    print(f"[*] File di output: {OUTPUT_PREDICTIONS_PATH}")
 
     # --- SKELETON ESEMPI FEW-SHOT ---
     example_output = NutritionExtraction(
@@ -272,7 +295,8 @@ def main():
             print(f"Salvataggio finale completato. Predizioni totali salvate: {len(existing_predictions)}")
 
         end_time = time.time()
-        print(f"\nBatch completato! Processate {successful_count} nuove immagini in {end_time - start_time:.2f} secondi.")
+        print(
+            f"\nBatch completato! Processate {successful_count} nuove immagini in {end_time - start_time:.2f} secondi.")
 
 
 if __name__ == "__main__":
