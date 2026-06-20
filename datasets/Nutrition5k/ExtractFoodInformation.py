@@ -159,7 +159,7 @@ def main():
         OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_qwen.json"
 
     elif PROVIDER == "minicpm":
-        model = os.environ.get("OLLAMA_MINICPM_MODEL", "openbmb/minicpm-v4.5:q8_0")
+        model = os.environ.get("OLLAMA_MINICPM_MODEL", "openbmb/minicpm-v4.5:8b")
         # Attiviamo la modalità Deep Thinking come default per questo task complesso
         client = MiniCPMClient(model_name=model, thinking_mode="deep")
         OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_minicpm.json"
