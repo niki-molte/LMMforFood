@@ -25,7 +25,7 @@ class QwenClient(BaseVisionClient):
             "top_k": 20,
             "presence_penalty": 1.5,
             "num_predict": 32768,
-            "num_ctx": 32768,  # Finestra di contesto bloccata a 32k
+            "num_ctx": 65536,  # Finestra di contesto bloccata a 32k
         }
 
         return config_kwargs
