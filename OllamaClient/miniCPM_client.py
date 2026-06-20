@@ -35,7 +35,7 @@ class MiniCPMClient(BaseVisionClient):
         # Parametri dinamici in base al livello di pensiero richiesto
         if self.thinking_mode == "deep":
             options = {
-                "temperature": 1.0,
+                "temperature": 0.7,
                 "top_p": 0.90,
                 "num_predict": 32768,  # Spazio di generazione molto ampio per i ragionamenti
                 "num_ctx": 32768,  # Contesto bloccato a 32k come da te richiesto
