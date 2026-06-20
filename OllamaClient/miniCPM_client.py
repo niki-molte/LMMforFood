@@ -35,16 +35,16 @@ class MiniCPMClient(BaseVisionClient):
         # Parametri dinamici in base al livello di pensiero richiesto
         if self.thinking_mode == "deep":
             options = {
-                "temperature": 1.0,  # Leggermente più alta per favorire l'esplorazione logica
+                "temperature": 1.0,
                 "top_p": 0.90,
-                "num_predict": 8192,  # Spazio di generazione molto ampio per i ragionamenti
+                "num_predict": 32768,  # Spazio di generazione molto ampio per i ragionamenti
                 "num_ctx": 32768,  # Contesto bloccato a 32k come da te richiesto
             }
         else:  # "fast"
             options = {
                 "temperature": 0.3,  # Bassa temperatura per andare dritto al punto
                 "top_p": 0.80,
-                "num_predict": 8192,  # Taglio rapido per efficienza
+                "num_predict": 32768,  # Taglio rapido per efficienza
                 "num_ctx": 32768,
             }
 
