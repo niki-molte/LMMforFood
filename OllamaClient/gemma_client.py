@@ -19,7 +19,7 @@ class GemmaClient(BaseVisionClient):
             config_kwargs["format"] = "json"
 
         config_kwargs["options"] = {
-            "temperature": 1.0,
+            "temperature": 0.3,
             "top_p": 0.95,
             "top_k": 64,
             "num_predict": 32768,

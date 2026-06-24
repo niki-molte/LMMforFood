@@ -384,8 +384,10 @@ if __name__ == "__main__":
     PRED_JSON_PATHS = [
         "data/prediction/test_predictions_nutrition5k_gemma4e2b_q4.json",
         "data/prediction/test_predictions_nutrition5k_gemma4e2b_q8.json",
+        "data/prediction/test_predictions_nutrition5k_gemma_e2b_q8V2.json",
         "data/prediction/test_predictions_nutrition5k_gemma4e4b_q4.json",
-        "data/prediction/test_predictions_nutrition5k_gemma4e4b_q8.json"
+        "data/prediction/test_predictions_nutrition5k_gemma4e4b_q8.json",
+        "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q8V2.json"
     ]
     INGREDIENTS_CSV_PATH = "data/metadata/ingredients_metadata.csv"
     # ==================================================
