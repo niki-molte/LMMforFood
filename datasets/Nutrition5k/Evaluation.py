@@ -131,6 +131,7 @@ class Nutrition5kEvaluator:
         err_values = {field: [] for field in DATA_FIELDNAMES}
 
         for item in self.predictions:
+            # --- GROUND TRUTH ---
             gt_cal = gt_mass = gt_fat = gt_carbs = gt_prot = 0.0
             for ing in item.get("ground_truth_ingredients", []):
                 gt_mass += ing.get("weight_grams", 0.0)
@@ -140,18 +141,25 @@ class Nutrition5kEvaluator:
                 gt_carbs += macros.get("carbohydrates", 0.0)
                 gt_prot += macros.get("protein", 0.0)
 
+            # --- PREDICTIONS ---
+            # Se stai valutando i file generati dallo script Two-Step,
+            # ricordati di cambiare la chiave in "predicted_nutrition_step2"
             pred_nut = item.get("predicted_nutrition", {})
-            pred_macros = pred_nut.get("total_macronutrients", {})
 
-            pred_cal = pred_macros.get("calories", 0.0)
-            pred_fat = pred_macros.get("fat", 0.0)
-            pred_carbs = pred_macros.get("carbohydrates", 0.0)
-            pred_prot = pred_macros.get("protein", 0.0)
+            pred_cal = pred_mass = pred_fat = pred_carbs = pred_prot = 0.0
+            predicted_ingredients = pred_nut.get("visible_ingredients", []) + pred_nut.get("hidden_ingredients", [])
 
-            pred_mass = 0.0
-            for ing in pred_nut.get("visible_ingredients", []) + pred_nut.get("hidden_ingredients", []):
+            for ing in predicted_ingredients:
                 pred_mass += ing.get("weight_grams", 0.0)
 
+                macros = ing.get("macronutrients", {})
+                if isinstance(macros, dict):
+                    pred_cal += macros.get("calories", 0.0)
+                    pred_fat += macros.get("fat", 0.0)
+                    pred_carbs += macros.get("carbohydrates", 0.0)
+                    pred_prot += macros.get("protein", 0.0)
+
+            # --- COMPILAZIONE RISULTATI ---
             gt_vals = {"calories": gt_cal, "mass": gt_mass, "fat": gt_fat, "carbohydrates": gt_carbs,
                        "protein": gt_prot}
             pred_vals = {"calories": pred_cal, "mass": pred_mass, "fat": pred_fat, "carbohydrates": pred_carbs,

@@ -138,7 +138,6 @@ def main():
         "3. Extract all the possibile allergenes (e.g. gluten, dairy products) based on the visible and hidden ingredients extracted before.\n"
         "4. Estimate realistic portion sizes (weight in grams) for each identified item.\n"
         "5. Calculate exact macronutrients based on the estimated weights.\n"
-        "6. Sum the total macronutrients accurately.\n\n"
         "You MUST respond ONLY with a valid JSON strictly adhering to this schema:\n"
         f"{json.dumps(schema_dict)}"
     )
