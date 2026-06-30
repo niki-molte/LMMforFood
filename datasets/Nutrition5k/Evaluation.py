@@ -95,7 +95,14 @@ class Nutrition5kEvaluator:
 
         for item in self.predictions:
             gt_raw = item.get("ground_truth_ingredients", [])
-            pred_dict = item.get("predicted_nutrition", {})
+
+            # --- MODIFICA: Auto-rilevamento della pipeline ---
+            if "predicted_nutrition_step2" in item:
+                pred_dict = item.get("predicted_nutrition_step2", {})
+            else:
+                pred_dict = item.get("predicted_nutrition", {})
+            # -------------------------------------------------
+
             pred_raw = pred_dict.get("visible_ingredients", []) + pred_dict.get("hidden_ingredients", [])
 
             recipe_id = item.get("food_id", "unknown")
@@ -142,9 +149,12 @@ class Nutrition5kEvaluator:
                 gt_prot += macros.get("protein", 0.0)
 
             # --- PREDICTIONS ---
-            # Se stai valutando i file generati dallo script Two-Step,
-            # ricordati di cambiare la chiave in "predicted_nutrition_step2"
-            pred_nut = item.get("predicted_nutrition", {})
+            # --- MODIFICA: Auto-rilevamento della pipeline ---
+            if "predicted_nutrition_step2" in item:
+                pred_nut = item.get("predicted_nutrition_step2", {})
+            else:
+                pred_nut = item.get("predicted_nutrition", {})
+            # -------------------------------------------------
 
             pred_cal = pred_mass = pred_fat = pred_carbs = pred_prot = 0.0
             predicted_ingredients = pred_nut.get("visible_ingredients", []) + pred_nut.get("hidden_ingredients", [])
@@ -180,13 +190,13 @@ class Nutrition5kEvaluator:
 
 
 # ==========================================
-# FUNZIONI PER I GRAFICI
+# FUNZIONI PER I GRAFICI (Invariate)
 # ==========================================
 
 def plot_nlp_metrics(all_nlp_results: dict, show_standardized: bool, output_dir: str):
     metrics = ["P", "R", "F1", "IoU"]
     models = list(all_nlp_results.keys())
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
     model_colors = {model: colors[i % len(colors)] for i, model in enumerate(models)}
 
     # --- PLOT COMBINATO (SUBPLOTS) ---
@@ -293,8 +303,8 @@ def plot_macro_metrics(all_macro_results: dict, show_mae_percentage: bool, outpu
 
     models = list(plot_data.keys())
 
-    # Colori: 4 per gemma, e 2 dedicati per le baseline del paper
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
+    # Colori ampliati per coprire tutti i modelli
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f']
     model_colors = {model: colors[i % len(colors)] for i, model in enumerate(models)}
 
     # Preparazione legenda combinata/singola
@@ -318,10 +328,8 @@ def plot_macro_metrics(all_macro_results: dict, show_mae_percentage: bool, outpu
         if show_mae_percentage:
             width = 0.35
             for i, mod in enumerate(models):
-                # Colonna MAE Assoluto (Piena)
                 ax.bar(x[i] - width / 2, plot_data[mod][f"{f}_MAE"], width, color=model_colors[mod], edgecolor='black',
                        zorder=2)
-                # Colonna MAE % (Tratteggiata, vicina a quella assoluta)
                 ax.bar(x[i] + width / 2, plot_data[mod][f"{f}_MAE_%"], width, color=model_colors[mod], alpha=0.5,
                        hatch='//', edgecolor='black', zorder=2)
         else:
@@ -337,7 +345,6 @@ def plot_macro_metrics(all_macro_results: dict, show_mae_percentage: bool, outpu
 
     axes[5].axis('off')
 
-    # Aggiusta il numero di colonne nella legenda in base a quanti elementi ci sono
     ncols_legend = 4 if show_mae_percentage else 3
     fig_combined.legend(handles=legend_elements, loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=ncols_legend)
 
@@ -383,19 +390,23 @@ if __name__ == "__main__":
 
     # ================= CONFIGURAZIONI =================
     THRESHOLD = 0.7
-    SHOW_STANDARDIZED_METRICS = True  # Attiva/Disattiva NLP Standardizzate (IoU, F1...)
-    SHOW_MAE_PERCENTAGE = True  # Attiva/Disattiva plotting del MAE% affiancato al MAE
+    SHOW_STANDARDIZED_METRICS = True
+    SHOW_MAE_PERCENTAGE = True
     OUTPUT_DIR = "data/evaluation"
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+    # Puoi mixare liberamente file derivati dal single-step e dal two-step
     PRED_JSON_PATHS = [
         "data/prediction/test_predictions_nutrition5k_gemma4e2b_q4.json",
         "data/prediction/test_predictions_nutrition5k_gemma_e2b_q8V2.json",
         "data/prediction/test_predictions_nutrition5k_gemma4_e2b_q8_tb.json",
-        "data/prediction/test_predictions_nutrition5k_gemma4e4b_q4.json",
+        "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e2b_q4_tb.json",
+        "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e2b_q8_tb.json",
+        "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q4.json",
         "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q8V2.json",
-        "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q8_tb.json"
+        "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q8_tb.json",
+        "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e4b_q4_tb.json"
     ]
     INGREDIENTS_CSV_PATH = "data/metadata/ingredients_metadata.csv"
     # ==================================================
@@ -444,7 +455,6 @@ if __name__ == "__main__":
     if all_nlp_results:
         plot_nlp_metrics(all_nlp_results, show_standardized=SHOW_STANDARDIZED_METRICS, output_dir=OUTPUT_DIR)
     if all_macro_results:
-        # Passiamo la nuova variabile SHOW_MAE_PERCENTAGE
         plot_macro_metrics(all_macro_results, show_mae_percentage=SHOW_MAE_PERCENTAGE, output_dir=OUTPUT_DIR)
 
     print(f"\nTutti i grafici (singoli e combinati) sono stati salvati nella cartella: {OUTPUT_DIR}")
