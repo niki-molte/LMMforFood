@@ -190,102 +190,104 @@ class Nutrition5kEvaluator:
 
 
 # ==========================================
-# FUNZIONI PER I GRAFICI (Invariate)
+# FUNZIONI PER I GRAFICI
 # ==========================================
 
-def plot_nlp_metrics(all_nlp_results: dict, show_standardized: bool, output_dir: str):
+GROUPS = ['E2B - Q4', 'E2B - Q8', 'E4B - Q4', 'E4B - Q8']
+VARIANTS = ['Standard (Alta Temp.)', 'Standard (Bassa Temp.)', 'Two-Step (Bassa Temp.)']
+VARIANT_COLORS = {
+    'Standard (Alta Temp.)': '#404040',        # Grigio scuro
+    'Standard (Bassa Temp.)': '#1f77b4',       # Blu standard
+    'Two-Step (Bassa Temp.)': '#87ceeb'        # Azzurro chiaro
+}
+
+def parse_model_name(name: str):
+    name_lower = name.lower()
+    group = "Unknown"
+    if "e2b" in name_lower and "q4" in name_lower:
+        group = "E2B - Q4"
+    elif "e2b" in name_lower and "q8" in name_lower:
+        group = "E2B - Q8"
+    elif "e4b" in name_lower and "q4" in name_lower:
+        group = "E4B - Q4"
+    elif "e4b" in name_lower and "q8" in name_lower:
+        group = "E4B - Q8"
+        
+    variant = "Unknown"
+    if "twostep" in name_lower:
+        variant = "Two-Step (Bassa Temp.)"
+    elif "tb" in name_lower:
+        variant = "Standard (Bassa Temp.)"
+    else:
+        variant = "Standard (Alta Temp.)"
+        
+    return group, variant
+
+def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
     metrics = ["P", "R", "F1", "IoU"]
-    models = list(all_nlp_results.keys())
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
-    model_colors = {model: colors[i % len(colors)] for i, model in enumerate(models)}
+    
+    data_structured = {g: {v: None for v in VARIANTS} for g in GROUPS}
+    for model_name, res in all_nlp_results.items():
+        g, v = parse_model_name(model_name)
+        if g in GROUPS and v in VARIANTS:
+            data_structured[g][v] = res
 
-    # --- PLOT COMBINATO (SUBPLOTS) ---
-    fig_combined, axes = plt.subplots(2, 2, figsize=(14, 10))
-    axes = axes.flatten()
+    def plot_std_type(std_key, file_suffix):
+        fig_combined, axes = plt.subplots(2, 2, figsize=(14, 10))
+        axes = axes.flatten()
 
-    for idx, m in enumerate(metrics):
-        ax = axes[idx]
-        x = np.arange(len(models))
+        for idx, m in enumerate(metrics):
+            ax = axes[idx]
+            x = np.arange(len(GROUPS))
+            width = 0.25
+            offsets = [-width, 0, width]
 
-        if show_standardized:
-            width = 0.35
-            non_std_vals = [all_nlp_results[mod]["Non-Standardized"][m] for mod in models]
-            std_vals = [all_nlp_results[mod]["Standardized"][m] for mod in models]
+            for i, var in enumerate(VARIANTS):
+                vals = [data_structured[g][var][std_key][m] if data_structured[g][var] else 0.0 for g in GROUPS]
+                ax.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=var if idx == 0 else "")
 
-            for i, mod in enumerate(models):
-                ax.bar(x[i] - width / 2, non_std_vals[i], width, color=model_colors[mod], edgecolor='black')
-                ax.bar(x[i] + width / 2, std_vals[i], width, color=model_colors[mod], alpha=0.5, hatch='//',
-                       edgecolor='black')
-        else:
-            width = 0.5
-            non_std_vals = [all_nlp_results[mod]["Non-Standardized"][m] for mod in models]
-            for i, mod in enumerate(models):
-                ax.bar(x[i], non_std_vals[i], width, color=model_colors[mod], edgecolor='black')
+            ax.set_ylabel('Score')
+            ax.set_title(f'Metrica NLP ({std_key}): {m}', fontweight='bold')
+            ax.set_xticks(x)
+            ax.set_xticklabels(GROUPS, rotation=0)
+            ax.grid(False, axis='x')
+            ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+            ax.set_ylim(0, 1.05)
 
-        ax.set_ylabel('Score')
-        ax.set_title(f'Metrica NLP: {m}', fontweight='bold')
-        ax.set_xticks(x)
-        ax.set_xticklabels(models, rotation=15, ha="right")
-        ax.grid(False)
-        ax.set_ylim(0, 1.05)
-
-    legend_elements = []
-    for mod in models:
-        if show_standardized:
-            legend_elements.append(Patch(facecolor=model_colors[mod], edgecolor='black', label=f"{mod} (Non-Std)"))
-            legend_elements.append(
-                Patch(facecolor=model_colors[mod], alpha=0.5, hatch='//', edgecolor='black', label=f"{mod} (Std)"))
-        else:
-            legend_elements.append(Patch(facecolor=model_colors[mod], edgecolor='black', label=mod))
-
-    fig_combined.legend(handles=legend_elements, loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=4)
-    plt.suptitle("Confronto Riepilogativo delle Metriche NLP", fontsize=16, fontweight='bold', y=0.98)
-    plt.tight_layout()
-    comb_path = os.path.join(output_dir, 'nlp_metrics_combined.png')
-    plt.savefig(comb_path, bbox_inches='tight', dpi=300)
-    plt.close()
-
-    # --- PLOT SINGOLI ---
-    for m in metrics:
-        fig_single, ax_single = plt.subplots(figsize=(8, 6))
-        x = np.arange(len(models))
-
-        if show_standardized:
-            width = 0.35
-            non_std_vals = [all_nlp_results[mod]["Non-Standardized"][m] for mod in models]
-            std_vals = [all_nlp_results[mod]["Standardized"][m] for mod in models]
-
-            for i, mod in enumerate(models):
-                ax_single.bar(x[i] - width / 2, non_std_vals[i], width, color=model_colors[mod], edgecolor='black')
-                ax_single.bar(x[i] + width / 2, std_vals[i], width, color=model_colors[mod], alpha=0.5, hatch='//',
-                              edgecolor='black')
-        else:
-            width = 0.5
-            non_std_vals = [all_nlp_results[mod]["Non-Standardized"][m] for mod in models]
-            for i, mod in enumerate(models):
-                ax_single.bar(x[i], non_std_vals[i], width, color=model_colors[mod], edgecolor='black')
-
-        ax_single.set_ylabel('Score')
-        ax_single.set_title(f'Metrica NLP: {m}', fontweight='bold')
-        ax_single.set_xticks(x)
-        ax_single.set_xticklabels(models, rotation=15, ha="right")
-        ax_single.grid(False)
-        ax_single.set_ylim(0, 1.05)
-
-        ax_single.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.2), ncol=2)
+        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=3)
+        plt.suptitle(f"Metriche NLP - {std_key}", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
-        single_path = os.path.join(output_dir, f'nlp_metric_{m}.png')
-        plt.savefig(single_path, bbox_inches='tight', dpi=300)
+        plt.savefig(os.path.join(output_dir, f'nlp_metrics_combined_{file_suffix}.png'), bbox_inches='tight', dpi=300)
         plt.close()
 
+        for m in metrics:
+            fig_single, ax_single = plt.subplots(figsize=(8, 6))
+            x = np.arange(len(GROUPS))
+            
+            for i, var in enumerate(VARIANTS):
+                vals = [data_structured[g][var][std_key][m] if data_structured[g][var] else 0.0 for g in GROUPS]
+                ax_single.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=var)
+            
+            ax_single.set_ylabel('Score')
+            ax_single.set_title(f'Metrica NLP ({std_key}): {m}', fontweight='bold')
+            ax_single.set_xticks(x)
+            ax_single.set_xticklabels(GROUPS, rotation=0)
+            ax_single.grid(False, axis='x')
+            ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
+            ax_single.set_ylim(0, 1.05)
+            
+            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, f'nlp_metric_{m}_{file_suffix}.png'), bbox_inches='tight', dpi=300)
+            plt.close()
 
-def plot_macro_metrics(all_macro_results: dict, show_mae_percentage: bool, output_dir: str):
+    plot_std_type("Non-Standardized", "non_std")
+    plot_std_type("Standardized", "std")
+
+def plot_macro_metrics(all_macro_results: dict, output_dir: str):
     fields = ["calories", "mass", "fat", "carbohydrates", "protein"]
-
-    # Creazione dei dati per il plot includendo i due modelli "baseline" presi dalla Tabella 3 del paper
-    plot_data = dict(all_macro_results)
-
-    plot_data["Paper 2D Direct"] = {
+    
+    baseline = {
         "calories_MAE": 70.6, "calories_MAE_%": 26.1,
         "mass_MAE": 40.4, "mass_MAE_%": 18.8,
         "fat_MAE": 5.0, "fat_MAE_%": 34.2,
@@ -293,112 +295,152 @@ def plot_macro_metrics(all_macro_results: dict, show_mae_percentage: bool, outpu
         "protein_MAE": 5.5, "protein_MAE_%": 29.5
     }
 
-    plot_data["Paper Baseline (Std)"] = {
-        "calories_MAE": 150.8, "calories_MAE_%": 60.2,
-        "mass_MAE": 124.6, "mass_MAE_%": 58.5,
-        "fat_MAE": 8.2, "fat_MAE_%": 67.6,
-        "carbohydrates_MAE": 12.5, "carbohydrates_MAE_%": 62.1,
-        "protein_MAE": 10.5, "protein_MAE_%": 62.1
+    data_structured = {g: {v: None for v in VARIANTS} for g in GROUPS}
+    for model_name, res in all_macro_results.items():
+        g, v = parse_model_name(model_name)
+        if g in GROUPS and v in VARIANTS:
+            data_structured[g][v] = res
+
+    def plot_macro_type(metric_suffix, file_suffix, ylabel, title_prefix):
+        fig_combined, axes = plt.subplots(2, 3, figsize=(18, 12))
+        axes = axes.flatten()
+
+        for idx, f in enumerate(fields):
+            ax = axes[idx]
+            x = np.arange(len(GROUPS))
+            width = 0.25
+            offsets = [-width, 0, width]
+            
+            for i, var in enumerate(VARIANTS):
+                vals = [data_structured[g][var][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
+                ax.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=var if idx == 0 else "")
+            
+            base_val = baseline[f"{f}_{metric_suffix}"]
+            ax.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k' if idx == 0 else "")
+
+            ax.set_ylabel(ylabel)
+            ax.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
+            ax.set_xticks(x)
+            ax.set_xticklabels(GROUPS, rotation=0)
+            ax.grid(False, axis='x')
+            ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+
+        axes[5].axis('off')
+        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=4)
+        plt.suptitle(f"Confronto {title_prefix} dei Macronutrienti", fontsize=16, fontweight='bold', y=0.98)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f'macro_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
+        plt.close()
+
+        for f in fields:
+            fig_single, ax_single = plt.subplots(figsize=(10, 8))
+            x = np.arange(len(GROUPS))
+            
+            for i, var in enumerate(VARIANTS):
+                vals = [data_structured[g][var][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
+                ax_single.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=var)
+            
+            base_val = baseline[f"{f}_{metric_suffix}"]
+            ax_single.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k')
+
+            ax_single.set_ylabel(ylabel)
+            ax_single.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
+            ax_single.set_xticks(x)
+            ax_single.set_xticklabels(GROUPS, rotation=0)
+            ax_single.grid(False, axis='x')
+            ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
+            
+            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=4)
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, f'macro_{file_suffix}_{f}.png'), bbox_inches='tight', dpi=300)
+            plt.close()
+
+    plot_macro_type("MAE", "mae_abs", "Errore Medio Assoluto (Valore)", "MAE Assoluto")
+    plot_macro_type("MAE_%", "mae_perc", "Errore Medio Assoluto (%)", "MAE Percentuale")
+
+
+def print_summary_tables(all_nlp_results: dict, all_macro_results: dict):
+    print("\n" + "="*120)
+    print(" " * 45 + "TABELLA RIASSUNTIVA METRICHE")
+    print("="*120)
+
+    baseline = {
+        "calories_MAE": 70.6, "calories_MAE_%": 26.1,
+        "mass_MAE": 40.4, "mass_MAE_%": 18.8,
+        "fat_MAE": 5.0, "fat_MAE_%": 34.2,
+        "carbohydrates_MAE": 6.1, "carbohydrates_MAE_%": 31.9,
+        "protein_MAE": 5.5, "protein_MAE_%": 29.5
     }
 
-    models = list(plot_data.keys())
+    models = list(all_macro_results.keys())
+    models_sorted = []
+    for g in GROUPS:
+        for v in VARIANTS:
+            for m in models:
+                mg, mv = parse_model_name(m)
+                if mg == g and mv == v:
+                    models_sorted.append(m)
+    
+    if all_nlp_results:
+        print("\n--- METRICHE NLP ---")
+        header = f"{'Gruppo':<10} | {'Variante':<25} | {'F1':<6} | {'F1 (Std)':<8} | {'IoU':<6} | {'IoU (Std)':<9}"
+        print("-" * len(header))
+        print(header)
+        print("-" * len(header))
+        
+        for mod in models_sorted:
+            if mod in all_nlp_results:
+                g, v = parse_model_name(mod)
+                res = all_nlp_results[mod]
+                f1_ns = res["Non-Standardized"]["F1"]
+                f1_s = res["Standardized"]["F1"]
+                iou_ns = res["Non-Standardized"]["IoU"]
+                iou_s = res["Standardized"]["IoU"]
+                print(f"{g:<10} | {v:<25} | {f1_ns:.4f} | {f1_s:.4f}   | {iou_ns:.4f} | {iou_s:.4f}")
+        print("-" * len(header))
 
-    # Colori ampliati per coprire tutti i modelli
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f']
-    model_colors = {model: colors[i % len(colors)] for i, model in enumerate(models)}
+    if all_macro_results:
+        print("\n--- METRICHE MACRONUTRIENTI (MAE e MAE%) ---")
+        header = f"{'Gruppo':<10} | {'Variante':<25} | {'Calorie':<15} | {'Massa':<15} | {'Grassi':<15} | {'Carbo':<15} | {'Proteine':<15}"
+        print("-" * len(header))
+        print(header)
+        print("-" * len(header))
+        
+        b = baseline
+        cal_str = f"{b['calories_MAE']:.1f} ({b['calories_MAE_%']:.1f}%)"
+        mass_str = f"{b['mass_MAE']:.1f} ({b['mass_MAE_%']:.1f}%)"
+        fat_str = f"{b['fat_MAE']:.1f} ({b['fat_MAE_%']:.1f}%)"
+        carb_str = f"{b['carbohydrates_MAE']:.1f} ({b['carbohydrates_MAE_%']:.1f}%)"
+        prot_str = f"{b['protein_MAE']:.1f} ({b['protein_MAE_%']:.1f}%)"
+        print(f"{'Baseline':<10} | {'Nutrition 5k (2D Direct)':<25} | {cal_str:<15} | {mass_str:<15} | {fat_str:<15} | {carb_str:<15} | {prot_str:<15}")
+        print("-" * len(header))
 
-    # Preparazione legenda combinata/singola
-    legend_elements = []
-    for mod in models:
-        if show_mae_percentage:
-            legend_elements.append(Patch(facecolor=model_colors[mod], edgecolor='black', label=f"{mod} (Abs)"))
-            legend_elements.append(
-                Patch(facecolor=model_colors[mod], alpha=0.5, hatch='//', edgecolor='black', label=f"{mod} (%)"))
-        else:
-            legend_elements.append(Patch(facecolor=model_colors[mod], edgecolor='black', label=mod))
-
-    # --- PLOT COMBINATO (SUBPLOTS) ---
-    fig_combined, axes = plt.subplots(2, 3, figsize=(18, 12))
-    axes = axes.flatten()
-
-    for idx, f in enumerate(fields):
-        ax = axes[idx]
-        x = np.arange(len(models))
-
-        if show_mae_percentage:
-            width = 0.35
-            for i, mod in enumerate(models):
-                ax.bar(x[i] - width / 2, plot_data[mod][f"{f}_MAE"], width, color=model_colors[mod], edgecolor='black',
-                       zorder=2)
-                ax.bar(x[i] + width / 2, plot_data[mod][f"{f}_MAE_%"], width, color=model_colors[mod], alpha=0.5,
-                       hatch='//', edgecolor='black', zorder=2)
-        else:
-            width = 0.5
-            for i, mod in enumerate(models):
-                ax.bar(x[i], plot_data[mod][f"{f}_MAE"], width, color=model_colors[mod], edgecolor='black', zorder=2)
-
-        ax.set_ylabel('Errore Medio Assoluto (Valore e %)')
-        ax.set_title(f'MAE & MAE%: {f.capitalize()}', fontweight='bold')
-        ax.set_xticks(x)
-        ax.set_xticklabels(models, rotation=30, ha="right")
-        ax.grid(False)
-
-    axes[5].axis('off')
-
-    ncols_legend = 4 if show_mae_percentage else 3
-    fig_combined.legend(handles=legend_elements, loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=ncols_legend)
-
-    plt.suptitle("Confronto Errore Medio Assoluto (MAE) dei Macronutrienti", fontsize=16, fontweight='bold', y=0.98)
-    plt.tight_layout()
-    comb_path = os.path.join(output_dir, 'macro_mae_combined.png')
-    plt.savefig(comb_path, bbox_inches='tight', dpi=300)
-    plt.close()
-
-    # --- PLOT SINGOLI ---
-    for f in fields:
-        fig_single, ax_single = plt.subplots(figsize=(10, 8))
-        x = np.arange(len(models))
-
-        if show_mae_percentage:
-            width = 0.35
-            for i, mod in enumerate(models):
-                ax_single.bar(x[i] - width / 2, plot_data[mod][f"{f}_MAE"], width, color=model_colors[mod],
-                              edgecolor='black', zorder=2)
-                ax_single.bar(x[i] + width / 2, plot_data[mod][f"{f}_MAE_%"], width, color=model_colors[mod], alpha=0.5,
-                              hatch='//', edgecolor='black', zorder=2)
-        else:
-            width = 0.5
-            for i, mod in enumerate(models):
-                ax_single.bar(x[i], plot_data[mod][f"{f}_MAE"], width, color=model_colors[mod], edgecolor='black',
-                              zorder=2)
-
-        ax_single.set_ylabel('Errore Medio Assoluto (Valore e %)')
-        ax_single.set_title(f'MAE & MAE%: {f.capitalize()}', fontweight='bold')
-        ax_single.set_xticks(x)
-        ax_single.set_xticklabels(models, rotation=25, ha="right")
-        ax_single.grid(False)
-
-        ax_single.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.2), ncol=ncols_legend)
-
-        plt.tight_layout()
-        single_path = os.path.join(output_dir, f'macro_mae_{f}.png')
-        plt.savefig(single_path, bbox_inches='tight', dpi=300)
-        plt.close()
+        for mod in models_sorted:
+            if mod in all_macro_results:
+                g, v = parse_model_name(mod)
+                r = all_macro_results[mod]
+                cal_str = f"{r['calories_MAE']:.1f} ({r['calories_MAE_%']:.1f}%)"
+                mass_str = f"{r['mass_MAE']:.1f} ({r['mass_MAE_%']:.1f}%)"
+                fat_str = f"{r['fat_MAE']:.1f} ({r['fat_MAE_%']:.1f}%)"
+                carb_str = f"{r['carbohydrates_MAE']:.1f} ({r['carbohydrates_MAE_%']:.1f}%)"
+                prot_str = f"{r['protein_MAE']:.1f} ({r['protein_MAE_%']:.1f}%)"
+                
+                print(f"{g:<10} | {v:<25} | {cal_str:<15} | {mass_str:<15} | {fat_str:<15} | {carb_str:<15} | {prot_str:<15}")
+        print("-" * len(header))
+        print("\n")
 
 
 if __name__ == "__main__":
 
     # ================= CONFIGURAZIONI =================
     THRESHOLD = 0.7
-    SHOW_STANDARDIZED_METRICS = True
-    SHOW_MAE_PERCENTAGE = True
     OUTPUT_DIR = "data/evaluation"
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     # Puoi mixare liberamente file derivati dal single-step e dal two-step
     PRED_JSON_PATHS = [
-        "data/prediction/test_predictions_nutrition5k_gemma4e2b_q4.json",
+        "data/prediction/test_predictions_nutrition5k_gemma4_e2b_q4.json",
         "data/prediction/test_predictions_nutrition5k_gemma_e2b_q8V2.json",
         "data/prediction/test_predictions_nutrition5k_gemma4_e2b_q8_tb.json",
         "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e2b_q4_tb.json",
@@ -406,7 +448,8 @@ if __name__ == "__main__":
         "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q4.json",
         "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q8V2.json",
         "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q8_tb.json",
-        "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e4b_q4_tb.json"
+        "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e4b_q4_tb.json",
+        "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e4b_q8_tb.json"
     ]
     INGREDIENTS_CSV_PATH = "data/metadata/ingredients_metadata.csv"
     # ==================================================
@@ -453,8 +496,13 @@ if __name__ == "__main__":
     print(f"{'=' * 70}")
 
     if all_nlp_results:
-        plot_nlp_metrics(all_nlp_results, show_standardized=SHOW_STANDARDIZED_METRICS, output_dir=OUTPUT_DIR)
+        plot_nlp_metrics(all_nlp_results, output_dir=OUTPUT_DIR)
     if all_macro_results:
-        plot_macro_metrics(all_macro_results, show_mae_percentage=SHOW_MAE_PERCENTAGE, output_dir=OUTPUT_DIR)
+        plot_macro_metrics(all_macro_results, output_dir=OUTPUT_DIR)
+
+    print("\n" + "=" * 70)
+    print("STAMPA TABELLA RIASSUNTIVA A TERMINALE...")
+    print("=" * 70)
+    print_summary_tables(all_nlp_results, all_macro_results)
 
     print(f"\nTutti i grafici (singoli e combinati) sono stati salvati nella cartella: {OUTPUT_DIR}")
