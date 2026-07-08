@@ -13,3 +13,6 @@
 __pycache__/
 *.pyc
 *.pyo
+
+# Cartelle di progetto
+datasets/VireoFood172/
