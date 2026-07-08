@@ -3,15 +3,17 @@ import os
 import csv
 import statistics
 import numpy as np
+import matplotlib
+
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.patches import Patch
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
 def load_vocabulary(path: str) -> list:
     if not os.path.exists(path):
-        raise FileNotFoundError(f"File CSV non trovato: {path}")
+        raise FileNotFoundError(f"CSV file not found: {path}")
 
     vocab = set()
     with open(path, 'r', encoding='utf-8-sig') as f:
@@ -36,7 +38,7 @@ class Nutrition5kEvaluator:
 
     def _load_json(self, path: str) -> list:
         if not os.path.exists(path):
-            raise FileNotFoundError(f"File JSON non trovato: {path}")
+            raise FileNotFoundError(f"JSON file not found: {path}")
         with open(path, 'r', encoding='utf-8') as f:
             return json.load(f)
 
@@ -96,7 +98,7 @@ class Nutrition5kEvaluator:
         for item in self.predictions:
             gt_raw = item.get("ground_truth_ingredients", [])
 
-            # --- MODIFICA: Auto-rilevamento della pipeline ---
+            # --- MODIFICATION: Pipeline auto-detection ---
             if "predicted_nutrition_step2" in item:
                 pred_dict = item.get("predicted_nutrition_step2", {})
             else:
@@ -134,72 +136,150 @@ class Nutrition5kEvaluator:
 
     def evaluate_macronutrients(self) -> dict:
         DATA_FIELDNAMES = ["calories", "mass", "fat", "carbohydrates", "protein"]
+        
         groundtruth_values = {field: [] for field in DATA_FIELDNAMES}
         err_values = {field: [] for field in DATA_FIELDNAMES}
+        
+        groundtruth_values_exact = {field: [] for field in DATA_FIELDNAMES}
+        err_values_exact = {field: [] for field in DATA_FIELDNAMES}
 
         for item in self.predictions:
-            # --- GROUND TRUTH ---
-            gt_cal = gt_mass = gt_fat = gt_carbs = gt_prot = 0.0
-            for ing in item.get("ground_truth_ingredients", []):
-                gt_mass += ing.get("weight_grams", 0.0)
-                macros = ing.get("macronutrients", {})
-                gt_cal += macros.get("calories", 0.0)
-                gt_fat += macros.get("fat", 0.0)
-                gt_carbs += macros.get("carbohydrates", 0.0)
-                gt_prot += macros.get("protein", 0.0)
+            gt_raw = item.get("ground_truth_ingredients", [])
+            gt_list = self._clean_ingredients(gt_raw)
+            gt_set = set(gt_list)
 
-            # --- PREDICTIONS ---
-            # --- MODIFICA: Auto-rilevamento della pipeline ---
+            # --- MODIFICATION: Pipeline auto-detection ---
             if "predicted_nutrition_step2" in item:
                 pred_nut = item.get("predicted_nutrition_step2", {})
             else:
                 pred_nut = item.get("predicted_nutrition", {})
             # -------------------------------------------------
 
-            pred_cal = pred_mass = pred_fat = pred_carbs = pred_prot = 0.0
             predicted_ingredients = pred_nut.get("visible_ingredients", []) + pred_nut.get("hidden_ingredients", [])
+            pred_list = self._clean_ingredients(predicted_ingredients)
+            pred_set = set(pred_list)
+            
+            exact_names = gt_set.intersection(pred_set)
+
+            # --- GROUND TRUTH ---
+            gt_cal = gt_mass = gt_fat = gt_carbs = gt_prot = 0.0
+            gt_cal_ex = gt_mass_ex = gt_fat_ex = gt_carbs_ex = gt_prot_ex = 0.0
+            
+            for ing in gt_raw:
+                name = str(ing.get("name", "")).strip().lower()
+                mass = ing.get("weight_grams", 0.0)
+                macros = ing.get("macronutrients", {})
+                if not isinstance(macros, dict): macros = {}
+                cal = macros.get("calories", 0.0)
+                fat = macros.get("fat", 0.0)
+                carbs = macros.get("carbohydrates", 0.0)
+                prot = macros.get("protein", 0.0)
+                
+                gt_mass += mass; gt_cal += cal; gt_fat += fat; gt_carbs += carbs; gt_prot += prot
+                if name in exact_names:
+                    gt_mass_ex += mass; gt_cal_ex += cal; gt_fat_ex += fat; gt_carbs_ex += carbs; gt_prot_ex += prot
+
+            # --- PREDICTIONS ---
+            pred_cal = pred_mass = pred_fat = pred_carbs = pred_prot = 0.0
+            pred_cal_ex = pred_mass_ex = pred_fat_ex = pred_carbs_ex = pred_prot_ex = 0.0
 
             for ing in predicted_ingredients:
-                pred_mass += ing.get("weight_grams", 0.0)
-
+                name = str(ing.get("name", "")).strip().lower()
+                mass = ing.get("weight_grams", 0.0)
                 macros = ing.get("macronutrients", {})
-                if isinstance(macros, dict):
-                    pred_cal += macros.get("calories", 0.0)
-                    pred_fat += macros.get("fat", 0.0)
-                    pred_carbs += macros.get("carbohydrates", 0.0)
-                    pred_prot += macros.get("protein", 0.0)
+                if not isinstance(macros, dict): macros = {}
+                cal = macros.get("calories", 0.0)
+                fat = macros.get("fat", 0.0)
+                carbs = macros.get("carbohydrates", 0.0)
+                prot = macros.get("protein", 0.0)
+                
+                pred_mass += mass; pred_cal += cal; pred_fat += fat; pred_carbs += carbs; pred_prot += prot
+                if name in exact_names:
+                    pred_mass_ex += mass; pred_cal_ex += cal; pred_fat_ex += fat; pred_carbs_ex += carbs; pred_prot_ex += prot
 
-            # --- COMPILAZIONE RISULTATI ---
-            gt_vals = {"calories": gt_cal, "mass": gt_mass, "fat": gt_fat, "carbohydrates": gt_carbs,
-                       "protein": gt_prot}
-            pred_vals = {"calories": pred_cal, "mass": pred_mass, "fat": pred_fat, "carbohydrates": pred_carbs,
-                         "protein": pred_prot}
+            # --- COMPILING RESULTS ---
+            gt_vals = {"calories": gt_cal, "mass": gt_mass, "fat": gt_fat, "carbohydrates": gt_carbs, "protein": gt_prot}
+            pred_vals = {"calories": pred_cal, "mass": pred_mass, "fat": pred_fat, "carbohydrates": pred_carbs, "protein": pred_prot}
+            
+            gt_vals_ex = {"calories": gt_cal_ex, "mass": gt_mass_ex, "fat": gt_fat_ex, "carbohydrates": gt_carbs_ex, "protein": gt_prot_ex}
+            pred_vals_ex = {"calories": pred_cal_ex, "mass": pred_mass_ex, "fat": pred_fat_ex, "carbohydrates": pred_carbs_ex, "protein": pred_prot_ex}
 
             for field in DATA_FIELDNAMES:
                 groundtruth_values[field].append(gt_vals[field])
                 err_values[field].append(abs(pred_vals[field] - gt_vals[field]))
+                
+                groundtruth_values_exact[field].append(gt_vals_ex[field])
+                err_values_exact[field].append(abs(pred_vals_ex[field] - gt_vals_ex[field]))
 
-        output_stats = {}
+        output_stats = {"overall": {}, "exact_match": {}}
         for field in DATA_FIELDNAMES:
+            # Overall
             mean_err = statistics.mean(err_values[field])
             mean_gt = statistics.mean(groundtruth_values[field])
-            output_stats[f"{field}_MAE"] = mean_err
-            output_stats[f"{field}_MAE_%"] = (100 * mean_err / mean_gt) if mean_gt > 0 else 0.0
+            output_stats["overall"][f"{field}_MAE"] = mean_err
+            output_stats["overall"][f"{field}_MAE_%"] = (100 * mean_err / mean_gt) if mean_gt > 0 else 0.0
+            
+            # Exact Match
+            if len(err_values_exact[field]) > 0:
+                mean_err_ex = statistics.mean(err_values_exact[field])
+                mean_gt_ex = statistics.mean(groundtruth_values_exact[field])
+            else:
+                mean_err_ex = 0.0
+                mean_gt_ex = 0.0
+            output_stats["exact_match"][f"{field}_MAE"] = mean_err_ex
+            output_stats["exact_match"][f"{field}_MAE_%"] = (100 * mean_err_ex / mean_gt_ex) if mean_gt_ex > 0 else 0.0
 
         return output_stats
 
+    def export_similarity_log_to_json(self, filename: str = "similarity_analysis.json"):
+        """
+        Exports the similarity log to a structured JSON file grouped by recipe_id.
+        """
+        if not self.similarity_log:
+            print("No log to export. Run evaluate_nlp_metrics() first.")
+            return
+
+        json_output = {}
+        for log in self.similarity_log:
+            rid = log["recipe_id"]
+            if rid not in json_output:
+                json_output[rid] = {}
+
+            json_output[rid][log["predicted"]] = {
+                "best_vocab_match": log["best_vocab_match"],
+                "max_similarity_score": log["max_similarity_score"],
+                "threshold_passed": log["threshold_passed"]
+            }
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(json_output, f, indent=4, ensure_ascii=False)
+
+    def print_similarity_summary(self):
+        if not self.similarity_log:
+            return
+
+        total = len(self.similarity_log)
+        passed = sum(1 for log in self.similarity_log if log["threshold_passed"])
+        avg_score = sum(log["max_similarity_score"] for log in self.similarity_log) / total
+
+        print("\n--- NLP Similarity Analysis Summary ---")
+        print(f"Total comparisons made: {total}")
+        print(f"Standardized ingredients (above threshold {self.threshold}): {passed} ({(passed / total) * 100:.1f}%)")
+        print(f"Unchanged ingredients: {total - passed} ({((total - passed) / total) * 100:.1f}%)")
+        print(f"Average maximum similarity score (across all samples): {avg_score:.4f}")
+
 
 # ==========================================
-# FUNZIONI PER I GRAFICI
+# GRAPH FUNCTIONS
 # ==========================================
 
 GROUPS = ['E2B - Q4', 'E2B - Q8', 'E4B - Q4', 'E4B - Q8']
-VARIANTS = ['Standard (Alta Temp.)', 'Standard (Bassa Temp.)', 'Two-Step (Bassa Temp.)']
+VARIANTS = ['Standard (Low Temp.)', 'Two-Step (Low Temp.)']
 VARIANT_COLORS = {
-    'Standard (Alta Temp.)': '#404040',        # Grigio scuro
-    'Standard (Bassa Temp.)': '#1f77b4',       # Blu standard
-    'Two-Step (Bassa Temp.)': '#87ceeb'        # Azzurro chiaro
+    'Standard (Low Temp.)': '#1f77b4',  # Standard blue
+    'Two-Step (Low Temp.)': '#87ceeb'  # Light blue
 }
+
 
 def parse_model_name(name: str):
     name_lower = name.lower()
@@ -212,20 +292,19 @@ def parse_model_name(name: str):
         group = "E4B - Q4"
     elif "e4b" in name_lower and "q8" in name_lower:
         group = "E4B - Q8"
-        
+
     variant = "Unknown"
     if "twostep" in name_lower:
-        variant = "Two-Step (Bassa Temp.)"
-    elif "tb" in name_lower:
-        variant = "Standard (Bassa Temp.)"
+        variant = "Two-Step (Low Temp.)"
     else:
-        variant = "Standard (Alta Temp.)"
-        
+        variant = "Standard (Low Temp.)"
+
     return group, variant
+
 
 def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
     metrics = ["P", "R", "F1", "IoU"]
-    
+
     data_structured = {g: {v: None for v in VARIANTS} for g in GROUPS}
     for model_name, res in all_nlp_results.items():
         g, v = parse_model_name(model_name)
@@ -244,10 +323,11 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
 
             for i, var in enumerate(VARIANTS):
                 vals = [data_structured[g][var][std_key][m] if data_structured[g][var] else 0.0 for g in GROUPS]
-                ax.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=var if idx == 0 else "")
+                ax.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black',
+                       label=var if idx == 0 else "")
 
             ax.set_ylabel('Score')
-            ax.set_title(f'Metrica NLP ({std_key}): {m}', fontweight='bold')
+            ax.set_title(f'NLP Metrics ({std_key}): {m}', fontweight='bold')
             ax.set_xticks(x)
             ax.set_xticklabels(GROUPS, rotation=0)
             ax.grid(False, axis='x')
@@ -255,7 +335,7 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
             ax.set_ylim(0, 1.05)
 
         fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=3)
-        plt.suptitle(f"Metriche NLP - {std_key}", fontsize=16, fontweight='bold', y=0.98)
+        plt.suptitle(f"NLP Metrics - {std_key}", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, f'nlp_metrics_combined_{file_suffix}.png'), bbox_inches='tight', dpi=300)
         plt.close()
@@ -263,19 +343,19 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
         for m in metrics:
             fig_single, ax_single = plt.subplots(figsize=(8, 6))
             x = np.arange(len(GROUPS))
-            
+
             for i, var in enumerate(VARIANTS):
                 vals = [data_structured[g][var][std_key][m] if data_structured[g][var] else 0.0 for g in GROUPS]
                 ax_single.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=var)
-            
+
             ax_single.set_ylabel('Score')
-            ax_single.set_title(f'Metrica NLP ({std_key}): {m}', fontweight='bold')
+            ax_single.set_title(f'NLP Metric ({std_key}): {m}', fontweight='bold')
             ax_single.set_xticks(x)
             ax_single.set_xticklabels(GROUPS, rotation=0)
             ax_single.grid(False, axis='x')
             ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
             ax_single.set_ylim(0, 1.05)
-            
+
             ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
             plt.tight_layout()
             plt.savefig(os.path.join(output_dir, f'nlp_metric_{m}_{file_suffix}.png'), bbox_inches='tight', dpi=300)
@@ -284,9 +364,10 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
     plot_std_type("Non-Standardized", "non_std")
     plot_std_type("Standardized", "std")
 
-def plot_macro_metrics(all_macro_results: dict, output_dir: str):
+
+def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: bool = True):
     fields = ["calories", "mass", "fat", "carbohydrates", "protein"]
-    
+
     baseline = {
         "calories_MAE": 70.6, "calories_MAE_%": 26.1,
         "mass_MAE": 40.4, "mass_MAE_%": 18.8,
@@ -310,13 +391,17 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str):
             x = np.arange(len(GROUPS))
             width = 0.25
             offsets = [-width, 0, width]
-            
+
             for i, var in enumerate(VARIANTS):
-                vals = [data_structured[g][var][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
-                ax.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=var if idx == 0 else "")
-            
-            base_val = baseline[f"{f}_{metric_suffix}"]
-            ax.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k' if idx == 0 else "")
+                vals = [data_structured[g][var][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in
+                        GROUPS]
+                ax.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black',
+                       label=var if idx == 0 else "")
+
+            if plot_baseline:
+                base_val = baseline[f"{f}_{metric_suffix}"]
+                ax.axhline(y=base_val, color='r', linestyle='--', linewidth=2,
+                           label='Nutrition 5k (2D direct)' if idx == 0 else "")
 
             ax.set_ylabel(ylabel)
             ax.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
@@ -327,7 +412,7 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str):
 
         axes[5].axis('off')
         fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=4)
-        plt.suptitle(f"Confronto {title_prefix} dei Macronutrienti", fontsize=16, fontweight='bold', y=0.98)
+        plt.suptitle(f"{title_prefix} Comparison of Macronutrients", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, f'macro_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
         plt.close()
@@ -335,13 +420,15 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str):
         for f in fields:
             fig_single, ax_single = plt.subplots(figsize=(10, 8))
             x = np.arange(len(GROUPS))
-            
+
             for i, var in enumerate(VARIANTS):
-                vals = [data_structured[g][var][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
+                vals = [data_structured[g][var][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in
+                        GROUPS]
                 ax_single.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=var)
-            
-            base_val = baseline[f"{f}_{metric_suffix}"]
-            ax_single.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k')
+
+            if plot_baseline:
+                base_val = baseline[f"{f}_{metric_suffix}"]
+                ax_single.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k (2D direct)')
 
             ax_single.set_ylabel(ylabel)
             ax_single.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
@@ -349,20 +436,90 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str):
             ax_single.set_xticklabels(GROUPS, rotation=0)
             ax_single.grid(False, axis='x')
             ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
-            
+
             ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=4)
             plt.tight_layout()
             plt.savefig(os.path.join(output_dir, f'macro_{file_suffix}_{f}.png'), bbox_inches='tight', dpi=300)
             plt.close()
 
-    plot_macro_type("MAE", "mae_abs", "Errore Medio Assoluto (Valore)", "MAE Assoluto")
-    plot_macro_type("MAE_%", "mae_perc", "Errore Medio Assoluto (%)", "MAE Percentuale")
+    plot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE")
+    plot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE")
+
+
+# --- NUOVE FUNZIONI DI SUPPORTO PER IL GRAFICO THRESHOLD ---
+def get_marker(group_name: str) -> str:
+    if 'E2B' in group_name:
+        return 'o'  # Cerchio per modelli E2B
+    elif 'E4B' in group_name:
+        return '^'  # Triangolo per modelli E4B
+    return 'x'  # Fallback
+
+
+def get_linestyle(group_name: str) -> str:
+    if 'Q4' in group_name:
+        return '-'  # Linea continua per la quantizzazione Q4
+    elif 'Q8' in group_name:
+        return '--'  # Tratteggiato per la quantizzazione Q8
+    return '-'
+
+
+# -----------------------------------------------------------
+
+def plot_threshold_study(thresholds, study_results, output_dir):
+    fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+
+    for model_name, metrics in study_results.items():
+        g, v = parse_model_name(model_name)
+
+        # color mapping
+        color = VARIANT_COLORS.get(v, '#333333')
+
+        # marker and style mapping
+        marker = get_marker(g)
+        linestyle = get_linestyle(g)
+
+        axes[0].plot(thresholds, metrics['F1'], color=color,
+                     linestyle=linestyle, marker=marker, markersize=6, linewidth=1.5)
+        axes[1].plot(thresholds, metrics['IoU'], color=color,
+                     linestyle=linestyle, marker=marker, markersize=6, linewidth=1.5)
+
+    axes[0].set_title('Standardized F1 vs Threshold', fontweight='bold')
+    axes[0].set_xlabel('Similarity Threshold')
+    axes[0].set_ylabel('F1 Score')
+    axes[0].invert_xaxis()
+    axes[0].grid(True, linestyle='--', alpha=0.7)
+
+    axes[1].set_title('Standardized IoU vs Threshold', fontweight='bold')
+    axes[1].set_xlabel('Similarity Threshold')
+    axes[1].set_ylabel('IoU Score')
+    axes[1].invert_xaxis()
+    axes[1].grid(True, linestyle='--', alpha=0.7)
+
+    # legend
+    import matplotlib.lines as mlines
+    legend_elements = [
+        # Simboli Modelli (Colonna 1)
+        mlines.Line2D([], [], color='gray', marker='o', linestyle='None', markersize=8, label='E2B Model'),
+        mlines.Line2D([], [], color='gray', marker='^', linestyle='None', markersize=8, label='E4B Model'),
+        # Quantizzazioni (Colonna 2)
+        mlines.Line2D([], [], color='gray', linestyle='-', linewidth=2, label='Q4 Quantization'),
+        mlines.Line2D([], [], color='gray', linestyle='--', linewidth=2, label='Q8 Quantization'),
+        # Tecniche di Prompting (Colonna 3)
+        mlines.Line2D([], [], color=VARIANT_COLORS['Standard (Low Temp.)'], linewidth=4, label='Standard Prompting'),
+        mlines.Line2D([], [], color=VARIANT_COLORS['Two-Step (Low Temp.)'], linewidth=4, label='Two-Step')
+    ]
+    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=3)
+
+    plt.suptitle("Influence of Similarity Threshold on NLP Metrics", fontsize=16, fontweight='bold', y=1.02)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, 'nlp_threshold_study.png'), bbox_inches='tight', dpi=300)
+    plt.close()
 
 
 def print_summary_tables(all_nlp_results: dict, all_macro_results: dict):
-    print("\n" + "="*120)
-    print(" " * 45 + "TABELLA RIASSUNTIVA METRICHE")
-    print("="*120)
+    print("\n" + "=" * 120)
+    print(" " * 45 + "METRICS SUMMARY TABLE")
+    print("=" * 120)
 
     baseline = {
         "calories_MAE": 70.6, "calories_MAE_%": 26.1,
@@ -380,14 +537,14 @@ def print_summary_tables(all_nlp_results: dict, all_macro_results: dict):
                 mg, mv = parse_model_name(m)
                 if mg == g and mv == v:
                     models_sorted.append(m)
-    
+
     if all_nlp_results:
-        print("\n--- METRICHE NLP ---")
-        header = f"{'Gruppo':<10} | {'Variante':<25} | {'F1':<6} | {'F1 (Std)':<8} | {'IoU':<6} | {'IoU (Std)':<9}"
+        print("\n--- NLP METRICS ---")
+        header = f"{'Group':<10} | {'Variant':<25} | {'F1':<6} | {'F1 (Std)':<8} | {'IoU':<6} | {'IoU (Std)':<9}"
         print("-" * len(header))
         print(header)
         print("-" * len(header))
-        
+
         for mod in models_sorted:
             if mod in all_nlp_results:
                 g, v = parse_model_name(mod)
@@ -400,67 +557,75 @@ def print_summary_tables(all_nlp_results: dict, all_macro_results: dict):
         print("-" * len(header))
 
     if all_macro_results:
-        print("\n--- METRICHE MACRONUTRIENTI (MAE e MAE%) ---")
-        header = f"{'Gruppo':<10} | {'Variante':<25} | {'Calorie':<15} | {'Massa':<15} | {'Grassi':<15} | {'Carbo':<15} | {'Proteine':<15}"
-        print("-" * len(header))
-        print(header)
-        print("-" * len(header))
-        
-        b = baseline
-        cal_str = f"{b['calories_MAE']:.1f} ({b['calories_MAE_%']:.1f}%)"
-        mass_str = f"{b['mass_MAE']:.1f} ({b['mass_MAE_%']:.1f}%)"
-        fat_str = f"{b['fat_MAE']:.1f} ({b['fat_MAE_%']:.1f}%)"
-        carb_str = f"{b['carbohydrates_MAE']:.1f} ({b['carbohydrates_MAE_%']:.1f}%)"
-        prot_str = f"{b['protein_MAE']:.1f} ({b['protein_MAE_%']:.1f}%)"
-        print(f"{'Baseline':<10} | {'Nutrition 5k (2D Direct)':<25} | {cal_str:<15} | {mass_str:<15} | {fat_str:<15} | {carb_str:<15} | {prot_str:<15}")
-        print("-" * len(header))
+        for subset in ["overall", "exact_match"]:
+            title = "MACRONUTRIENTS METRICS (OVERALL)" if subset == "overall" else "MACRONUTRIENTS METRICS (EXACT MATCH)"
+            print(f"\n--- {title} ---")
+            header = f"{'Group':<10} | {'Variant':<25} | {'Calories':<15} | {'Mass':<15} | {'Fat':<15} | {'Carbs':<15} | {'Protein':<15}"
+            print("-" * len(header))
+            print(header)
+            print("-" * len(header))
 
-        for mod in models_sorted:
-            if mod in all_macro_results:
-                g, v = parse_model_name(mod)
-                r = all_macro_results[mod]
-                cal_str = f"{r['calories_MAE']:.1f} ({r['calories_MAE_%']:.1f}%)"
-                mass_str = f"{r['mass_MAE']:.1f} ({r['mass_MAE_%']:.1f}%)"
-                fat_str = f"{r['fat_MAE']:.1f} ({r['fat_MAE_%']:.1f}%)"
-                carb_str = f"{r['carbohydrates_MAE']:.1f} ({r['carbohydrates_MAE_%']:.1f}%)"
-                prot_str = f"{r['protein_MAE']:.1f} ({r['protein_MAE_%']:.1f}%)"
-                
-                print(f"{g:<10} | {v:<25} | {cal_str:<15} | {mass_str:<15} | {fat_str:<15} | {carb_str:<15} | {prot_str:<15}")
-        print("-" * len(header))
-        print("\n")
+            if subset == "overall":
+                b = baseline
+                cal_str = f"{b['calories_MAE']:.1f} ({b['calories_MAE_%']:.1f}%)"
+                mass_str = f"{b['mass_MAE']:.1f} ({b['mass_MAE_%']:.1f}%)"
+                fat_str = f"{b['fat_MAE']:.1f} ({b['fat_MAE_%']:.1f}%)"
+                carb_str = f"{b['carbohydrates_MAE']:.1f} ({b['carbohydrates_MAE_%']:.1f}%)"
+                prot_str = f"{b['protein_MAE']:.1f} ({b['protein_MAE_%']:.1f}%)"
+                print(
+                    f"{'Baseline':<10} | {'Nutrition 5k (2D Direct)':<25} | {cal_str:<15} | {mass_str:<15} | {fat_str:<15} | {carb_str:<15} | {prot_str:<15}")
+                print("-" * len(header))
+
+            for mod in models_sorted:
+                if mod in all_macro_results:
+                    g, v = parse_model_name(mod)
+                    r = all_macro_results[mod][subset]
+                    cal_str = f"{r['calories_MAE']:.1f} ({r['calories_MAE_%']:.1f}%)"
+                    mass_str = f"{r['mass_MAE']:.1f} ({r['mass_MAE_%']:.1f}%)"
+                    fat_str = f"{r['fat_MAE']:.1f} ({r['fat_MAE_%']:.1f}%)"
+                    carb_str = f"{r['carbohydrates_MAE']:.1f} ({r['carbohydrates_MAE_%']:.1f}%)"
+                    prot_str = f"{r['protein_MAE']:.1f} ({r['protein_MAE_%']:.1f}%)"
+
+                    print(
+                        f"{g:<10} | {v:<25} | {cal_str:<15} | {mass_str:<15} | {fat_str:<15} | {carb_str:<15} | {prot_str:<15}")
+            print("-" * len(header))
+            print("\n")
 
 
 if __name__ == "__main__":
 
-    # ================= CONFIGURAZIONI =================
+    # ================= CONFIGURATIONS =================
     THRESHOLD = 0.7
     OUTPUT_DIR = "data/evaluation"
 
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    SIMILARITY_DIR = os.path.join(OUTPUT_DIR, "similarity_analysis")
+    THRESHOLD_DIR = os.path.join(OUTPUT_DIR, "threshold_study")
+    NLP_DIR = os.path.join(OUTPUT_DIR, "nlp_metrics")
+    MAE_OVERALL_DIR = os.path.join(OUTPUT_DIR, "mae_metrics", "overall")
+    MAE_EXACT_DIR = os.path.join(OUTPUT_DIR, "mae_metrics", "exact_match")
 
-    # Puoi mixare liberamente file derivati dal single-step e dal two-step
+    for d in [SIMILARITY_DIR, THRESHOLD_DIR, NLP_DIR, MAE_OVERALL_DIR, MAE_EXACT_DIR]:
+        os.makedirs(d, exist_ok=True)
+
     PRED_JSON_PATHS = [
-        "data/prediction/test_predictions_nutrition5k_gemma4_e2b_q4.json",
-        "data/prediction/test_predictions_nutrition5k_gemma_e2b_q8V2.json",
+        "data/prediction/test_predictions_nutrition5k_gemma4_e2b_q4_tb.json",
         "data/prediction/test_predictions_nutrition5k_gemma4_e2b_q8_tb.json",
         "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e2b_q4_tb.json",
         "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e2b_q8_tb.json",
-        "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q4.json",
-        "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q8V2.json",
+        "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q4_tb.json",
         "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q8_tb.json",
         "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e4b_q4_tb.json",
         "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e4b_q8_tb.json"
     ]
     INGREDIENTS_CSV_PATH = "data/metadata/ingredients_metadata.csv"
     # ==================================================
-
-    print("Caricamento del vocabolario da CSV...")
+    print("Loading vocabulary from CSV...")
     vocabulary = load_vocabulary(INGREDIENTS_CSV_PATH)
 
-    print("Caricamento del modello NLP: all-MiniLM-L6-v2... (Avviene una singola volta)")
+    print("Loading NLP model: all-MiniLM-L6-v2... (Happens only once)")
     nlp_model = SentenceTransformer('all-MiniLM-L6-v2')
 
-    print("Calcolo degli embedding per il vocabolario base...")
+    print("Calculating embeddings for the base vocabulary...")
     vocab_embeddings = nlp_model.encode(vocabulary)
 
     all_nlp_results = {}
@@ -470,7 +635,7 @@ if __name__ == "__main__":
         model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
 
         print(f"\n{'=' * 70}")
-        print(f"VALUTAZIONE MODELLO: {model_name}")
+        print(f"MODEL EVALUATION: {model_name}")
         print(f"{'=' * 70}")
 
         try:
@@ -485,24 +650,78 @@ if __name__ == "__main__":
             nlp_res = evaluator.evaluate_nlp_metrics()
             all_nlp_results[model_name] = nlp_res
 
+            # Export and print similarity results for the model
+            sim_path = os.path.join(SIMILARITY_DIR, f"similarity_analysis_{model_name}.json")
+            evaluator.export_similarity_log_to_json(sim_path)
+            evaluator.print_similarity_summary()
+
             macro_res = evaluator.evaluate_macronutrients()
             all_macro_results[model_name] = macro_res
 
         except Exception as e:
-            print(f"\n[!] Errore durante l'esecuzione del file {pred_path}:\n{e}")
+            print(f"\n[!] Error during the execution of file {pred_path}:\n{e}")
 
     print(f"\n{'=' * 70}")
-    print("VALUTAZIONE COMPLETATA. GENERAZIONE GRAFICI IN CORSO...")
+    print("EVALUATION COMPLETED. GENERATING GRAPHS...")
     print(f"{'=' * 70}")
 
     if all_nlp_results:
-        plot_nlp_metrics(all_nlp_results, output_dir=OUTPUT_DIR)
+        plot_nlp_metrics(all_nlp_results, output_dir=NLP_DIR)
     if all_macro_results:
-        plot_macro_metrics(all_macro_results, output_dir=OUTPUT_DIR)
+        overall_results = {k: v["overall"] for k, v in all_macro_results.items()}
+        exact_results = {k: v["exact_match"] for k, v in all_macro_results.items()}
+        plot_macro_metrics(overall_results, output_dir=MAE_OVERALL_DIR, plot_baseline=True)
+        plot_macro_metrics(exact_results, output_dir=MAE_EXACT_DIR, plot_baseline=False)
 
     print("\n" + "=" * 70)
-    print("STAMPA TABELLA RIASSUNTIVA A TERMINALE...")
+    print("PRINTING SUMMARY TABLE TO TERMINAL...")
     print("=" * 70)
     print_summary_tables(all_nlp_results, all_macro_results)
 
-    print(f"\nTutti i grafici (singoli e combinati) sono stati salvati nella cartella: {OUTPUT_DIR}")
+    print(f"\n{'=' * 70}")
+    print("STARTING THRESHOLD STUDY FOR NLP METRICS...")
+    print(f"{'=' * 70}")
+
+    thresholds = list(np.linspace(1.0, 0.0, 11))
+    study_json_path = os.path.join(THRESHOLD_DIR, "threshold_study_results.json")
+
+    if os.path.exists(study_json_path):
+        print(f"Loading existing threshold study from {study_json_path}...")
+        with open(study_json_path, 'r', encoding='utf-8') as f:
+            threshold_study_results = json.load(f)
+    else:
+        print("Computing threshold study...")
+        threshold_study_results = {}
+        for pred_path in PRED_JSON_PATHS:
+            model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
+            threshold_study_results[model_name] = {'F1': [], 'IoU': []}
+
+            try:
+                evaluator = Nutrition5kEvaluator(
+                    pred_json_path=pred_path,
+                    nlp_model=nlp_model,
+                    vocabulary=vocabulary,
+                    vocab_embeddings=vocab_embeddings,
+                    threshold=1.0
+                )
+
+                for thr in thresholds:
+                    evaluator.threshold = thr
+                    print(f"======== EVALUATING THRESHOLD {thr:.2f} ========")
+                    nlp_res = evaluator.evaluate_nlp_metrics()
+                    if nlp_res and "Standardized" in nlp_res:
+                        threshold_study_results[model_name]['F1'].append(nlp_res["Standardized"]["F1"])
+                        threshold_study_results[model_name]['IoU'].append(nlp_res["Standardized"]["IoU"])
+                    else:
+                        threshold_study_results[model_name]['F1'].append(0.0)
+                        threshold_study_results[model_name]['IoU'].append(0.0)
+            except Exception as e:
+                print(f"\n[!] Error during the threshold study of file {pred_path}:\n{e}")
+
+        # Save to JSON
+        with open(study_json_path, 'w', encoding='utf-8') as f:
+            json.dump(threshold_study_results, f, indent=4)
+
+    plot_threshold_study(thresholds, threshold_study_results, output_dir=THRESHOLD_DIR)
+
+    print(f"\nAll graphs (single and combined) have been saved in the folder: {OUTPUT_DIR}")

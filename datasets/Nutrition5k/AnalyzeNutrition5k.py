@@ -1,11 +1,5 @@
 import os
-import json
 import pandas as pd
-import numpy as np
-import scipy as sp
-import itertools
-from collections import Counter
-import networkx as nx
 import matplotlib
 
 pd.set_option('display.max_columns', None)
@@ -332,7 +326,7 @@ class AnalyzeNutrition5k:
         self._plot_top_ingredients_by_mass()
         self._plot_top_ingredients_by_occurrence()
         self._plot_ingredients_per_dish()
-        self._plot_ingredient_cooccurrence_network()
+        #self._plot_ingredient_cooccurrence_network()
         self._analyze_test_set_challenges()
 
         plt.show()
