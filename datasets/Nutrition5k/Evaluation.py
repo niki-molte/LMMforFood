@@ -446,6 +446,77 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: 
     plot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE")
 
 
+def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
+    fields = ["calories", "mass", "fat", "carbohydrates", "protein"]
+    metric_types = {"MAE": "Mean Absolute Error", "MAE_%": "Mean Absolute Error (%)"}
+
+    data_structured = {g: {v: None for v in VARIANTS} for g in GROUPS}
+    for model_name, res in all_macro_results.items():
+        g, v = parse_model_name(model_name)
+        if g in GROUPS and v in VARIANTS:
+            data_structured[g][v] = res
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    for metric_suffix, ylabel in metric_types.items():
+        fig_combined, axes = plt.subplots(2, 3, figsize=(18, 12))
+        axes = axes.flatten()
+
+        for idx, f in enumerate(fields):
+            ax = axes[idx]
+            x = np.arange(len(GROUPS))
+            width = 0.2
+            offsets = [-1.5 * width, -0.5 * width, 0.5 * width, 1.5 * width]
+
+            for i, var in enumerate(VARIANTS):
+                overall_vals = [data_structured[g][var]["overall"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
+                exact_vals = [data_structured[g][var]["exact_match"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
+
+                ax.bar(x + offsets[i*2], overall_vals, width, color=VARIANT_COLORS[var], edgecolor='black', 
+                       label=f"{var} - Overall" if idx == 0 else "")
+                ax.bar(x + offsets[i*2 + 1], exact_vals, width, color=VARIANT_COLORS[var], edgecolor='black', hatch='//', alpha=0.8, 
+                       label=f"{var} - Exact Match" if idx == 0 else "")
+
+            ax.set_ylabel(ylabel)
+            ax.set_title(f'Overlay: {f.capitalize()}', fontweight='bold')
+            ax.set_xticks(x)
+            ax.set_xticklabels(GROUPS, rotation=0)
+            ax.grid(False, axis='x')
+            ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+
+        axes[5].axis('off')
+        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=4)
+        file_suffix = "mae_perc" if metric_suffix == "MAE_%" else "mae_abs"
+        plt.suptitle(f"Overall vs Exact Match: {ylabel}", fontsize=16, fontweight='bold', y=0.98)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f'overlay_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
+        plt.close()
+
+        # Generate individual plots as well
+        for f in fields:
+            fig_single, ax_single = plt.subplots(figsize=(10, 8))
+            x = np.arange(len(GROUPS))
+
+            for i, var in enumerate(VARIANTS):
+                overall_vals = [data_structured[g][var]["overall"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
+                exact_vals = [data_structured[g][var]["exact_match"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
+
+                ax_single.bar(x + offsets[i*2], overall_vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=f"{var} - Overall")
+                ax_single.bar(x + offsets[i*2 + 1], exact_vals, width, color=VARIANT_COLORS[var], edgecolor='black', hatch='//', alpha=0.8, label=f"{var} - Exact Match")
+
+            ax_single.set_ylabel(ylabel)
+            ax_single.set_title(f'Overall vs Exact Match: {f.capitalize()}', fontweight='bold')
+            ax_single.set_xticks(x)
+            ax_single.set_xticklabels(GROUPS, rotation=0)
+            ax_single.grid(False, axis='x')
+            ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
+
+            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=2)
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, f'overlay_{file_suffix}_{f}.png'), bbox_inches='tight', dpi=300)
+            plt.close()
+
+
 # --- NUOVE FUNZIONI DI SUPPORTO PER IL GRAFICO THRESHOLD ---
 def get_marker(group_name: str) -> str:
     if 'E2B' in group_name:
@@ -603,8 +674,9 @@ if __name__ == "__main__":
     NLP_DIR = os.path.join(OUTPUT_DIR, "nlp_metrics")
     MAE_OVERALL_DIR = os.path.join(OUTPUT_DIR, "mae_metrics", "overall")
     MAE_EXACT_DIR = os.path.join(OUTPUT_DIR, "mae_metrics", "exact_match")
+    MAE_OVERLAY_DIR = os.path.join(OUTPUT_DIR, "mae_metrics", "overlay")
 
-    for d in [SIMILARITY_DIR, THRESHOLD_DIR, NLP_DIR, MAE_OVERALL_DIR, MAE_EXACT_DIR]:
+    for d in [SIMILARITY_DIR, THRESHOLD_DIR, NLP_DIR, MAE_OVERALL_DIR, MAE_EXACT_DIR, MAE_OVERLAY_DIR]:
         os.makedirs(d, exist_ok=True)
 
     PRED_JSON_PATHS = [
@@ -672,6 +744,7 @@ if __name__ == "__main__":
         exact_results = {k: v["exact_match"] for k, v in all_macro_results.items()}
         plot_macro_metrics(overall_results, output_dir=MAE_OVERALL_DIR, plot_baseline=True)
         plot_macro_metrics(exact_results, output_dir=MAE_EXACT_DIR, plot_baseline=False)
+        plot_overlay_macro_metrics(all_macro_results, output_dir=MAE_OVERLAY_DIR)
 
     print("\n" + "=" * 70)
     print("PRINTING SUMMARY TABLE TO TERMINAL...")
