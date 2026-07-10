@@ -148,7 +148,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563984242": {
@@ -212,7 +212,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563996485": {
@@ -378,7 +378,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1566502505": {
@@ -405,7 +405,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -713,7 +713,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -745,7 +745,7 @@
         "tomato paste/sauce": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6311,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "spices (curry powder, turmeric, etc.)": {
             "best_vocab_match": "curries",
@@ -939,7 +939,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562776497": {
@@ -993,7 +993,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "sugar": {
             "best_vocab_match": "sugar",
@@ -1025,7 +1025,7 @@
         "curry powder": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6687,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -1194,7 +1194,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1561662814": {
@@ -1385,7 +1385,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -1625,7 +1625,7 @@
         "pizza crust/bread base": {
             "best_vocab_match": "pizza dough",
             "max_similarity_score": 0.6665,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "tomato sauce": {
             "best_vocab_match": "pizza sauce",
@@ -1699,7 +1699,7 @@
         "chili paste/sauce": {
             "best_vocab_match": "chili",
             "max_similarity_score": 0.6974,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565894910": {
@@ -1814,7 +1814,7 @@
         "butter/oil (for cooking/toast)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6574,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and seasonings": {
             "best_vocab_match": "salt",
@@ -2052,7 +2052,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558635618": {
@@ -2118,7 +2118,7 @@
         "pizza crust/base": {
             "best_vocab_match": "pie crust",
             "max_similarity_score": 0.6832,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "mozzarella cheese": {
             "best_vocab_match": "mozzarella cheese",
@@ -2150,7 +2150,7 @@
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -2177,7 +2177,7 @@
         "tomato sauce/puree": {
             "best_vocab_match": "pizza sauce",
             "max_similarity_score": 0.6338,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "olive oil": {
             "best_vocab_match": "olive oil",
@@ -2376,12 +2376,12 @@
         "butter/oil for cooking": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6335,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "sauce base (tomato/broth)": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6073,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "spices and seasonings": {
             "best_vocab_match": "chili",
@@ -2651,7 +2651,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565711570": {
@@ -2668,7 +2668,7 @@
         "butter/oil for cooking": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6335,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -2808,7 +2808,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1560801041": {
@@ -2835,12 +2835,12 @@
         "milk (for potatoes)": {
             "best_vocab_match": "milk",
             "max_similarity_score": 0.6613,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (chicken/veg)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6427,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -2872,7 +2872,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "garlic": {
             "best_vocab_match": "garlic",
@@ -2882,7 +2882,7 @@
         "red chili flakes": {
             "best_vocab_match": "chili",
             "max_similarity_score": 0.6379,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1560526552": {
@@ -3071,12 +3071,12 @@
         "carrot julienne": {
             "best_vocab_match": "carrot",
             "max_similarity_score": 0.6803,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "green leafy vegetables (spinach/kale)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6175,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1559844490": {
@@ -3098,7 +3098,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558720097": {
@@ -3333,7 +3333,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558113941": {
@@ -3453,7 +3453,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1561739188": {
@@ -3470,7 +3470,7 @@
         "curry powder": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6687,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "coconut milk": {
             "best_vocab_match": "coconut milk",
@@ -3544,7 +3544,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562790775": {
@@ -3750,7 +3750,7 @@
         "tomato sauce base": {
             "best_vocab_match": "pizza sauce",
             "max_similarity_score": 0.6335,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "oregano/spices": {
             "best_vocab_match": "oregano",
@@ -3787,7 +3787,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563909507": {
@@ -3836,7 +3836,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565811000": {
@@ -4174,7 +4174,7 @@
         "tomato paste/sauce": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6311,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -4203,7 +4203,7 @@
         "butter/cooking oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6939,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "sugar (in berries)": {
             "best_vocab_match": "sugar",
@@ -4220,7 +4220,7 @@
         "fish fillet": {
             "best_vocab_match": "fish",
             "max_similarity_score": 0.6692,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice": {
             "best_vocab_match": "rice",
@@ -4507,7 +4507,7 @@
         "butter/oil (for toast)": {
             "best_vocab_match": "toast",
             "max_similarity_score": 0.666,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -4544,7 +4544,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558718680": {
@@ -4588,7 +4588,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1564689078": {
@@ -4686,7 +4686,7 @@
         "dried herbs (oregano/thyme)": {
             "best_vocab_match": "oregano",
             "max_similarity_score": 0.6704,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -4779,7 +4779,7 @@
         "chili sauce/paste": {
             "best_vocab_match": "chili",
             "max_similarity_score": 0.6938,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1560368395": {
@@ -4924,7 +4924,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1560444914": {
@@ -5017,14 +5017,14 @@
         "cooking oil (for rendering/frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6078,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565986702": {
         "fish fillet": {
             "best_vocab_match": "fish",
             "max_similarity_score": 0.6692,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice": {
             "best_vocab_match": "rice",
@@ -5044,12 +5044,12 @@
         "chili paste/sauce": {
             "best_vocab_match": "chili",
             "max_similarity_score": 0.6974,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565118729": {
@@ -5223,7 +5223,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563996464": {
@@ -5343,12 +5343,12 @@
         "tomato chunks": {
             "best_vocab_match": "tomatoes",
             "max_similarity_score": 0.6864,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "butter/oil (for cooking eggs)": {
             "best_vocab_match": "fried eggs",
             "max_similarity_score": 0.6167,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -5468,7 +5468,7 @@
         "sauce/gravy (tomato-based)": {
             "best_vocab_match": "gravy",
             "max_similarity_score": 0.6849,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "olive oil": {
             "best_vocab_match": "olive oil",
@@ -5750,7 +5750,7 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558030383": {
@@ -5767,7 +5767,7 @@
         "cooking oil (for rendering/frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6078,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1561663541": {
@@ -6083,7 +6083,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1557862783": {
@@ -6137,7 +6137,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565123881": {
@@ -6338,7 +6338,7 @@
         "honey/sweetener": {
             "best_vocab_match": "honey",
             "max_similarity_score": 0.6407,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "nuts (mixed, for granola)": {
             "best_vocab_match": "mixed nuts",
@@ -6348,7 +6348,7 @@
         "milk/dairy solids (in yogurt)": {
             "best_vocab_match": "soy yogurt",
             "max_similarity_score": 0.693,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1566416701": {
@@ -6498,7 +6498,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558376984": {
@@ -6633,7 +6633,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565117429": {
@@ -6699,12 +6699,12 @@
         "breading/flour mixture": {
             "best_vocab_match": "flour",
             "max_similarity_score": 0.6604,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "egg wash": {
             "best_vocab_match": "eggs",
             "max_similarity_score": 0.6537,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (vegetable)": {
             "best_vocab_match": "vegetable oil",
@@ -6839,7 +6839,7 @@
         "butter sauce/glaze": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.616,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "milk": {
             "best_vocab_match": "milk",
@@ -6962,7 +6962,7 @@
         "curry powder": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6687,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "vegetable oil": {
             "best_vocab_match": "vegetable oil",
@@ -7068,7 +7068,7 @@
         "curry powder/spices": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6396,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558722125": {
@@ -7148,7 +7148,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563898019": {
@@ -7422,7 +7422,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558630207": {
@@ -7740,7 +7740,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562788506": {
@@ -7828,7 +7828,7 @@
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "flour/batter ingredients": {
             "best_vocab_match": "flour",
@@ -7838,7 +7838,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1568305225": {
@@ -7865,7 +7865,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -7951,7 +7951,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "butter (for cooking)": {
             "best_vocab_match": "butter",
@@ -8007,7 +8007,7 @@
         "oil (cooking/seasoning)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6979,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "soy sauce": {
             "best_vocab_match": "soy sauce",
@@ -8183,7 +8183,7 @@
         "cooking oil (for frying potatoes)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6794,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -8254,12 +8254,12 @@
         "tomato paste/sauce": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6311,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "spices (paprika, chili, etc.)": {
             "best_vocab_match": "chili",
             "max_similarity_score": 0.6261,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1561662869": {
@@ -8335,7 +8335,7 @@
         "icing/cream cheese frosting": {
             "best_vocab_match": "frostings",
             "max_similarity_score": 0.6823,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1560456326": {
@@ -9190,7 +9190,7 @@
         "stir-fried vegetables": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6996,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "soy sauce": {
             "best_vocab_match": "soy sauce",
@@ -9286,7 +9286,7 @@
         "curry powder": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6687,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1561147967": {
@@ -9492,7 +9492,7 @@
         "milk (for potatoes)": {
             "best_vocab_match": "milk",
             "max_similarity_score": 0.6613,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -9529,7 +9529,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -9632,7 +9632,7 @@
         "carrot julienne": {
             "best_vocab_match": "carrot",
             "max_similarity_score": 0.6803,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "soy sauce": {
             "best_vocab_match": "soy sauce",
@@ -9647,7 +9647,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice vinegar": {
             "best_vocab_match": "vinegar",
@@ -9679,7 +9679,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565898128": {
@@ -9906,7 +9906,7 @@
         "breading/flour mixture": {
             "best_vocab_match": "flour",
             "max_similarity_score": 0.6604,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -9955,7 +9955,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "garlic paste": {
             "best_vocab_match": "garlic",
@@ -9982,7 +9982,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1557936645": {
@@ -10082,7 +10082,7 @@
         "lemon juice/vinegar dressing": {
             "best_vocab_match": "lemon juice",
             "max_similarity_score": 0.6925,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -10146,7 +10146,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -10528,7 +10528,7 @@
         "green apple": {
             "best_vocab_match": "apple",
             "max_similarity_score": 0.6693,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "almonds": {
             "best_vocab_match": "almonds",
@@ -10543,7 +10543,7 @@
         "sweetener (honey/syrup)": {
             "best_vocab_match": "syrup",
             "max_similarity_score": 0.6772,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563898107": {
@@ -10592,7 +10592,7 @@
         "butter (for eggs and hash browns)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6928,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (for sausage/hash browns)": {
             "best_vocab_match": "vegetable oil",
@@ -10602,7 +10602,7 @@
         "tomato sauce/ketchup (on eggs)": {
             "best_vocab_match": "ketchup",
             "max_similarity_score": 0.6377,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -10901,7 +10901,7 @@
         "brown sugar glaze (sauce)": {
             "best_vocab_match": "brown sugar",
             "max_similarity_score": 0.6886,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "soy sauce": {
             "best_vocab_match": "soy sauce",
@@ -10916,7 +10916,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558110478": {
@@ -11085,7 +11085,7 @@
         "butter/oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6659,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -11141,7 +11141,7 @@
         "butter/oil (for cooking eggs)": {
             "best_vocab_match": "fried eggs",
             "max_similarity_score": 0.6167,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -11251,7 +11251,7 @@
         "curry powder": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6687,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "coconut milk": {
             "best_vocab_match": "coconut milk",
@@ -11359,7 +11359,7 @@
         "butter/oil (for spreading)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6543,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -11538,7 +11538,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -11565,7 +11565,7 @@
         "seasoning (salt, pepper)": {
             "best_vocab_match": "pepper",
             "max_similarity_score": 0.6027,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565020895": {
@@ -11868,7 +11868,7 @@
         "milk (for blending/seasoning)": {
             "best_vocab_match": "milk",
             "max_similarity_score": 0.6497,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -12057,7 +12057,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565810969": {
@@ -12101,12 +12101,12 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562172561": {
@@ -12162,7 +12162,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -12216,7 +12216,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "garlic paste": {
             "best_vocab_match": "garlic",
@@ -12275,7 +12275,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1567107839": {
@@ -12431,7 +12431,7 @@
         "salt and spices": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6909,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558635523": {

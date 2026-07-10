@@ -173,7 +173,7 @@ def main():
     elif PROVIDER == "qwen":
         model = os.environ.get("OLLAMA_QWEN_MODEL", "qwen3.5:0.8b")
         client = QwenClient(model_name=model)
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_qwen_cloud.json"
+        OUTPUT_PREDICTIONS_PATH = "data/prediction/one_example/test_predictions_nutrition5k_qwen_cloud.json"
 
     elif PROVIDER == "minicpm":
         model = os.environ.get("OLLAMA_MINICPM_MODEL", "openbmb/minicpm-v4.5:8b")

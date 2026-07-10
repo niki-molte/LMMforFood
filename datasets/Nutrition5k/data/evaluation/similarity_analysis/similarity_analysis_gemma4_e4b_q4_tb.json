@@ -128,7 +128,7 @@
         "gravy sauce (tomato/onion base)": {
             "best_vocab_match": "gravy",
             "max_similarity_score": 0.6593,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (vegetable/ghee)": {
             "best_vocab_match": "vegetable oil",
@@ -148,7 +148,7 @@
         "spices (cumin, turmeric, chili)": {
             "best_vocab_match": "chili",
             "max_similarity_score": 0.6129,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563984242": {
@@ -356,7 +356,7 @@
         "grilled chicken breast strips": {
             "best_vocab_match": "grilled chicken",
             "max_similarity_score": 0.6583,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "olive oil": {
             "best_vocab_match": "olive oil",
@@ -535,7 +535,7 @@
         "green leafy vegetables (e.g., spinach/kale)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6307,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "sausages": {
             "best_vocab_match": "sausage",
@@ -755,7 +755,7 @@
         "cooking oil (for chicken/rice)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6392,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -934,7 +934,7 @@
         "curry leaves": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6699,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "oil (cooking)": {
             "best_vocab_match": "vegetable oil",
@@ -954,7 +954,7 @@
         "curry leaves (flavoring)": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6132,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -1142,7 +1142,7 @@
         "paneer (indian cottage cheese)": {
             "best_vocab_match": "cottage cheese",
             "max_similarity_score": 0.6857,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice (cooked white rice)": {
             "best_vocab_match": "white rice",
@@ -1702,7 +1702,7 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "garlic": {
             "best_vocab_match": "garlic",
@@ -1773,7 +1773,7 @@
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -1871,7 +1871,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -2003,7 +2003,7 @@
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and seasoning": {
             "best_vocab_match": "salt",
@@ -2052,7 +2052,7 @@
         "cooking oil (general purpose)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6609,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565034635": {
@@ -2319,7 +2319,7 @@
         "curry powder": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6687,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "coconut milk": {
             "best_vocab_match": "coconut milk",
@@ -2606,7 +2606,7 @@
         "cooking oil (vegetable/butter mix)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6973,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -2820,7 +2820,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -2901,12 +2901,12 @@
         "fried bread/toast points": {
             "best_vocab_match": "toast",
             "max_similarity_score": 0.6434,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -3112,7 +3112,7 @@
         "grilled chicken breast strips": {
             "best_vocab_match": "grilled chicken",
             "max_similarity_score": 0.6583,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice (plain, cooked)": {
             "best_vocab_match": "white rice",
@@ -3262,7 +3262,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "ginger paste": {
             "best_vocab_match": "ginger",
@@ -3507,12 +3507,12 @@
         "tomato paste": {
             "best_vocab_match": "tomatoes",
             "max_similarity_score": 0.6629,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "onion powder": {
             "best_vocab_match": "onions",
             "max_similarity_score": 0.6833,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "garlic powder": {
             "best_vocab_match": "garlic",
@@ -3539,7 +3539,7 @@
         "red pepper flakes": {
             "best_vocab_match": "pepper",
             "max_similarity_score": 0.6533,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "olive oil": {
             "best_vocab_match": "olive oil",
@@ -3649,7 +3649,7 @@
         "green leafy vegetables (e.g., spinach/kale)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6307,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (e.g., vegetable/olive oil)": {
             "best_vocab_match": "vegetable oil",
@@ -3723,7 +3723,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562703382": {
@@ -3755,7 +3755,7 @@
         "paprika": {
             "best_vocab_match": "paella",
             "max_similarity_score": 0.6635,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -3978,7 +3978,7 @@
         "vegetable stir-fry": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6338,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "corn kernels": {
             "best_vocab_match": "corn",
@@ -4196,14 +4196,14 @@
         "cooking oil (for bacon)": {
             "best_vocab_match": "bacon",
             "max_similarity_score": 0.6286,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1564773847": {
         "fish fillet": {
             "best_vocab_match": "fish",
             "max_similarity_score": 0.6692,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice": {
             "best_vocab_match": "rice",
@@ -4289,7 +4289,7 @@
         "cooking oil (vegetable/butter blend)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6707,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "soy sauce": {
             "best_vocab_match": "soy sauce",
@@ -4406,7 +4406,7 @@
         "butter/oil (for cooking eggs)": {
             "best_vocab_match": "fried eggs",
             "max_similarity_score": 0.6167,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -4477,7 +4477,7 @@
         "beef stir-fry": {
             "best_vocab_match": "beef",
             "max_similarity_score": 0.642,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "soy sauce": {
             "best_vocab_match": "soy sauce",
@@ -4487,7 +4487,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "ginger paste": {
             "best_vocab_match": "ginger",
@@ -4590,7 +4590,7 @@
         "curry chicken pieces": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6804,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cream/dairy sauce": {
             "best_vocab_match": "cream cheese",
@@ -4865,7 +4865,7 @@
         "cooking oil (vegetable/butter mix)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6973,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -4882,7 +4882,7 @@
         "curry chicken pieces": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6804,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "mixed vegetable curry (saag/bhaji)": {
             "best_vocab_match": "mixed vegetables",
@@ -4907,7 +4907,7 @@
         "tomato puree/sauce": {
             "best_vocab_match": "tomatoes",
             "max_similarity_score": 0.6274,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1560444914": {
@@ -4968,7 +4968,7 @@
         "green vegetables (broccoli/spinach)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6996,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (vegetable/olive)": {
             "best_vocab_match": "olive oil",
@@ -5002,7 +5002,7 @@
         "fish fillet": {
             "best_vocab_match": "fish",
             "max_similarity_score": 0.6692,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice": {
             "best_vocab_match": "rice",
@@ -5017,7 +5017,7 @@
         "curry powder": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6687,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -5424,7 +5424,7 @@
         "roasted vegetables (zucchini, bell pepper, etc.)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6531,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "olive oil": {
             "best_vocab_match": "olive oil",
@@ -5461,7 +5461,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "ginger paste": {
             "best_vocab_match": "ginger",
@@ -5515,7 +5515,7 @@
         "red wine reduction sauce": {
             "best_vocab_match": "wine",
             "max_similarity_score": 0.6106,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "olive oil": {
             "best_vocab_match": "olive oil",
@@ -5767,7 +5767,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "ginger paste": {
             "best_vocab_match": "ginger",
@@ -6030,7 +6030,7 @@
         "pizza crust/bread base": {
             "best_vocab_match": "pizza dough",
             "max_similarity_score": 0.6665,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "mozzarella cheese": {
             "best_vocab_match": "mozzarella cheese",
@@ -6045,7 +6045,7 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1557862783": {
@@ -6185,7 +6185,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "ginger paste": {
             "best_vocab_match": "ginger",
@@ -6583,7 +6583,7 @@
         "roasted sweet potato cubes": {
             "best_vocab_match": "roasted potatoes",
             "max_similarity_score": 0.6872,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "egg white (scrambled/cooked)": {
             "best_vocab_match": "egg whites",
@@ -6625,7 +6625,7 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -6664,7 +6664,7 @@
         "curry powder": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6687,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "coconut milk": {
             "best_vocab_match": "coconut milk",
@@ -6691,12 +6691,12 @@
         "egg wash": {
             "best_vocab_match": "eggs",
             "max_similarity_score": 0.6537,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6356,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558376437": {
@@ -7048,12 +7048,12 @@
         "oil (cooking/sautéing)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6899,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "curry powder/spices": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6396,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -7176,7 +7176,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "ginger paste": {
             "best_vocab_match": "ginger",
@@ -7191,7 +7191,7 @@
         "cornstarch slurry (thickener)": {
             "best_vocab_match": "corn starch",
             "max_similarity_score": 0.6282,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1568305198": {
@@ -7345,7 +7345,7 @@
         "butter glaze": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.696,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "sugar": {
             "best_vocab_match": "sugar",
@@ -7509,7 +7509,7 @@
         "butter/oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6659,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -7664,7 +7664,7 @@
         "cheese sauce/melted cheese": {
             "best_vocab_match": "cheese",
             "max_similarity_score": 0.69,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1566414342": {
@@ -7723,7 +7723,7 @@
         "cooking oil (bacon/veg)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.625,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -7833,7 +7833,7 @@
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -7875,7 +7875,7 @@
         "cornstarch (thickener)": {
             "best_vocab_match": "corn starch",
             "max_similarity_score": 0.6858,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562009810": {
@@ -7975,7 +7975,7 @@
         "cloves": {
             "best_vocab_match": "garlic",
             "max_similarity_score": 0.6189,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "star anise": {
             "best_vocab_match": "custard",
@@ -8108,7 +8108,7 @@
         "red pepper flakes": {
             "best_vocab_match": "pepper",
             "max_similarity_score": 0.6533,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558545738": {
@@ -8213,7 +8213,7 @@
         "sausage links (cooked)": {
             "best_vocab_match": "sausage",
             "max_similarity_score": 0.6976,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "white rice": {
             "best_vocab_match": "white rice",
@@ -8835,7 +8835,7 @@
         "paneer (indian cottage cheese)": {
             "best_vocab_match": "cottage cheese",
             "max_similarity_score": 0.6857,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "chickpeas (garbanzo beans)": {
             "best_vocab_match": "chickpeas",
@@ -8855,7 +8855,7 @@
         "tomato paste/sauce": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6311,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "spices (garam masala, turmeric, chili powder)": {
             "best_vocab_match": "oregano",
@@ -8882,7 +8882,7 @@
         "cooking oil (butter/spray)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6297,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -8968,7 +8968,7 @@
         "curry powder/spices": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6396,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -9046,7 +9046,7 @@
         "curry paste": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6657,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "coconut milk": {
             "best_vocab_match": "coconut milk",
@@ -9078,7 +9078,7 @@
         "sesame oil": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6827,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "garlic": {
             "best_vocab_match": "garlic",
@@ -9144,7 +9144,7 @@
         "oil (cooking/dressing)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6945,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "lemon juice": {
             "best_vocab_match": "lemon juice",
@@ -9254,7 +9254,7 @@
         "cooking oil (vegetable/butter mix)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6973,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -9301,7 +9301,7 @@
         "cornstarch (thickener)": {
             "best_vocab_match": "corn starch",
             "max_similarity_score": 0.6858,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1561147967": {
@@ -9384,7 +9384,7 @@
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "butter (in mashed potatoes)": {
             "best_vocab_match": "butter",
@@ -9463,7 +9463,7 @@
         "red chili flakes": {
             "best_vocab_match": "chili",
             "max_similarity_score": 0.6379,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565118700": {
@@ -9652,7 +9652,7 @@
         "sauce/broth base": {
             "best_vocab_match": "broth",
             "max_similarity_score": 0.6507,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "soy sauce": {
             "best_vocab_match": "soy sauce",
@@ -9662,7 +9662,7 @@
         "cornstarch/thickener": {
             "best_vocab_match": "corn starch",
             "max_similarity_score": 0.6424,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (vegetable)": {
             "best_vocab_match": "vegetable oil",
@@ -9792,7 +9792,7 @@
         "red pepper flakes": {
             "best_vocab_match": "pepper",
             "max_similarity_score": 0.6533,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "lemon juice": {
             "best_vocab_match": "lemon juice",
@@ -10015,7 +10015,7 @@
         "sauce (tomato/cream base)": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6756,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (vegetable/butter)": {
             "best_vocab_match": "vegetable oil",
@@ -10132,7 +10132,7 @@
         "butter/margarine (for searing)": {
             "best_vocab_match": "margarine",
             "max_similarity_score": 0.6503,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -10203,7 +10203,7 @@
         "diced apple": {
             "best_vocab_match": "apple",
             "max_similarity_score": 0.6926,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "olive oil": {
             "best_vocab_match": "olive oil",
@@ -10568,7 +10568,7 @@
         "green apple": {
             "best_vocab_match": "apple",
             "max_similarity_score": 0.6693,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "almonds": {
             "best_vocab_match": "almonds",
@@ -10595,7 +10595,7 @@
         "butter/oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6659,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -10627,7 +10627,7 @@
         "butter/oil (for cooking eggs and potatoes)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6488,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "sauce/ketchup (on sausage)": {
             "best_vocab_match": "ketchup",
@@ -10693,7 +10693,7 @@
         "cheese shreds": {
             "best_vocab_match": "cheese",
             "max_similarity_score": 0.6458,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "butter": {
             "best_vocab_match": "butter",
@@ -10781,12 +10781,12 @@
         "oil (for cooking chicken)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6803,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "curry paste/sauce": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6098,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -11090,7 +11090,7 @@
         "butter/oil (for eggs and bacon)": {
             "best_vocab_match": "almond butter",
             "max_similarity_score": 0.6223,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",
@@ -11511,7 +11511,7 @@
         "meat (chicken/pork mixture)": {
             "best_vocab_match": "pork",
             "max_similarity_score": 0.6412,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "oil (cooking)": {
             "best_vocab_match": "vegetable oil",
@@ -11570,7 +11570,7 @@
         "butter/oil (for toasting)": {
             "best_vocab_match": "toast",
             "max_similarity_score": 0.6564,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565035746": {
@@ -11776,7 +11776,7 @@
         "sweetener (e.g., honey/syrup)": {
             "best_vocab_match": "syrup",
             "max_similarity_score": 0.6361,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562009934": {
@@ -12280,7 +12280,7 @@
         "curry powder/spices": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6396,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt and pepper": {
             "best_vocab_match": "pepper",

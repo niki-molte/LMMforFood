@@ -25,12 +25,12 @@
         "cooked meat (likely chicken or pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6525,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooked leafy greens (likely cabbage or collard greens)": {
             "best_vocab_match": "mixed greens",
             "max_similarity_score": 0.6185,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (for searing/cooking)": {
             "best_vocab_match": "vegetable oil",
@@ -72,7 +72,7 @@
         "spices/herbs": {
             "best_vocab_match": "oregano",
             "max_similarity_score": 0.6324,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562691032": {
@@ -511,7 +511,7 @@
         "red fruit (likely strawberry/raspberry mix)": {
             "best_vocab_match": "strawberries",
             "max_similarity_score": 0.612,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "dark berries (blackberry/raspberry)": {
             "best_vocab_match": "blackberries",
@@ -521,7 +521,7 @@
         "oatmeal/cereal base (visible under fruit)": {
             "best_vocab_match": "oatmeal",
             "max_similarity_score": 0.6601,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (for chicken/sautéing)": {
             "best_vocab_match": "vegetable oil",
@@ -685,7 +685,7 @@
         "cooking oil (deduced)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6832,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1560368464": {
@@ -719,7 +719,7 @@
         "cooked meat (likely chicken or pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6525,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice": {
             "best_vocab_match": "rice",
@@ -729,7 +729,7 @@
         "cooked vegetables (squash/pumpkin)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6171,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (e.g., vegetable oil or butter)": {
             "best_vocab_match": "vegetable oil",
@@ -954,7 +954,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -1143,7 +1143,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -1165,7 +1165,7 @@
         "green sauce/herb": {
             "best_vocab_match": "soy sauce",
             "max_similarity_score": 0.6457,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563984140": {
@@ -1272,7 +1272,7 @@
         "cooked meat (likely chicken or pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6525,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice": {
             "best_vocab_match": "rice",
@@ -1282,7 +1282,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -1454,7 +1454,7 @@
         "spices": {
             "best_vocab_match": "pepper",
             "max_similarity_score": 0.6327,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558630288": {
@@ -1466,7 +1466,7 @@
         "cooked meat (likely chicken/pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6522,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -1508,14 +1508,14 @@
         "spices/herbs": {
             "best_vocab_match": "oregano",
             "max_similarity_score": 0.6324,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558544663": {
         "cooked meat (likely chicken or pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6525,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice (cooked)": {
             "best_vocab_match": "fried rice",
@@ -1697,14 +1697,14 @@
         "oil (cooking/baking)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6864,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1566316681": {
         "cooked meat": {
             "best_vocab_match": "beef",
             "max_similarity_score": 0.683,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice": {
             "best_vocab_match": "rice",
@@ -1736,7 +1736,7 @@
         "tomato relish/sauce": {
             "best_vocab_match": "relish",
             "max_similarity_score": 0.6143,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "olive oil": {
             "best_vocab_match": "olive oil",
@@ -2131,7 +2131,7 @@
         "apple slices": {
             "best_vocab_match": "apple pie",
             "max_similarity_score": 0.6339,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cauliflower florets": {
             "best_vocab_match": "cauliflower",
@@ -2153,7 +2153,7 @@
         "cooked meat (likely chicken or pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6525,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooked rice": {
             "best_vocab_match": "fried rice",
@@ -2163,12 +2163,12 @@
         "green leafy vegetables (spinach/kale)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6175,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (for cooking meat/veg)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6475,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -2232,7 +2232,7 @@
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -2428,12 +2428,12 @@
         "butter or oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6595,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "tomato paste/sauce": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6311,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "onion (for sauce base)": {
             "best_vocab_match": "onion rings",
@@ -2521,7 +2521,7 @@
         "cooking oil (assumed for cooking chicken/rice)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6569,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -2602,7 +2602,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -2800,7 +2800,7 @@
         "white fish fillet": {
             "best_vocab_match": "fish",
             "max_similarity_score": 0.6256,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "white rice": {
             "best_vocab_match": "white rice",
@@ -2832,7 +2832,7 @@
         "butter/oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6659,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "spinach": {
             "best_vocab_match": "spinach (raw)",
@@ -2842,7 +2842,7 @@
         "browned onions/garlic (for flavor)": {
             "best_vocab_match": "onions",
             "max_similarity_score": 0.6046,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563897047": {
@@ -2928,7 +2928,7 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cheese (mozzarella/feta)": {
             "best_vocab_match": "mozzarella cheese",
@@ -2955,7 +2955,7 @@
         "cooking oil (assumed for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6353,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -3156,7 +3156,7 @@
         "cooked meat (likely chicken/pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6522,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -3249,7 +3249,7 @@
         "butter or oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6595,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "sugar/seasoning": {
             "best_vocab_match": "sugar",
@@ -3264,12 +3264,12 @@
         "fruit (orange/tangerine pieces)": {
             "best_vocab_match": "orange with peel",
             "max_similarity_score": 0.6408,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cheese (white cubes)": {
             "best_vocab_match": "cheese",
             "max_similarity_score": 0.6943,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563565454": {
@@ -3401,7 +3401,7 @@
         "white sauce/yogurt dressing": {
             "best_vocab_match": "salad dressing",
             "max_similarity_score": 0.6774,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -3504,12 +3504,12 @@
         "tomato paste/sauce": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6311,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "seasoning (salt, pepper)": {
             "best_vocab_match": "pepper",
             "max_similarity_score": 0.6027,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563208412": {
@@ -3641,7 +3641,7 @@
         "green leafy vegetables": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6747,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -3732,7 +3732,7 @@
         "herbs and spices": {
             "best_vocab_match": "oregano",
             "max_similarity_score": 0.6284,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562703382": {
@@ -3749,7 +3749,7 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cheese": {
             "best_vocab_match": "cheese",
@@ -3965,7 +3965,7 @@
         "red pepper (or tomato slice)": {
             "best_vocab_match": "pepper",
             "max_similarity_score": 0.6982,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -4119,7 +4119,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -4190,7 +4190,7 @@
         "butter/oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6659,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "sugar/seasoning": {
             "best_vocab_match": "sugar",
@@ -4224,7 +4224,7 @@
         "cooked meat (likely chicken or pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6525,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice": {
             "best_vocab_match": "rice",
@@ -4381,7 +4381,7 @@
         "oil or butter (for cooking)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6601,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -4403,7 +4403,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -4430,7 +4430,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -4479,7 +4479,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -4621,7 +4621,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -4692,7 +4692,7 @@
         "leafy greens (spinach/kale mix)": {
             "best_vocab_match": "mixed greens",
             "max_similarity_score": 0.6928,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooked white rice": {
             "best_vocab_match": "white rice",
@@ -4702,7 +4702,7 @@
         "cooked chicken breast (or similar white meat)": {
             "best_vocab_match": "chicken breast",
             "max_similarity_score": 0.6987,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (e.g., olive or vegetable oil)": {
             "best_vocab_match": "vegetable oil",
@@ -4717,7 +4717,7 @@
         "garlic/onion seasoning": {
             "best_vocab_match": "garlic",
             "max_similarity_score": 0.6894,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558113477": {
@@ -4746,7 +4746,7 @@
         "green leafy vegetables (spinach/greens)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6524,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (for searing/cooking)": {
             "best_vocab_match": "vegetable oil",
@@ -4766,7 +4766,7 @@
         "spices/herbs (e.g., paprika, oregano)": {
             "best_vocab_match": "oregano",
             "max_similarity_score": 0.6665,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1560368395": {
@@ -4896,7 +4896,7 @@
         "flour/binder (for breading)": {
             "best_vocab_match": "flour",
             "max_similarity_score": 0.6284,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "spices/seasoning": {
             "best_vocab_match": "chili",
@@ -5021,7 +5021,7 @@
         "green vegetables (e.g., spinach/greens)": {
             "best_vocab_match": "mixed greens",
             "max_similarity_score": 0.6867,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "red chili/pepper": {
             "best_vocab_match": "chili",
@@ -5080,7 +5080,7 @@
         "butter or oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6595,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -5102,7 +5102,7 @@
         "cooking oil (assumed for cooking chicken)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6202,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed seasoning)": {
             "best_vocab_match": "salt",
@@ -5281,7 +5281,7 @@
         "tomato sauce/cheese topping": {
             "best_vocab_match": "pizza sauce",
             "max_similarity_score": 0.6887,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -5465,7 +5465,7 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "garlic": {
             "best_vocab_match": "garlic",
@@ -5504,7 +5504,7 @@
         "fried meat cutlet": {
             "best_vocab_match": "fried chicken",
             "max_similarity_score": 0.6436,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "white rice": {
             "best_vocab_match": "white rice",
@@ -5514,7 +5514,7 @@
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -5541,7 +5541,7 @@
         "herbs and spices": {
             "best_vocab_match": "oregano",
             "max_similarity_score": 0.6284,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1564427455": {
@@ -5597,7 +5597,7 @@
         "cooking oil (for cooking chicken/rice)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6469,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -5607,7 +5607,7 @@
         "water (for cooking rice)": {
             "best_vocab_match": "rice",
             "max_similarity_score": 0.663,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562009894": {
@@ -5678,7 +5678,7 @@
         "butter or oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6595,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -5705,7 +5705,7 @@
         "oil (cooking/dressing)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6945,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1562703447": {
@@ -5805,7 +5805,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -5915,7 +5915,7 @@
         "seasoning/oil": {
             "best_vocab_match": "oil",
             "max_similarity_score": 0.639,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -5984,7 +5984,7 @@
         "cooked meat (likely chicken or fish fillet)": {
             "best_vocab_match": "fried chicken",
             "max_similarity_score": 0.6127,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "rice (white)": {
             "best_vocab_match": "white rice",
@@ -6193,7 +6193,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -6458,12 +6458,12 @@
         "leafy greens (spinach/kale)": {
             "best_vocab_match": "mixed greens",
             "max_similarity_score": 0.6368,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (assumed for cooking chicken/rice)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6569,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -6485,12 +6485,12 @@
         "oil/fat (cooking)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6606,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "herbs/seasoning (e.g., parsley, pepper)": {
             "best_vocab_match": "parsley",
             "max_similarity_score": 0.6354,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558376984": {
@@ -6583,7 +6583,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -6610,7 +6610,7 @@
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cheese": {
             "best_vocab_match": "cheese",
@@ -6698,7 +6698,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -6764,7 +6764,7 @@
         "butter/oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6659,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -6786,7 +6786,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -6835,7 +6835,7 @@
         "butter/oil (cooking fat)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6372,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "garlic": {
             "best_vocab_match": "garlic",
@@ -6894,7 +6894,7 @@
         "curry sauce/stew": {
             "best_vocab_match": "curries",
             "max_similarity_score": 0.6773,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -6936,7 +6936,7 @@
         "seasonings (salt, pepper)": {
             "best_vocab_match": "pepper",
             "max_similarity_score": 0.6192,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1564160043": {
@@ -7075,12 +7075,12 @@
         "tomato sauce/cheese topping": {
             "best_vocab_match": "pizza sauce",
             "max_similarity_score": 0.6887,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil/butter": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.643,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cheese (dairy)": {
             "best_vocab_match": "cheese",
@@ -7090,7 +7090,7 @@
         "flour/bread base (crust)": {
             "best_vocab_match": "flour",
             "max_similarity_score": 0.6139,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -7315,7 +7315,7 @@
         "cooking oil (assumed for cooking chicken/rice)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6569,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed for seasoning)": {
             "best_vocab_match": "salt",
@@ -7337,7 +7337,7 @@
         "oil/butter (for cooking)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.67,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -7364,7 +7364,7 @@
         "cooking oil (assumed for cooking chicken)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6202,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -7459,7 +7459,7 @@
         "cooking oil (assumed for cooking chicken/rice)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6569,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1561654374": {
@@ -7481,7 +7481,7 @@
         "butter/oil (for cooking eggs)": {
             "best_vocab_match": "fried eggs",
             "max_similarity_score": 0.6167,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -7491,7 +7491,7 @@
         "garlic/onion (for cooking vegetables)": {
             "best_vocab_match": "garlic",
             "max_similarity_score": 0.6991,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "olive oil (for roasting vegetables)": {
             "best_vocab_match": "olive oil",
@@ -7513,7 +7513,7 @@
         "butter or oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6595,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -7596,7 +7596,7 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cheese (mozzarella)": {
             "best_vocab_match": "mozzarella cheese",
@@ -7743,7 +7743,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -7792,7 +7792,7 @@
         "greens (spinach/kale)": {
             "best_vocab_match": "mixed greens",
             "max_similarity_score": 0.6903,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -7814,7 +7814,7 @@
         "vegetable pieces (carrot/other)": {
             "best_vocab_match": "baby carrots",
             "max_similarity_score": 0.6985,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -7895,7 +7895,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -8044,7 +8044,7 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558546558": {
@@ -8279,7 +8279,7 @@
         "cooking oil (assumed for pan-frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6379,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -8370,7 +8370,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -8392,7 +8392,7 @@
         "red pepper (visible garnish)": {
             "best_vocab_match": "pepper",
             "max_similarity_score": 0.6429,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -8549,7 +8549,7 @@
         "salt (estimated)": {
             "best_vocab_match": "salt",
             "max_similarity_score": 0.6843,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558720133": {
@@ -8674,7 +8674,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -8750,7 +8750,7 @@
         "meat pieces (chicken/pork)": {
             "best_vocab_match": "pork",
             "max_similarity_score": 0.6581,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -8819,7 +8819,7 @@
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -8868,12 +8868,12 @@
         "lemon zest/peel": {
             "best_vocab_match": "lemon",
             "max_similarity_score": 0.6426,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -8978,7 +8978,7 @@
         "cooked vegetables (e.g., carrots, greens)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6878,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -9005,7 +9005,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -9228,12 +9228,12 @@
         "cooking oil (for chicken/rice)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6392,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "flour/maida (for flatbread)": {
             "best_vocab_match": "flour",
             "max_similarity_score": 0.6649,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cheese (in flatbread)": {
             "best_vocab_match": "flatbread",
@@ -9392,7 +9392,7 @@
         "cooked meat (likely chicken or pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6525,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "white rice": {
             "best_vocab_match": "white rice",
@@ -9402,7 +9402,7 @@
         "green leafy vegetables (e.g., spinach or kale)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6188,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (for searing/cooking meat)": {
             "best_vocab_match": "vegetable oil",
@@ -9569,7 +9569,7 @@
         "oil (cooking/dressing)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6945,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563218408": {
@@ -9591,7 +9591,7 @@
         "cooking oil (for frying/baking)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.624,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -9635,7 +9635,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -9662,7 +9662,7 @@
         "tomato sauce/seasoning": {
             "best_vocab_match": "pizza sauce",
             "max_similarity_score": 0.6434,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1563996441": {
@@ -9723,7 +9723,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -9916,7 +9916,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -10134,7 +10134,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -10173,7 +10173,7 @@
         "tomato sauce/base": {
             "best_vocab_match": "pizza sauce",
             "max_similarity_score": 0.6573,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cheese (mozzarella/ricotta)": {
             "best_vocab_match": "mozzarella cheese",
@@ -10382,7 +10382,7 @@
         "cooking oil (deduced)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6832,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (deduced)": {
             "best_vocab_match": "salt",
@@ -10458,7 +10458,7 @@
         "cooking oil (assumed for preparation)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6322,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1559849097": {
@@ -10485,7 +10485,7 @@
         "cooking oil (for chicken/rice)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6392,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -10517,27 +10517,27 @@
         "dried fruit mix (raisins/berries)": {
             "best_vocab_match": "raisins",
             "max_similarity_score": 0.6116,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "fried item (e.g., sausage/bacon)": {
             "best_vocab_match": "fried chicken",
             "max_similarity_score": 0.613,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooked potato wedges": {
             "best_vocab_match": "baked potatoes",
             "max_similarity_score": 0.647,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "flour/starch (for breading or coating)": {
             "best_vocab_match": "flour",
             "max_similarity_score": 0.6599,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (for frying)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6439,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -10574,7 +10574,7 @@
         "butter/oil (for cooking)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6659,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "potatoes (roasted/boiled)": {
             "best_vocab_match": "roasted potatoes",
@@ -10635,7 +10635,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -10718,7 +10718,7 @@
         "fried bread/crouton": {
             "best_vocab_match": "croutons",
             "max_similarity_score": 0.6771,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -10733,7 +10733,7 @@
         "butter/oil for frying": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6343,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1565638550": {
@@ -11086,12 +11086,12 @@
         "cooked potato wedges (or similar fried vegetable)": {
             "best_vocab_match": "baked potatoes",
             "max_similarity_score": 0.6175,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (for chicken/potatoes)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6908,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -11140,7 +11140,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -11189,7 +11189,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -11272,7 +11272,7 @@
         "leafy greens (spinach/kale mix)": {
             "best_vocab_match": "mixed greens",
             "max_similarity_score": 0.6928,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "red onion": {
             "best_vocab_match": "green onions",
@@ -11358,7 +11358,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -11461,7 +11461,7 @@
         "cooking oil (assumed for cooking chicken/rice)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6569,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -11599,7 +11599,7 @@
         "sugar/sweetener (in granola/topping)": {
             "best_vocab_match": "granola",
             "max_similarity_score": 0.6855,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -11660,7 +11660,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -11709,7 +11709,7 @@
         "butter/oil (cooking fat)": {
             "best_vocab_match": "butter",
             "max_similarity_score": 0.6372,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "vegetable garnish (green leafy)": {
             "best_vocab_match": "mixed vegetables",
@@ -11841,7 +11841,7 @@
         "cooking oil (assumed for cooking)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6721,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1564773826": {
@@ -11858,7 +11858,7 @@
         "oil/fat (cooking)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6606,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -11961,7 +11961,7 @@
         "oil/fat (cooking)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6606,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -12103,7 +12103,7 @@
         "tomato sauce/paste": {
             "best_vocab_match": "pasta sauce",
             "max_similarity_score": 0.6579,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil": {
             "best_vocab_match": "vegetable oil",
@@ -12135,7 +12135,7 @@
         "cooking oil (assumed)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6663,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt (assumed)": {
             "best_vocab_match": "salt",
@@ -12157,7 +12157,7 @@
         "oil/butter (for cooking)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.67,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -12218,7 +12218,7 @@
         "cooked meat (likely chicken or pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6525,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "white rice": {
             "best_vocab_match": "white rice",
@@ -12233,7 +12233,7 @@
         "cooking oil (for cooking meat/rice)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6476,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -12250,7 +12250,7 @@
         "cooked meat (likely chicken or pork)": {
             "best_vocab_match": "roast pork",
             "max_similarity_score": 0.6525,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooked rice": {
             "best_vocab_match": "fried rice",
@@ -12260,7 +12260,7 @@
         "green leafy vegetables (spinach/kale)": {
             "best_vocab_match": "mixed vegetables",
             "max_similarity_score": 0.6175,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "cooking oil (e.g., olive or vegetable oil)": {
             "best_vocab_match": "vegetable oil",
@@ -12365,7 +12365,7 @@
         "cooking oil (for frying/baking)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.624,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "seasoning/spices": {
             "best_vocab_match": "chili",
@@ -12463,7 +12463,7 @@
         "cooking oil (for cooking chicken)": {
             "best_vocab_match": "vegetable oil",
             "max_similarity_score": 0.6281,
-            "threshold_passed": false
+            "threshold_passed": true
         },
         "salt": {
             "best_vocab_match": "salt",
@@ -12473,7 +12473,7 @@
         "water (for cooking rice)": {
             "best_vocab_match": "rice",
             "max_similarity_score": 0.663,
-            "threshold_passed": false
+            "threshold_passed": true
         }
     },
     "dish_1558635523": {

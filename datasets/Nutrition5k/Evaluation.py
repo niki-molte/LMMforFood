@@ -312,10 +312,11 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
             data_structured[g][v] = res
 
     def plot_std_type(std_key, file_suffix):
-        fig_combined, axes = plt.subplots(2, 2, figsize=(14, 10))
+        combined_metrics = ["F1", "IoU"]
+        fig_combined, axes = plt.subplots(1, 2, figsize=(14, 6))
         axes = axes.flatten()
 
-        for idx, m in enumerate(metrics):
+        for idx, m in enumerate(combined_metrics):
             ax = axes[idx]
             x = np.arange(len(GROUPS))
             width = 0.25
@@ -334,8 +335,8 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
             ax.grid(True, axis='y', linestyle='--', alpha=0.7)
             ax.set_ylim(0, 1.05)
 
-        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=3)
-        plt.suptitle(f"NLP Metrics - {std_key}", fontsize=16, fontweight='bold', y=0.98)
+        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=2)
+        plt.suptitle(f"NLP Metrics - {std_key}", fontsize=16, fontweight='bold', y=1.05)
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, f'nlp_metrics_combined_{file_suffix}.png'), bbox_inches='tight', dpi=300)
         plt.close()
@@ -666,7 +667,7 @@ def print_summary_tables(all_nlp_results: dict, all_macro_results: dict):
 if __name__ == "__main__":
 
     # ================= CONFIGURATIONS =================
-    THRESHOLD = 0.7
+    THRESHOLD = 0.6
     OUTPUT_DIR = "data/evaluation"
 
     SIMILARITY_DIR = os.path.join(OUTPUT_DIR, "similarity_analysis")
@@ -680,14 +681,14 @@ if __name__ == "__main__":
         os.makedirs(d, exist_ok=True)
 
     PRED_JSON_PATHS = [
-        "data/prediction/test_predictions_nutrition5k_gemma4_e2b_q4_tb.json",
-        "data/prediction/test_predictions_nutrition5k_gemma4_e2b_q8_tb.json",
-        "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e2b_q4_tb.json",
-        "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e2b_q8_tb.json",
-        "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q4_tb.json",
-        "data/prediction/test_predictions_nutrition5k_gemma4_e4b_q8_tb.json",
-        "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e4b_q4_tb.json",
-        "data/prediction/test_predictions_nutrition5k_twostep_gemma4_e4b_q8_tb.json"
+        "data/prediction/one_example/test_predictions_nutrition5k_gemma4_e2b_q4_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_gemma4_e2b_q8_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e2b_q4_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e2b_q8_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_gemma4_e4b_q4_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_gemma4_e4b_q8_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e4b_q4_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e4b_q8_tb.json"
     ]
     INGREDIENTS_CSV_PATH = "data/metadata/ingredients_metadata.csv"
     # ==================================================
