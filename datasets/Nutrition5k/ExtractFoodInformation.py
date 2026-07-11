@@ -833,6 +833,7 @@ def main():
         }
     ]
 
+    print(f"number of examples in prompt: {NUM_EXAMPLES}")
     few_shot_examples = all_few_shot_examples[:NUM_EXAMPLES]
 
     os.makedirs(os.path.dirname(OUTPUT_PREDICTIONS_PATH), exist_ok=True)
