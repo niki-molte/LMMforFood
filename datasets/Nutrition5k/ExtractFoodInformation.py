@@ -844,7 +844,7 @@ def main():
 
     if MAX_ITEMS_TO_TEST:
         test_data = test_data[:MAX_ITEMS_TO_TEST]
-        print(f"[*] MAX_ITEMS_TO_TEST attivo: esecuzione limitata a {MAX_ITEMS_TO_TEST} elementi.")
+        print(f"[*] MAX_ITEMS_TO_TEST active: execution limited to {MAX_ITEMS_TO_TEST}")
 
     # --- RIPRESA DA CHECKPOINT ---
     existing_predictions = []

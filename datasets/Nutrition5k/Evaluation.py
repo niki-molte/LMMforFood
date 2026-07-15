@@ -664,6 +664,294 @@ def print_summary_tables(all_nlp_results: dict, all_macro_results: dict):
             print("\n")
 
 
+FEW_SHOT_VARIANTS = ['1 Example', '5 Examples', '10 Examples']
+FEW_SHOT_COLORS = {
+    '1 Example': '#1f77b4',  # Standard blue
+    '5 Examples': '#5bc0de', # Medium blue
+    '10 Examples': '#87ceeb' # Light blue
+}
+
+def plot_few_shot_metrics(all_results: dict, output_dir: str):
+    nlp_dir = os.path.join(output_dir, "nlp_metrics")
+    mae_overall_dir = os.path.join(output_dir, "mae_metrics", "overall")
+    mae_exact_dir = os.path.join(output_dir, "mae_metrics", "exact_match")
+
+    os.makedirs(nlp_dir, exist_ok=True)
+    os.makedirs(mae_overall_dir, exist_ok=True)
+    os.makedirs(mae_exact_dir, exist_ok=True)
+    
+    # 1. NLP Metrics
+    def plot_few_shot_nlp_type(std_key, file_suffix):
+        metrics_nlp = ["P", "R", "F1", "IoU"]
+        
+        # Combined plot for F1 and IoU
+        combined_metrics = ["F1", "IoU"]
+        fig_nlp, axes_nlp = plt.subplots(1, 2, figsize=(14, 6))
+        for idx, m in enumerate(combined_metrics):
+            ax = axes_nlp[idx]
+            x = np.arange(len(GROUPS))
+            width = 0.25
+            offsets = [-width, 0, width]
+            
+            for i, var in enumerate(FEW_SHOT_VARIANTS):
+                vals = []
+                for g in GROUPS:
+                    res = all_results.get(g, {}).get(var)
+                    if res and "nlp" in res and std_key in res["nlp"]:
+                        vals.append(res["nlp"][std_key][m])
+                    else:
+                        vals.append(0.0)
+                
+                ax.bar(x + offsets[i], vals, width, color=FEW_SHOT_COLORS[var], edgecolor='black', label=var if idx == 0 else "")
+                
+            ax.set_ylabel('Score')
+            ax.set_title(f'NLP {std_key}: {m}', fontweight='bold')
+            ax.set_xticks(x)
+            ax.set_xticklabels(GROUPS, rotation=0)
+            ax.grid(False, axis='x')
+            ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+            ax.set_ylim(0, 1.05)
+            
+        fig_nlp.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+        plt.suptitle(f"Few-Shot Comparison - NLP Metrics ({std_key})", fontsize=16, fontweight='bold', y=1.05)
+        plt.tight_layout()
+        plt.savefig(os.path.join(nlp_dir, f'few_shot_nlp_combined_{file_suffix}.png'), bbox_inches='tight', dpi=300)
+        plt.close()
+
+        # Single plots
+        for m in metrics_nlp:
+            fig_single, ax_single = plt.subplots(figsize=(8, 6))
+            x = np.arange(len(GROUPS))
+            width = 0.25
+            offsets = [-width, 0, width]
+            for i, var in enumerate(FEW_SHOT_VARIANTS):
+                vals = []
+                for g in GROUPS:
+                    res = all_results.get(g, {}).get(var)
+                    if res and "nlp" in res and std_key in res["nlp"]:
+                        vals.append(res["nlp"][std_key][m])
+                    else:
+                        vals.append(0.0)
+                ax_single.bar(x + offsets[i], vals, width, color=FEW_SHOT_COLORS[var], edgecolor='black', label=var)
+            
+            ax_single.set_ylabel('Score')
+            ax_single.set_title(f'NLP {std_key}: {m}', fontweight='bold')
+            ax_single.set_xticks(x)
+            ax_single.set_xticklabels(GROUPS, rotation=0)
+            ax_single.grid(False, axis='x')
+            ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
+            ax_single.set_ylim(0, 1.05)
+            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+            plt.tight_layout()
+            plt.savefig(os.path.join(nlp_dir, f'few_shot_nlp_{m}_{file_suffix}.png'), bbox_inches='tight', dpi=300)
+            plt.close()
+
+    plot_few_shot_nlp_type("Standardized", "std")
+    plot_few_shot_nlp_type("Non-Standardized", "non_std")
+
+    # 2. Macro metrics
+    fields = ["calories", "mass", "fat", "carbohydrates", "protein"]
+    
+    baseline = {
+        "calories_MAE": 70.6, "calories_MAE_%": 26.1,
+        "mass_MAE": 40.4, "mass_MAE_%": 18.8,
+        "fat_MAE": 5.0, "fat_MAE_%": 34.2,
+        "carbohydrates_MAE": 6.1, "carbohydrates_MAE_%": 31.9,
+        "protein_MAE": 5.5, "protein_MAE_%": 29.5
+    }
+    
+    def plot_few_shot_macro_type(metric_suffix, file_suffix, ylabel, title_prefix, subset="overall", plot_baseline=True):
+        out_dir = mae_overall_dir if subset == "overall" else mae_exact_dir
+        fig_macro, axes_macro = plt.subplots(2, 3, figsize=(18, 12))
+        axes_macro = axes_macro.flatten()
+        
+        for idx, f in enumerate(fields):
+            ax = axes_macro[idx]
+            x = np.arange(len(GROUPS))
+            width = 0.25
+            offsets = [-width, 0, width]
+            
+            for i, var in enumerate(FEW_SHOT_VARIANTS):
+                vals = []
+                for g in GROUPS:
+                    res = all_results.get(g, {}).get(var)
+                    if res and "macro" in res and subset in res["macro"]:
+                        vals.append(res["macro"][subset][f"{f}_{metric_suffix}"])
+                    else:
+                        vals.append(0.0)
+                
+                ax.bar(x + offsets[i], vals, width, color=FEW_SHOT_COLORS[var], edgecolor='black', label=var if idx == 0 else "")
+                
+            if plot_baseline:
+                base_val = baseline[f"{f}_{metric_suffix}"]
+                ax.axhline(y=base_val, color='r', linestyle='--', linewidth=2,
+                           label='Nutrition 5k (2D direct)' if idx == 0 else "")
+
+            ax.set_ylabel(ylabel)
+            ax.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
+            ax.set_xticks(x)
+            ax.set_xticklabels(GROUPS, rotation=0)
+            ax.grid(False, axis='x')
+            ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+            
+        axes_macro[5].axis('off')
+        ncol = 4 if plot_baseline else 3
+        fig_macro.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=ncol)
+        plt.suptitle(f"Few-Shot Comparison - {title_prefix}", fontsize=16, fontweight='bold', y=0.98)
+        plt.tight_layout()
+        plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
+        plt.close()
+
+        # Single plots
+        for f in fields:
+            fig_single, ax_single = plt.subplots(figsize=(10, 8))
+            x = np.arange(len(GROUPS))
+            width = 0.25
+            offsets = [-width, 0, width]
+            for i, var in enumerate(FEW_SHOT_VARIANTS):
+                vals = []
+                for g in GROUPS:
+                    res = all_results.get(g, {}).get(var)
+                    if res and "macro" in res and subset in res["macro"]:
+                        vals.append(res["macro"][subset][f"{f}_{metric_suffix}"])
+                    else:
+                        vals.append(0.0)
+                ax_single.bar(x + offsets[i], vals, width, color=FEW_SHOT_COLORS[var], edgecolor='black', label=var)
+            
+            if plot_baseline:
+                base_val = baseline[f"{f}_{metric_suffix}"]
+                ax_single.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k (2D direct)')
+
+            ax_single.set_ylabel(ylabel)
+            ax_single.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
+            ax_single.set_xticks(x)
+            ax_single.set_xticklabels(GROUPS, rotation=0)
+            ax_single.grid(False, axis='x')
+            ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
+            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=ncol)
+            plt.tight_layout()
+            plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix}_{f}.png'), bbox_inches='tight', dpi=300)
+            plt.close()
+
+    plot_few_shot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", plot_baseline=True)
+    plot_few_shot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", plot_baseline=True)
+    plot_few_shot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", plot_baseline=False)
+    plot_few_shot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", plot_baseline=False)
+
+def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshold, base_dir="data/prediction"):
+    print("\n" + "=" * 70)
+    print("STARTING FEW-SHOT EVALUATION (1, 5, 10 Examples)")
+    print("=" * 70)
+    
+    folders = ["one_example", "five_example", "ten_example"]
+    
+    all_few_shot_results = {g: {v: None for v in FEW_SHOT_VARIANTS} for g in GROUPS}
+    
+    for folder, var_name in zip(folders, FEW_SHOT_VARIANTS):
+        folder_path = os.path.join(base_dir, folder)
+        if not os.path.exists(folder_path):
+            continue
+            
+        for filename in os.listdir(folder_path):
+            if not filename.endswith('.json'):
+                continue
+
+            pred_path = os.path.join(folder_path, filename)
+            g, _ = parse_model_name(filename)
+            if g not in GROUPS:
+                continue
+                
+            print(f"Evaluating Few-Shot: {var_name} - {g}")
+            try:
+                evaluator = Nutrition5kEvaluator(
+                    pred_json_path=pred_path,
+                    nlp_model=nlp_model,
+                    vocabulary=vocabulary,
+                    vocab_embeddings=vocab_embeddings,
+                    threshold=threshold
+                )
+                nlp_res = evaluator.evaluate_nlp_metrics()
+                macro_res = evaluator.evaluate_macronutrients()
+                
+                all_few_shot_results[g][var_name] = {
+                    "nlp": nlp_res,
+                    "macro": macro_res
+                }
+            except Exception as e:
+                print(f"[!] Error in {pred_path}: {e}")
+                
+    # Generate Output Tables
+    print("\n" + "=" * 120)
+    print(" " * 45 + "FEW-SHOT SUMMARY TABLE")
+    print("=" * 120)
+    
+    # NLP Table
+    print("\n--- FEW-SHOT NLP METRICS ---")
+    header_nlp = f"{'Group':<12} | {'Variant':<15} | {'F1 (Non-Std)':<12} | {'F1 (Std)':<10} | {'IoU (Non-Std)':<13} | {'IoU (Std)':<10}"
+    print("-" * len(header_nlp))
+    print(header_nlp)
+    print("-" * len(header_nlp))
+    for g in GROUPS:
+        for v in FEW_SHOT_VARIANTS:
+            res = all_few_shot_results[g][v]
+            if res and "nlp" in res and "Standardized" in res["nlp"]:
+                f1_s = res["nlp"]["Standardized"]["F1"]
+                iou_s = res["nlp"]["Standardized"]["IoU"]
+                f1_ns = res["nlp"]["Non-Standardized"]["F1"]
+                iou_ns = res["nlp"]["Non-Standardized"]["IoU"]
+                print(f"{g:<12} | {v:<15} | {f1_ns:<12.4f} | {f1_s:<10.4f} | {iou_ns:<13.4f} | {iou_s:<10.4f}")
+            else:
+                print(f"{g:<12} | {v:<15} | {'N/A':<12} | {'N/A':<10} | {'N/A':<13} | {'N/A':<10}")
+    print("-" * len(header_nlp))
+    
+    # Macro Table (Overall)
+    print("\n--- FEW-SHOT MACRO METRICS (Overall MAE & MAE %) ---")
+    header_macro = f"{'Group':<12} | {'Variant':<15} | {'Calories':<18} | {'Mass':<18} | {'Fat':<18} | {'Carbs':<18} | {'Protein':<18}"
+    print("-" * len(header_macro))
+    print(header_macro)
+    print("-" * len(header_macro))
+    for g in GROUPS:
+        for v in FEW_SHOT_VARIANTS:
+            res = all_few_shot_results[g][v]
+            if res and "macro" in res and "overall" in res["macro"]:
+                overall = res["macro"]["overall"]
+                cal = f"{overall.get('calories_MAE', 0.0):.1f} ({overall.get('calories_MAE_%', 0.0):.1f}%)"
+                mass = f"{overall.get('mass_MAE', 0.0):.1f} ({overall.get('mass_MAE_%', 0.0):.1f}%)"
+                fat = f"{overall.get('fat_MAE', 0.0):.1f} ({overall.get('fat_MAE_%', 0.0):.1f}%)"
+                carbs = f"{overall.get('carbohydrates_MAE', 0.0):.1f} ({overall.get('carbohydrates_MAE_%', 0.0):.1f}%)"
+                prot = f"{overall.get('protein_MAE', 0.0):.1f} ({overall.get('protein_MAE_%', 0.0):.1f}%)"
+                print(f"{g:<12} | {v:<15} | {cal:<18} | {mass:<18} | {fat:<18} | {carbs:<18} | {prot:<18}")
+            else:
+                print(f"{g:<12} | {v:<15} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18}")
+    print("-" * len(header_macro))
+
+    # Macro Table (Exact Match)
+    print("\n--- FEW-SHOT MACRO METRICS (Exact Match MAE & MAE %) ---")
+    print("-" * len(header_macro))
+    print(header_macro)
+    print("-" * len(header_macro))
+    for g in GROUPS:
+        for v in FEW_SHOT_VARIANTS:
+            res = all_few_shot_results[g][v]
+            if res and "macro" in res and "exact_match" in res["macro"]:
+                exact = res["macro"]["exact_match"]
+                cal = f"{exact.get('calories_MAE', 0.0):.1f} ({exact.get('calories_MAE_%', 0.0):.1f}%)"
+                mass = f"{exact.get('mass_MAE', 0.0):.1f} ({exact.get('mass_MAE_%', 0.0):.1f}%)"
+                fat = f"{exact.get('fat_MAE', 0.0):.1f} ({exact.get('fat_MAE_%', 0.0):.1f}%)"
+                carbs = f"{exact.get('carbohydrates_MAE', 0.0):.1f} ({exact.get('carbohydrates_MAE_%', 0.0):.1f}%)"
+                prot = f"{exact.get('protein_MAE', 0.0):.1f} ({exact.get('protein_MAE_%', 0.0):.1f}%)"
+                print(f"{g:<12} | {v:<15} | {cal:<18} | {mass:<18} | {fat:<18} | {carbs:<18} | {prot:<18}")
+            else:
+                print(f"{g:<12} | {v:<15} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18}")
+    print("-" * len(header_macro))
+    
+    # Plotting
+    output_dir = os.path.join("data/evaluation", "few_shot_metrics")
+    plot_few_shot_metrics(all_few_shot_results, output_dir)
+    print(f"Few-shot charts saved in {output_dir}")
+
+
+
 if __name__ == "__main__":
 
     # ================= CONFIGURATIONS =================
@@ -704,7 +992,7 @@ if __name__ == "__main__":
     all_nlp_results = {}
     all_macro_results = {}
 
-    for pred_path in PRED_JSON_PATHS:
+    """for pred_path in PRED_JSON_PATHS:
         model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
 
         print(f"\n{'=' * 70}")
@@ -796,6 +1084,10 @@ if __name__ == "__main__":
         with open(study_json_path, 'w', encoding='utf-8') as f:
             json.dump(threshold_study_results, f, indent=4)
 
-    plot_threshold_study(thresholds, threshold_study_results, output_dir=THRESHOLD_DIR)
+    plot_threshold_study(thresholds, threshold_study_results, output_dir=THRESHOLD_DIR)"""
+
+    # === FEW SHOT EVALUATION ===
+    evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, THRESHOLD)
+
 
     print(f"\nAll graphs (single and combined) have been saved in the folder: {OUTPUT_DIR}")
