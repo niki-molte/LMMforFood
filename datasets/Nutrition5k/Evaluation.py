@@ -664,11 +664,17 @@ def print_summary_tables(all_nlp_results: dict, all_macro_results: dict):
             print("\n")
 
 
-FEW_SHOT_VARIANTS = ['1 Example', '5 Examples', '10 Examples']
+FEW_SHOT_VARIANTS = [
+    '1 Example (Standard)', '5 Examples (Standard)', '10 Examples (Standard)',
+    '1 Example (Two-Step)', '5 Examples (Two-Step)', '10 Examples (Two-Step)'
+]
 FEW_SHOT_COLORS = {
-    '1 Example': '#1f77b4',  # Standard blue
-    '5 Examples': '#5bc0de', # Medium blue
-    '10 Examples': '#87ceeb' # Light blue
+    '1 Example (Standard)': '#66b3ff',
+    '5 Examples (Standard)': '#1f77b4',
+    '10 Examples (Standard)': '#004080',
+    '1 Example (Two-Step)': '#ccebff',
+    '5 Examples (Two-Step)': '#87ceeb',
+    '10 Examples (Two-Step)': '#33ccff'
 }
 
 def plot_few_shot_metrics(all_results: dict, output_dir: str):
@@ -690,8 +696,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for idx, m in enumerate(combined_metrics):
             ax = axes_nlp[idx]
             x = np.arange(len(GROUPS))
-            width = 0.25
-            offsets = [-width, 0, width]
+            width = 0.12
+            offsets = [-3*width, -2*width, -width, width, 2*width, 3*width]
             
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
@@ -722,8 +728,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for m in metrics_nlp:
             fig_single, ax_single = plt.subplots(figsize=(8, 6))
             x = np.arange(len(GROUPS))
-            width = 0.25
-            offsets = [-width, 0, width]
+            width = 0.12
+            offsets = [-3*width, -2*width, -width, width, 2*width, 3*width]
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
                 for g in GROUPS:
@@ -768,8 +774,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for idx, f in enumerate(fields):
             ax = axes_macro[idx]
             x = np.arange(len(GROUPS))
-            width = 0.25
-            offsets = [-width, 0, width]
+            width = 0.12
+            offsets = [-3*width, -2*width, -width, width, 2*width, 3*width]
             
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
@@ -806,8 +812,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for f in fields:
             fig_single, ax_single = plt.subplots(figsize=(10, 8))
             x = np.arange(len(GROUPS))
-            width = 0.25
-            offsets = [-width, 0, width]
+            width = 0.12
+            offsets = [-3*width, -2*width, -width, width, 2*width, 3*width]
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
                 for g in GROUPS:
@@ -844,10 +850,11 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
     print("=" * 70)
     
     folders = ["one_example", "five_example", "ten_example"]
+    folder_to_prefix = {"one_example": "1 Example", "five_example": "5 Examples", "ten_example": "10 Examples"}
     
     all_few_shot_results = {g: {v: None for v in FEW_SHOT_VARIANTS} for g in GROUPS}
     
-    for folder, var_name in zip(folders, FEW_SHOT_VARIANTS):
+    for folder in folders:
         folder_path = os.path.join(base_dir, folder)
         if not os.path.exists(folder_path):
             continue
@@ -857,9 +864,15 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
                 continue
 
             pred_path = os.path.join(folder_path, filename)
-            g, _ = parse_model_name(filename)
+            g, v_type = parse_model_name(filename)
             if g not in GROUPS:
                 continue
+                
+            prefix = folder_to_prefix[folder]
+            if "Two-Step" in v_type:
+                var_name = f"{prefix} (Two-Step)"
+            else:
+                var_name = f"{prefix} (Standard)"
                 
             print(f"Evaluating Few-Shot: {var_name} - {g}")
             try:
@@ -887,7 +900,7 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
     
     # NLP Table
     print("\n--- FEW-SHOT NLP METRICS ---")
-    header_nlp = f"{'Group':<12} | {'Variant':<15} | {'F1 (Non-Std)':<12} | {'F1 (Std)':<10} | {'IoU (Non-Std)':<13} | {'IoU (Std)':<10}"
+    header_nlp = f"{'Group':<12} | {'Variant':<25} | {'F1 (Non-Std)':<12} | {'F1 (Std)':<10} | {'IoU (Non-Std)':<13} | {'IoU (Std)':<10}"
     print("-" * len(header_nlp))
     print(header_nlp)
     print("-" * len(header_nlp))
@@ -899,14 +912,14 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
                 iou_s = res["nlp"]["Standardized"]["IoU"]
                 f1_ns = res["nlp"]["Non-Standardized"]["F1"]
                 iou_ns = res["nlp"]["Non-Standardized"]["IoU"]
-                print(f"{g:<12} | {v:<15} | {f1_ns:<12.4f} | {f1_s:<10.4f} | {iou_ns:<13.4f} | {iou_s:<10.4f}")
+                print(f"{g:<12} | {v:<25} | {f1_ns:<12.4f} | {f1_s:<10.4f} | {iou_ns:<13.4f} | {iou_s:<10.4f}")
             else:
-                print(f"{g:<12} | {v:<15} | {'N/A':<12} | {'N/A':<10} | {'N/A':<13} | {'N/A':<10}")
+                print(f"{g:<12} | {v:<25} | {'N/A':<12} | {'N/A':<10} | {'N/A':<13} | {'N/A':<10}")
     print("-" * len(header_nlp))
     
     # Macro Table (Overall)
     print("\n--- FEW-SHOT MACRO METRICS (Overall MAE & MAE %) ---")
-    header_macro = f"{'Group':<12} | {'Variant':<15} | {'Calories':<18} | {'Mass':<18} | {'Fat':<18} | {'Carbs':<18} | {'Protein':<18}"
+    header_macro = f"{'Group':<12} | {'Variant':<25} | {'Calories':<18} | {'Mass':<18} | {'Fat':<18} | {'Carbs':<18} | {'Protein':<18}"
     print("-" * len(header_macro))
     print(header_macro)
     print("-" * len(header_macro))
@@ -920,9 +933,9 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
                 fat = f"{overall.get('fat_MAE', 0.0):.1f} ({overall.get('fat_MAE_%', 0.0):.1f}%)"
                 carbs = f"{overall.get('carbohydrates_MAE', 0.0):.1f} ({overall.get('carbohydrates_MAE_%', 0.0):.1f}%)"
                 prot = f"{overall.get('protein_MAE', 0.0):.1f} ({overall.get('protein_MAE_%', 0.0):.1f}%)"
-                print(f"{g:<12} | {v:<15} | {cal:<18} | {mass:<18} | {fat:<18} | {carbs:<18} | {prot:<18}")
+                print(f"{g:<12} | {v:<25} | {cal:<18} | {mass:<18} | {fat:<18} | {carbs:<18} | {prot:<18}")
             else:
-                print(f"{g:<12} | {v:<15} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18}")
+                print(f"{g:<12} | {v:<25} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18}")
     print("-" * len(header_macro))
 
     # Macro Table (Exact Match)
@@ -940,9 +953,9 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
                 fat = f"{exact.get('fat_MAE', 0.0):.1f} ({exact.get('fat_MAE_%', 0.0):.1f}%)"
                 carbs = f"{exact.get('carbohydrates_MAE', 0.0):.1f} ({exact.get('carbohydrates_MAE_%', 0.0):.1f}%)"
                 prot = f"{exact.get('protein_MAE', 0.0):.1f} ({exact.get('protein_MAE_%', 0.0):.1f}%)"
-                print(f"{g:<12} | {v:<15} | {cal:<18} | {mass:<18} | {fat:<18} | {carbs:<18} | {prot:<18}")
+                print(f"{g:<12} | {v:<25} | {cal:<18} | {mass:<18} | {fat:<18} | {carbs:<18} | {prot:<18}")
             else:
-                print(f"{g:<12} | {v:<15} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18}")
+                print(f"{g:<12} | {v:<25} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18}")
     print("-" * len(header_macro))
     
     # Plotting
