@@ -22,8 +22,8 @@ class GemmaClient(BaseVisionClient):
             "temperature": 0.3,
             "top_p": 0.95,
             "top_k": 64,
-            "num_predict": 32768,
-            "num_ctx": 32768,  # Finestra di contesto allocata localmente
+            "num_predict": 4096,
+            "num_ctx": 4096,  # Finestra di contesto allocata localmente
         }
 
         return config_kwargs
