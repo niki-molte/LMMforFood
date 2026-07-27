@@ -115,8 +115,9 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
     # STEP 2: Analisi Nutrizionale (Aggiunta Macronutrienti)
     # ==========================
     prompt2 = (
-        "Analyze this dish with the following extracted details. Calculate exact macronutrients based on the estimated weights.\n\n"
-        "Extracted Food Details:\n"
+        "Look carefully at the image of this dish and compare it with the following preliminary extraction. "
+        "Use the image to visually anchor the actual portion sizes, then calculate the exact macronutrients for the dish.\n\n"
+        "Preliminary Food Details:\n"
         f"{parsed_step1.model_dump_json()}\n\n"
         "Output ONLY the final JSON."
     )
@@ -171,10 +172,12 @@ def main():
     )
 
     base_step2_instruction = (
-        "You are an expert nutritionist.\n"
-        "Your task is to perform a precise nutritional breakdown based on the provided ingredient list and weights.\n\n"
+        "You are an expert nutritionist and food vision analyst.\n"
+        "Your task is to perform a precise nutritional breakdown by visually analyzing the image of the dish alongside a provided list of ingredients.\n\n"
         "CORE DIRECTIVES FOR STEP 2:\n"
-        "1. Calculate exact macronutrients (calories, fat, carbohydrates, protein) for each provided ingredient.\n"
+        "1. LOOK AT THE IMAGE to assess the actual volume, density, and portion size of each item.\n"
+        "2. Use the provided ingredient list and preliminary weights as a baseline, but you MUST visually validate and adjust the mass based on the real image.\n"
+        "3. Calculate exact macronutrients (calories, fat, carbohydrates, protein) based on your combined visual and textual analysis.\n"
         "You MUST respond ONLY with a valid JSON."
     )
 
