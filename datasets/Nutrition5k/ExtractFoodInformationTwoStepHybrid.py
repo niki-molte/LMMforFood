@@ -188,7 +188,7 @@ def main():
     global OUTPUT_PREDICTIONS_PATH
 
     if PROVIDER == "gemma":
-        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e4b-it-q8_0")
+        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e2b") #gemma4:e4b-it-q8_0
         client = GemmaClient(model_name=model)
         step1_sys_prompt = "<|think|>\n" + base_step1_instruction
         step2_sys_prompt = "<|think|>\n" + base_step2_instruction
