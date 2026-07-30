@@ -274,10 +274,11 @@ class Nutrition5kEvaluator:
 # ==========================================
 
 GROUPS = ['E2B - Q4', 'E2B - Q8', 'E4B - Q4', 'E4B - Q8']
-VARIANTS = ['Standard (Low Temp.)', 'Two-Step (Low Temp.)']
+VARIANTS = ['Standard (Low Temp.)', 'Two-Step (Low Temp.)', 'Hybrid (Low Temp.)']
 VARIANT_COLORS = {
     'Standard (Low Temp.)': '#1f77b4',  # Standard blue
-    'Two-Step (Low Temp.)': '#87ceeb'  # Light blue
+    'Two-Step (Low Temp.)': '#87ceeb',  # Light blue
+    'Hybrid (Low Temp.)': '#2ca02c'     # Green
 }
 
 
@@ -294,7 +295,9 @@ def parse_model_name(name: str):
         group = "E4B - Q8"
 
     variant = "Unknown"
-    if "twostep" in name_lower:
+    if "hybrid" in name_lower:
+        variant = "Hybrid (Low Temp.)"
+    elif "twostep" in name_lower:
         variant = "Two-Step (Low Temp.)"
     else:
         variant = "Standard (Low Temp.)"
@@ -466,8 +469,8 @@ def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
         for idx, f in enumerate(fields):
             ax = axes[idx]
             x = np.arange(len(GROUPS))
-            width = 0.2
-            offsets = [-1.5 * width, -0.5 * width, 0.5 * width, 1.5 * width]
+            width = 0.12
+            offsets = [-2.5 * width, -1.5 * width, -0.5 * width, 0.5 * width, 1.5 * width, 2.5 * width]
 
             for i, var in enumerate(VARIANTS):
                 overall_vals = [data_structured[g][var]["overall"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
@@ -578,9 +581,10 @@ def plot_threshold_study(thresholds, study_results, output_dir):
         mlines.Line2D([], [], color='gray', linestyle='--', linewidth=2, label='Q8 Quantization'),
         # Tecniche di Prompting (Colonna 3)
         mlines.Line2D([], [], color=VARIANT_COLORS['Standard (Low Temp.)'], linewidth=4, label='Standard Prompting'),
-        mlines.Line2D([], [], color=VARIANT_COLORS['Two-Step (Low Temp.)'], linewidth=4, label='Two-Step')
+        mlines.Line2D([], [], color=VARIANT_COLORS['Two-Step (Low Temp.)'], linewidth=4, label='Two-Step'),
+        mlines.Line2D([], [], color=VARIANT_COLORS['Hybrid (Low Temp.)'], linewidth=4, label='Hybrid')
     ]
-    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=3)
+    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
 
     plt.suptitle("Influence of Similarity Threshold on NLP Metrics", fontsize=16, fontweight='bold', y=1.02)
     plt.tight_layout()
@@ -666,7 +670,8 @@ def print_summary_tables(all_nlp_results: dict, all_macro_results: dict):
 
 FEW_SHOT_VARIANTS = [
     '1 Example (Standard)', '5 Examples (Standard)', '10 Examples (Standard)',
-    '1 Example (Two-Step)', '5 Examples (Two-Step)', '10 Examples (Two-Step)'
+    '1 Example (Two-Step)', '5 Examples (Two-Step)', '10 Examples (Two-Step)',
+    '1 Example (Hybrid)', '5 Examples (Hybrid)', '10 Examples (Hybrid)'
 ]
 FEW_SHOT_COLORS = {
     '1 Example (Standard)': '#66b3ff',
@@ -674,7 +679,10 @@ FEW_SHOT_COLORS = {
     '10 Examples (Standard)': '#004080',
     '1 Example (Two-Step)': '#ccebff',
     '5 Examples (Two-Step)': '#87ceeb',
-    '10 Examples (Two-Step)': '#33ccff'
+    '10 Examples (Two-Step)': '#33ccff',
+    '1 Example (Hybrid)': '#98df8a',
+    '5 Examples (Hybrid)': '#2ca02c',
+    '10 Examples (Hybrid)': '#006400'
 }
 
 def plot_few_shot_metrics(all_results: dict, output_dir: str):
@@ -696,8 +704,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for idx, m in enumerate(combined_metrics):
             ax = axes_nlp[idx]
             x = np.arange(len(GROUPS))
-            width = 0.12
-            offsets = [-3*width, -2*width, -width, width, 2*width, 3*width]
+            width = 0.08
+            offsets = [-4*width, -3*width, -2*width, -width, 0, width, 2*width, 3*width, 4*width]
             
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
@@ -728,8 +736,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for m in metrics_nlp:
             fig_single, ax_single = plt.subplots(figsize=(8, 6))
             x = np.arange(len(GROUPS))
-            width = 0.12
-            offsets = [-3*width, -2*width, -width, width, 2*width, 3*width]
+            width = 0.08
+            offsets = [-4*width, -3*width, -2*width, -width, 0, width, 2*width, 3*width, 4*width]
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
                 for g in GROUPS:
@@ -774,8 +782,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for idx, f in enumerate(fields):
             ax = axes_macro[idx]
             x = np.arange(len(GROUPS))
-            width = 0.12
-            offsets = [-3*width, -2*width, -width, width, 2*width, 3*width]
+            width = 0.08
+            offsets = [-4*width, -3*width, -2*width, -width, 0, width, 2*width, 3*width, 4*width]
             
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
@@ -812,8 +820,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for f in fields:
             fig_single, ax_single = plt.subplots(figsize=(10, 8))
             x = np.arange(len(GROUPS))
-            width = 0.12
-            offsets = [-3*width, -2*width, -width, width, 2*width, 3*width]
+            width = 0.08
+            offsets = [-4*width, -3*width, -2*width, -width, 0, width, 2*width, 3*width, 4*width]
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
                 for g in GROUPS:
@@ -869,7 +877,9 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
                 continue
                 
             prefix = folder_to_prefix[folder]
-            if "Two-Step" in v_type:
+            if "Hybrid" in v_type:
+                var_name = f"{prefix} (Hybrid)"
+            elif "Two-Step" in v_type:
                 var_name = f"{prefix} (Two-Step)"
             else:
                 var_name = f"{prefix} (Standard)"
@@ -986,10 +996,14 @@ if __name__ == "__main__":
         "data/prediction/one_example/test_predictions_nutrition5k_gemma4_e2b_q8_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e2b_q4_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e2b_q8_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e2b_q4_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e2b_q8_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_gemma4_e4b_q4_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_gemma4_e4b_q8_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e4b_q4_tb.json",
-        "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e4b_q8_tb.json"
+        "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e4b_q8_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e4b_q4_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e4b_q8_tb.json"
     ]
     INGREDIENTS_CSV_PATH = "data/metadata/ingredients_metadata.csv"
     # ==================================================
@@ -1005,7 +1019,7 @@ if __name__ == "__main__":
     all_nlp_results = {}
     all_macro_results = {}
 
-    """for pred_path in PRED_JSON_PATHS:
+    for pred_path in PRED_JSON_PATHS:
         model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
 
         print(f"\n{'=' * 70}")
@@ -1097,7 +1111,7 @@ if __name__ == "__main__":
         with open(study_json_path, 'w', encoding='utf-8') as f:
             json.dump(threshold_study_results, f, indent=4)
 
-    plot_threshold_study(thresholds, threshold_study_results, output_dir=THRESHOLD_DIR)"""
+    plot_threshold_study(thresholds, threshold_study_results, output_dir=THRESHOLD_DIR)
 
     # === FEW SHOT EVALUATION ===
     evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, THRESHOLD)
