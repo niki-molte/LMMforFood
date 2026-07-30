@@ -19,7 +19,7 @@ NUM_EXAMPLES = 1
 # percorsi
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/universit/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
 TEST_DATASET_PATH = "datasets/Nutrition5k/data/ground truth/test_dataset.json"
-OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_custom.json"
+OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep.json"
 
 
 # ==========================================
@@ -192,17 +192,17 @@ def main():
         client = GemmaClient(model_name=model)
         step1_sys_prompt = "<|think|>\n" + base_step1_instruction
         step2_sys_prompt = "<|think|>\n" + base_step2_instruction
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_custom_gemma.json"
+        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_gemma.json"
 
     elif PROVIDER == "qwen":
         model = os.environ.get("OLLAMA_QWEN_MODEL", "qwen3.5:4b")
         client = QwenClient(model_name=model)
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_custom_qwen.json"
+        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_qwen.json"
 
     elif PROVIDER == "minicpm":
         model = os.environ.get("OLLAMA_MINICPM_MODEL", "openbmb/minicpm-v4.5:8b")
         client = MiniCPMClient(model_name=model, thinking_mode="deep")
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_custom_minicpm.json"
+        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_minicpm.json"
 
     else:
         raise ValueError(f"Provider '{PROVIDER}' non supportato.")
