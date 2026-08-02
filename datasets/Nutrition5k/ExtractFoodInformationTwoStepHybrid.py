@@ -88,7 +88,11 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
     # ==========================
     # STEP 1: Analisi Visiva (Solo pesi e ingredienti)
     # ==========================
-    prompt1 = "Analyze this dish. Provide the full breakdown of visible/hidden ingredients, estimated weights, and allergens. Output ONLY the JSON."
+    """prompt1 = "Analyze this dish. Provide the full breakdown of visible/hidden ingredients, estimated weights, and allergens. Output ONLY the JSON." primp prompt hybrid"""
+    prompt1 = (
+        "Analyze this dish. Provide the full breakdown of visible/hidden ingredients, "
+        "estimated weights, nutritional values and allergens. Output ONLY the JSON."
+    )
 
     print(f"[{time.strftime('%H:%M:%S')}] Esecuzione Step 1 (Visual Analysis)...")
     start_step1 = time.time()
@@ -97,7 +101,7 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
             image_path=full_image_path,
             prompt=prompt1,
             system_instruction=step1_sys_prompt,
-            response_schema=FoodAnalysisStep1,
+            response_schema=NutritionExtraction,  # primo step hybrid FoodAnalysisStep1
             examples=examples_step1,
         )
     except Exception as e:
@@ -114,19 +118,26 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
     # ==========================
     # STEP 2: Analisi Nutrizionale (Aggiunta Macronutrienti)
     # ==========================
-    prompt2 = (
+    """prompt2 = (
         "Look carefully at the image of this dish and compare it with the following preliminary extraction. "
         "Use the image to visually anchor the actual portion sizes, then calculate the exact macronutrients for the dish.\n\n"
         "Preliminary Food Details:\n"
         f"{parsed_step1.model_dump_json()}\n\n"
         "Output ONLY the final JSON."
+    )prompt hybrid primo"""
+
+    prompt2 = (
+        "Act as a strict auditor. Review the image of this dish and critically evaluate the preliminary extraction below.\n\n"
+        "Preliminary Extraction:\n"
+        f"{parsed_step1.model_dump_json()}\n\n"
+        "Fix any hallucinations, missed ingredients, unrealistic weights, or incorrect macronutrient calculations. Output ONLY the final, corrected JSON."
     )
 
     print(f"[{time.strftime('%H:%M:%S')}] Esecuzione Step 2 (Nutrition Analysis)...")
     start_step2 = time.time()
     try:
         result_step2 = client.ask(
-            image_path=full_image_path,  # Passiamo l'immagine per robustezza, come suggerito nel paper
+            image_path=full_image_path,
             prompt=prompt2,
             system_instruction=step2_sys_prompt,
             response_schema=NutritionExtraction,
@@ -159,7 +170,7 @@ def main():
     print(f"Avvio esecuzione sequenziale con provider: {PROVIDER.upper()} (TWO-STEP CUSTOM PROMPTING)...")
 
     # --- 1. SYSTEM INSTRUCTIONS ---
-    base_step1_instruction = (
+    """base_step1_instruction = (
         "You are an expert food vision analyst.\n"
         "Your task is to analyze top-down RGB images of dishes to identify ingredients and portions.\n\n"
         "CORE DIRECTIVES FOR STEP 1:\n"
@@ -169,9 +180,24 @@ def main():
         "4. Estimate realistic portion sizes (weight in grams) for each item.\n"
         "5. DO NOT calculate macronutrients. Focus ONLY on identification and weight estimation.\n"
         "You MUST respond ONLY with a valid JSON."
+    ) primo prompt strategia hybrid"""
+
+    schema_dict = NutritionExtraction.model_json_schema()
+
+    base_step1_instruction = (
+        "You are an expert nutritionist and food vision analyst. "
+        "Your task is to analyze top-down RGB images of dishes to perform a precise nutritional breakdown.\n\n"
+        "CORE DIRECTIVES:\n"
+        "1. Identify all visible ingredients.\n"
+        "2. Deduce logically necessary hidden ingredients (e.g., cooking oils, butter, salt, sauces) based on the preparation method of the visible food.\n"
+        "3. Extract all the possibile allergenes (e.g. gluten, dairy products) based on the visible and hidden ingredients extracted before.\n"
+        "4. Estimate realistic portion sizes (weight in grams) for each identified item.\n"
+        "5. Calculate exact macronutrients based on the estimated weights.\n"
+        "You MUST respond ONLY with a valid JSON strictly adhering to this schema:\n"
+        f"{json.dumps(schema_dict)}"
     )
 
-    base_step2_instruction = (
+    """base_step2_instruction = (
         "You are an expert nutritionist and food vision analyst.\n"
         "Your task is to perform a precise nutritional breakdown by visually analyzing the image of the dish alongside a provided list of ingredients.\n\n"
         "CORE DIRECTIVES FOR STEP 2:\n"
@@ -179,6 +205,17 @@ def main():
         "2. Use the provided ingredient list and preliminary weights as a baseline, but you MUST visually validate and adjust the mass based on the real image.\n"
         "3. Calculate exact macronutrients (calories, fat, carbohydrates, protein) based on your combined visual and textual analysis.\n"
         "You MUST respond ONLY with a valid JSON."
+    ) primo prompt strategia hybrid"""
+
+    base_step2_instruction = (
+        "You are an expert AI culinary judge and strict nutritionist auditor.\n"
+        "Your task is to critically evaluate and correct a preliminary nutritional extraction by comparing it against the dish image.\n\n"
+        "CORE DIRECTIVES FOR STEP 2 (CRITIQUE & REVISE):\n"
+        "1. VISUAL AUDIT: Look closely at the image. Did the preliminary extraction hallucinate ingredients that are not there? Did it miss obvious components?\n"
+        "2. VOLUME AUDIT: Are the estimated weights realistic for the plate's proportions?\n"
+        "3. MATH AUDIT: Are the macronutrients mathematically sound for those ingredients and weights?\n"
+        "4. CORRECT & REFINE: Generate a final, corrected extraction. You can add missing items, remove wrong ones, and adjust all numbers.\n"
+        "You MUST respond ONLY with a valid JSON strictly adhering to the exact same schema."
     )
 
     # --- 2. CONFIGURAZIONE PROVIDER ---
@@ -188,7 +225,7 @@ def main():
     global OUTPUT_PREDICTIONS_PATH
 
     if PROVIDER == "gemma":
-        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e2b-it-q8_0") #gemma4:e4b-it-q8_0
+        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e4b-it-q8_0") #gemma4:e4b-it-q8_0
         client = GemmaClient(model_name=model)
         step1_sys_prompt = "<|think|>\n" + base_step1_instruction
         step2_sys_prompt = "<|think|>\n" + base_step2_instruction
