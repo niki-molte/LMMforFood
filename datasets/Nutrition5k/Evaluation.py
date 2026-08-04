@@ -274,11 +274,12 @@ class Nutrition5kEvaluator:
 # ==========================================
 
 GROUPS = ['E2B - Q4', 'E2B - Q8', 'E4B - Q4', 'E4B - Q8']
-VARIANTS = ['Standard (Low Temp.)', 'Two-Step (Low Temp.)', 'Hybrid (Low Temp.)']
+VARIANTS = ['Standard (Low Temp.)', 'Two-Step (Low Temp.)', 'Hybrid (Low Temp.)', 'Hybrid strategy two']
 VARIANT_COLORS = {
     'Standard (Low Temp.)': '#1f77b4',  # Standard blue
     'Two-Step (Low Temp.)': '#87ceeb',  # Light blue
-    'Hybrid (Low Temp.)': '#2ca02c'     # Green
+    'Hybrid (Low Temp.)': '#2ca02c',    # Green
+    'Hybrid strategy two': '#ff7f0e'    # Orange
 }
 
 
@@ -295,7 +296,9 @@ def parse_model_name(name: str):
         group = "E4B - Q8"
 
     variant = "Unknown"
-    if "hybrid" in name_lower:
+    if "v2hybrid" in name_lower:
+        variant = "Hybrid strategy two"
+    elif "hybrid" in name_lower:
         variant = "Hybrid (Low Temp.)"
     elif "twostep" in name_lower:
         variant = "Two-Step (Low Temp.)"
@@ -322,8 +325,8 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
         for idx, m in enumerate(combined_metrics):
             ax = axes[idx]
             x = np.arange(len(GROUPS))
-            width = 0.25
-            offsets = [-width, 0, width]
+            width = 0.2
+            offsets = [(i - len(VARIANTS)/2 + 0.5) * width for i in range(len(VARIANTS))]
 
             for i, var in enumerate(VARIANTS):
                 vals = [data_structured[g][var][std_key][m] if data_structured[g][var] else 0.0 for g in GROUPS]
@@ -338,7 +341,7 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
             ax.grid(True, axis='y', linestyle='--', alpha=0.7)
             ax.set_ylim(0, 1.05)
 
-        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=2)
+        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=2)
         plt.suptitle(f"NLP Metrics - {std_key}", fontsize=16, fontweight='bold', y=1.05)
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, f'nlp_metrics_combined_{file_suffix}.png'), bbox_inches='tight', dpi=300)
@@ -347,7 +350,8 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
         for m in metrics:
             fig_single, ax_single = plt.subplots(figsize=(8, 6))
             x = np.arange(len(GROUPS))
-
+            width = 0.2
+            offsets = [(i - len(VARIANTS)/2 + 0.5) * width for i in range(len(VARIANTS))]
             for i, var in enumerate(VARIANTS):
                 vals = [data_structured[g][var][std_key][m] if data_structured[g][var] else 0.0 for g in GROUPS]
                 ax_single.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=var)
@@ -360,7 +364,7 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
             ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
             ax_single.set_ylim(0, 1.05)
 
-            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=3)
             plt.tight_layout()
             plt.savefig(os.path.join(output_dir, f'nlp_metric_{m}_{file_suffix}.png'), bbox_inches='tight', dpi=300)
             plt.close()
@@ -393,8 +397,8 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: 
         for idx, f in enumerate(fields):
             ax = axes[idx]
             x = np.arange(len(GROUPS))
-            width = 0.25
-            offsets = [-width, 0, width]
+            width = 0.2
+            offsets = [(i - len(VARIANTS)/2 + 0.5) * width for i in range(len(VARIANTS))]
 
             for i, var in enumerate(VARIANTS):
                 vals = [data_structured[g][var][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in
@@ -415,7 +419,7 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: 
             ax.grid(True, axis='y', linestyle='--', alpha=0.7)
 
         axes[5].axis('off')
-        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=4)
+        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=4)
         plt.suptitle(f"{title_prefix} Comparison of Macronutrients", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, f'macro_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
@@ -424,7 +428,8 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: 
         for f in fields:
             fig_single, ax_single = plt.subplots(figsize=(10, 8))
             x = np.arange(len(GROUPS))
-
+            width = 0.2
+            offsets = [(i - len(VARIANTS)/2 + 0.5) * width for i in range(len(VARIANTS))]
             for i, var in enumerate(VARIANTS):
                 vals = [data_structured[g][var][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in
                         GROUPS]
@@ -441,7 +446,7 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: 
             ax_single.grid(False, axis='x')
             ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
 
-            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=4)
+            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=4)
             plt.tight_layout()
             plt.savefig(os.path.join(output_dir, f'macro_{file_suffix}_{f}.png'), bbox_inches='tight', dpi=300)
             plt.close()
@@ -469,8 +474,8 @@ def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
         for idx, f in enumerate(fields):
             ax = axes[idx]
             x = np.arange(len(GROUPS))
-            width = 0.12
-            offsets = [-2.5 * width, -1.5 * width, -0.5 * width, 0.5 * width, 1.5 * width, 2.5 * width]
+            width = 0.1
+            offsets = [(i - (len(VARIANTS)*2)/2 + 0.5) * width for i in range(len(VARIANTS)*2)]
 
             for i, var in enumerate(VARIANTS):
                 overall_vals = [data_structured[g][var]["overall"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
@@ -489,7 +494,7 @@ def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
             ax.grid(True, axis='y', linestyle='--', alpha=0.7)
 
         axes[5].axis('off')
-        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=4)
+        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=4)
         file_suffix = "mae_perc" if metric_suffix == "MAE_%" else "mae_abs"
         plt.suptitle(f"Overall vs Exact Match: {ylabel}", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
@@ -500,7 +505,8 @@ def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
         for f in fields:
             fig_single, ax_single = plt.subplots(figsize=(10, 8))
             x = np.arange(len(GROUPS))
-
+            width = 0.1
+            offsets = [(i - (len(VARIANTS)*2)/2 + 0.5) * width for i in range(len(VARIANTS)*2)]
             for i, var in enumerate(VARIANTS):
                 overall_vals = [data_structured[g][var]["overall"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
                 exact_vals = [data_structured[g][var]["exact_match"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
@@ -515,7 +521,7 @@ def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
             ax_single.grid(False, axis='x')
             ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
 
-            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=2)
+            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=2)
             plt.tight_layout()
             plt.savefig(os.path.join(output_dir, f'overlay_{file_suffix}_{f}.png'), bbox_inches='tight', dpi=300)
             plt.close()
@@ -582,9 +588,10 @@ def plot_threshold_study(thresholds, study_results, output_dir):
         # Tecniche di Prompting (Colonna 3)
         mlines.Line2D([], [], color=VARIANT_COLORS['Standard (Low Temp.)'], linewidth=4, label='Standard Prompting'),
         mlines.Line2D([], [], color=VARIANT_COLORS['Two-Step (Low Temp.)'], linewidth=4, label='Two-Step'),
-        mlines.Line2D([], [], color=VARIANT_COLORS['Hybrid (Low Temp.)'], linewidth=4, label='Hybrid')
+        mlines.Line2D([], [], color=VARIANT_COLORS['Hybrid (Low Temp.)'], linewidth=4, label='Hybrid'),
+        mlines.Line2D([], [], color=VARIANT_COLORS['Hybrid strategy two'], linewidth=4, label='Hybrid strategy two')
     ]
-    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=4)
 
     plt.suptitle("Influence of Similarity Threshold on NLP Metrics", fontsize=16, fontweight='bold', y=1.02)
     plt.tight_layout()
@@ -671,7 +678,8 @@ def print_summary_tables(all_nlp_results: dict, all_macro_results: dict):
 FEW_SHOT_VARIANTS = [
     '1 Example (Standard)', '5 Examples (Standard)', '10 Examples (Standard)',
     '1 Example (Two-Step)', '5 Examples (Two-Step)', '10 Examples (Two-Step)',
-    '1 Example (Hybrid)', '5 Examples (Hybrid)', '10 Examples (Hybrid)'
+    '1 Example (Hybrid)', '5 Examples (Hybrid)', '10 Examples (Hybrid)',
+    '1 Example (Hybrid strategy two)', '5 Examples (Hybrid strategy two)', '10 Examples (Hybrid strategy two)'
 ]
 FEW_SHOT_COLORS = {
     '1 Example (Standard)': '#66b3ff',
@@ -682,7 +690,10 @@ FEW_SHOT_COLORS = {
     '10 Examples (Two-Step)': '#33ccff',
     '1 Example (Hybrid)': '#98df8a',
     '5 Examples (Hybrid)': '#2ca02c',
-    '10 Examples (Hybrid)': '#006400'
+    '10 Examples (Hybrid)': '#006400',
+    '1 Example (Hybrid strategy two)': '#ffb3e6',
+    '5 Examples (Hybrid strategy two)': '#ff66b2',
+    '10 Examples (Hybrid strategy two)': '#cc0066'
 }
 
 def plot_few_shot_metrics(all_results: dict, output_dir: str):
@@ -704,8 +715,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for idx, m in enumerate(combined_metrics):
             ax = axes_nlp[idx]
             x = np.arange(len(GROUPS))
-            width = 0.08
-            offsets = [-4*width, -3*width, -2*width, -width, 0, width, 2*width, 3*width, 4*width]
+            width = 0.06
+            offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
             
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
@@ -726,7 +737,7 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
             ax.grid(True, axis='y', linestyle='--', alpha=0.7)
             ax.set_ylim(0, 1.05)
             
-        fig_nlp.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+        fig_nlp.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=3)
         plt.suptitle(f"Few-Shot Comparison - NLP Metrics ({std_key})", fontsize=16, fontweight='bold', y=1.05)
         plt.tight_layout()
         plt.savefig(os.path.join(nlp_dir, f'few_shot_nlp_combined_{file_suffix}.png'), bbox_inches='tight', dpi=300)
@@ -736,8 +747,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for m in metrics_nlp:
             fig_single, ax_single = plt.subplots(figsize=(8, 6))
             x = np.arange(len(GROUPS))
-            width = 0.08
-            offsets = [-4*width, -3*width, -2*width, -width, 0, width, 2*width, 3*width, 4*width]
+            width = 0.06
+            offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
                 for g in GROUPS:
@@ -755,7 +766,7 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
             ax_single.grid(False, axis='x')
             ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
             ax_single.set_ylim(0, 1.05)
-            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=3)
             plt.tight_layout()
             plt.savefig(os.path.join(nlp_dir, f'few_shot_nlp_{m}_{file_suffix}.png'), bbox_inches='tight', dpi=300)
             plt.close()
@@ -782,8 +793,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for idx, f in enumerate(fields):
             ax = axes_macro[idx]
             x = np.arange(len(GROUPS))
-            width = 0.08
-            offsets = [-4*width, -3*width, -2*width, -width, 0, width, 2*width, 3*width, 4*width]
+            width = 0.06
+            offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
             
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
@@ -810,7 +821,7 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
             
         axes_macro[5].axis('off')
         ncol = 4 if plot_baseline else 3
-        fig_macro.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=ncol)
+        fig_macro.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=ncol)
         plt.suptitle(f"Few-Shot Comparison - {title_prefix}", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
         plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
@@ -820,8 +831,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for f in fields:
             fig_single, ax_single = plt.subplots(figsize=(10, 8))
             x = np.arange(len(GROUPS))
-            width = 0.08
-            offsets = [-4*width, -3*width, -2*width, -width, 0, width, 2*width, 3*width, 4*width]
+            width = 0.06
+            offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
                 for g in GROUPS:
@@ -842,7 +853,7 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
             ax_single.set_xticklabels(GROUPS, rotation=0)
             ax_single.grid(False, axis='x')
             ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
-            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=ncol)
+            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=ncol)
             plt.tight_layout()
             plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix}_{f}.png'), bbox_inches='tight', dpi=300)
             plt.close()
@@ -877,7 +888,9 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
                 continue
                 
             prefix = folder_to_prefix[folder]
-            if "Hybrid" in v_type:
+            if "v2hybrid" in v_type.lower() or "Hybrid strategy two" in v_type:
+                var_name = f"{prefix} (Hybrid strategy two)"
+            elif "Hybrid" in v_type:
                 var_name = f"{prefix} (Hybrid)"
             elif "Two-Step" in v_type:
                 var_name = f"{prefix} (Two-Step)"
@@ -998,12 +1011,16 @@ if __name__ == "__main__":
         "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e2b_q8_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e2b_q4_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e2b_q8_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_v2hybrid_twostep_gemma4_e2b_q4_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_v2hybrid_twostep_gemma4_e2b_q8_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_gemma4_e4b_q4_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_gemma4_e4b_q8_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e4b_q4_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_twostep_gemma4_e4b_q8_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e4b_q4_tb.json",
-        "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e4b_q8_tb.json"
+        "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e4b_q8_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_v2hybrid_twostep_gemma4_e4b_q4_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_v2hybrid_twostep_gemma4_e4b_q8_tb.json"
     ]
     INGREDIENTS_CSV_PATH = "data/metadata/ingredients_metadata.csv"
     # ==================================================
