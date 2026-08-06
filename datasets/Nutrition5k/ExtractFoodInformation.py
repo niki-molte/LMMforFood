@@ -12,9 +12,9 @@ import os
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
 
-PROVIDER = "minicpm"
+PROVIDER = "gemma"
 USE_YOLO = True
-DEBUG = True
+DEBUG = False
 YOLO_WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "yolo_weights", "yolov8s.pt")
 _yolo_model = None
 
@@ -79,6 +79,13 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
     if not os.path.exists(full_image_path):
         print(f"[Avviso] File non trovato: {full_image_path}")
         return None
+
+    yolo_image_modified = None
+
+    """prompt = (
+        "Analyze this dish. Provide the full breakdown of visible/hidden ingredients, "
+        "estimated weights, nutritional values and allergens. Output ONLY the JSON."
+    )"""
 
     prompt = (
         "Analyze this dish. Provide the full breakdown of visible/hidden ingredients, "
@@ -179,32 +186,77 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
                 print(f"[YOLO FILTRATO] Coordinate Bounding Box: {bounding_boxes}")
                 print(f"[YOLO FILTRATO] Confidenze Bounding Box: {detected_confidences}")
                 
-                # --- VISUALIZZAZIONE DELLE NUOVE BOUNDING BOX ---
-                if DEBUG:
-                    from ultralytics.utils.plotting import colors, Annotator
-                    annotator = Annotator(img_resized.copy(), line_width=2, example=str(_yolo_model.names))
-                    for b in filtered_boxes:
-                        c = b["coords"]
-                        color = colors(b["class_id"], True)
-                        label = f'{b["class_name"]} {b["conf"]:.2f}'
-                        annotator.box_label(c, label, color=color)
+                # --- PREPARAZIONE IMMAGINE E PROMPT PER LLM ---
+                from collections import defaultdict
+                from ultralytics.utils.plotting import colors, Annotator
+                annotator = Annotator(img_resized.copy(), line_width=2, example=str(_yolo_model.names))
+                
+                ing_groups = defaultdict(list)
+                
+                for idx, box in enumerate(filtered_boxes, start=1):
+                    coords = box["coords"]
+                    class_id = box["class_id"]
+                    class_name = box["class_name"]
                     
-                    drawn_img = annotator.result()
+                    # Creiamo la label solo con ID incrementale, senza confidenza
+                    label = f"{idx}"
+                    annotator.box_label(coords, label, color=colors(class_id, True))
+                    
+                    # Calcoliamo l'area relativa
+                    box_area = (coords[2] - coords[0]) * (coords[3] - coords[1])
+                    total_area = 640.0 * 640.0
+                    rel_area = (box_area / total_area) * 100.0
+                    
+                    ing_groups[class_name].append({"id": idx, "area": rel_area})
+                
+                yolo_extracted_data = ""
+                for name, items in ing_groups.items():
+                    ids = [str(item["id"]) for item in items]
+                    total_area = sum(item["area"] for item in items)
+                    
+                    if len(ids) == 1:
+                        id_str = f"ID {ids[0]}"
+                        shape_str = "Compact shape"
+                    elif len(ids) == 2:
+                        id_str = f"ID {ids[0]} & {ids[1]}"
+                        shape_str = "Scattered shape"
+                    else:
+                        id_str = f"ID {', '.join(ids[:-1])} & {ids[-1]}"
+                        shape_str = "Scattered shape"
+                        
+                    yolo_extracted_data += f"- {id_str} ({name}): {shape_str}. Total area covered: {total_area:.0f}%.\n"
+                
+                print(f"[YOLO INFO BOX]\n{yolo_extracted_data}")
+                
+                drawn_img = annotator.result()
+                yolo_image_modified = os.path.join(SCRIPT_DIR, "data", "prediction", f"annotated_{os.path.basename(full_image_path)}")
+                cv2.imwrite(yolo_image_modified, drawn_img)
+                
+                prompt = (
+                    "Analyze this dish using the provided image and the following detection data:\n"
+                    f"{yolo_extracted_data}\n"
+                    "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+                    "nutritional values and allergens. Output ONLY the JSON."
+                )
+                
+                if DEBUG:
+                    print(f"\n[DEBUG PROMPT]\n{prompt}\n")
                     cv2.imshow("Modified Bounding Boxes", drawn_img)
-                    cv2.waitKey()  # Mostra l'immagine (premi un tasto per continuare)
+                    cv2.waitKey(0)  # Mostra l'immagine (premi un tasto per continuare)
                     cv2.destroyAllWindows()
                 # ------------------------------------------------
             else:
                 print(f"[Avviso] Impossibile leggere l'immagine con cv2: {full_image_path}")
         except Exception as e:
             print(f"[ERRORE YOLO] {e}")
-        return None  # Salta il passaggio al LLM per il momento
+
+    image_to_pass = yolo_image_modified if yolo_image_modified else full_image_path
 
     # --- INIZIO CHIAMATA OLLAMA ---
     start_inference = time.time()
     try:
         result = client.ask(
-            image_path=full_image_path,
+            image_path=image_to_pass,
             prompt=prompt,
             system_instruction=system_instruction,
             response_schema=NutritionExtraction,
@@ -213,6 +265,12 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
     except Exception as e:
         print(f"[ERRORE CRITICO] Il client Ollama è crashato durante ask(): {e}")
         return None
+    finally:
+        if yolo_image_modified and os.path.exists(yolo_image_modified):
+            try:
+                os.remove(yolo_image_modified)
+            except Exception:
+                pass
 
     elapsed = time.time() - start_inference
     print(f"[{time.strftime('%H:%M:%S')}] Inferenza completata in {elapsed:.2f}s")
@@ -265,7 +323,7 @@ def main():
     schema_dict = NutritionExtraction.model_json_schema()
 
     # 1. System Instruction BASE (Senza token specifici di modello)
-    base_system_instruction = (
+    """base_system_instruction = (
         "You are an expert nutritionist and food vision analyst. "
         "Your task is to analyze top-down RGB images of dishes to perform a precise nutritional breakdown.\n\n"
         "CORE DIRECTIVES:\n"
@@ -274,6 +332,23 @@ def main():
         "3. Extract all the possibile allergenes (e.g. gluten, dairy products) based on the visible and hidden ingredients extracted before.\n"
         "4. Estimate realistic portion sizes (weight in grams) for each identified item.\n"
         "5. Calculate exact macronutrients based on the estimated weights.\n"
+        "You MUST respond ONLY with a valid JSON strictly adhering to this schema:\n"
+        f"{json.dumps(schema_dict)}"
+    )"""
+
+    base_system_instruction = (
+        "You are an expert nutritionist and food vision analyst. "
+        "Your task is to analyze top-down RGB images of dishes to perform a precise nutritional breakdown.\n"
+        "You will receive an image with bounding boxes drawn on it, each labeled with a unique numeric ID. "
+        "You will also receive a text report from an object detection model detailing the ingredient name, "
+        "shape descriptor, and relative area percentage for each ID.\n\n"
+        "CORE DIRECTIVES:\n"
+        "1. VALIDATE & CORRECT: Review the ingredients detected by the system (IDs). Use your visual reasoning to correct any obvious misclassifications.\n"
+        "2. DISCOVER MISSED VISIBLE INGREDIENTS: Carefully scan the un-boxed areas of the dish to identify any visible ingredients the detection model missed.\n"
+        "3. DEDUCE HIDDEN INGREDIENTS: Infer logically necessary but invisible components (e.g., cooking oils, butter, salt, dressings) based on the visible items and their typical preparation methods.\n"
+        "4. ALLERGENS: Extract all possible allergens (e.g., gluten, dairy) based on the complete list of validated, discovered, and hidden ingredients.\n"
+        "5. ESTIMATE WEIGHTS: For boxed items, use the relative area, shape, and 'Fill Rate' to estimate mass. For newly discovered or hidden items, deduce their weight purely from visual context and culinary logic.\n"
+        "6. CALCULATE MACRONUTRIENTS: Compute exact nutritional values based on the final estimated weights.\n"
         "You MUST respond ONLY with a valid JSON strictly adhering to this schema:\n"
         f"{json.dumps(schema_dict)}"
     )
