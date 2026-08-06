@@ -253,6 +253,7 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
     image_to_pass = yolo_image_modified if yolo_image_modified else full_image_path
 
     # --- INIZIO CHIAMATA OLLAMA ---
+    print(f"[{time.strftime('%H:%M:%S')}] Avvio inferenza Ollama in corso, attendere...")
     start_inference = time.time()
     try:
         result = client.ask(
