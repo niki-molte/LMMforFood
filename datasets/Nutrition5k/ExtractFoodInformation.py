@@ -8,7 +8,15 @@ from OllamaClient.qwen_client import QwenClient
 from OllamaClient.miniCPM_client import MiniCPMClient
 from answer_schema.extraction import Macronutrients, IngredientWithNutrition, NutritionExtraction
 
+import os
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+
 PROVIDER = "minicpm"
+USE_YOLO = True
+DEBUG = True
+YOLO_WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "yolo_weights", "yolov8s.pt")
+_yolo_model = None
 
 # impostazioni checkpoint
 SAVE_EVERY_N_ITEMS = 5
@@ -17,8 +25,8 @@ NUM_EXAMPLES = 1
 
 # percorsi
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
-TEST_DATASET_PATH = "datasets/Nutrition5k/data/ground truth/test_dataset.json"
-OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_gemma4e2b_prova.json"
+TEST_DATASET_PATH = os.path.join(SCRIPT_DIR, "data", "ground truth", "test_dataset.json")
+OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_gemma4e2b_prova.json")
 
 
 # ==========================================
@@ -43,6 +51,20 @@ def save_json_safely(data, filepath):
         print(f"[ERRORE] Impossibile salvare il file JSON: {e}")
 
 
+def calculate_iou(boxA, boxB):
+    xA = max(boxA[0], boxB[0])
+    yA = max(boxA[1], boxB[1])
+    xB = min(boxA[2], boxB[2])
+    yB = min(boxA[3], boxB[3])
+    interArea = max(0, xB - xA) * max(0, yB - yA)
+    boxAArea = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1])
+    boxBArea = (boxB[2] - boxB[0]) * (boxB[3] - boxB[1])
+    denominator = float(boxAArea + boxBArea - interArea)
+    if denominator == 0:
+        return 0.0
+    return interArea / denominator
+
+
 def process_single_image(item, client, system_instruction, few_shot_examples, processed_images):
     """Processa una singola immagine in modo sequenziale con logging di debug dettagliato."""
     img_path = item["image_path"]
@@ -64,6 +86,90 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
     )
 
     print(f"\n[{time.strftime('%H:%M:%S')}] Elaborazione in corso: {img_path}...")
+
+    if USE_YOLO:
+        print(f"[YOLO] Esecuzione inferenza su {img_path}...")
+        try:
+            import cv2
+            from ultralytics import YOLO
+            global _yolo_model
+            if _yolo_model is None:
+                _yolo_model = YOLO(YOLO_WEIGHTS_PATH)
+            
+            img = cv2.imread(full_image_path)
+            if img is not None:
+                img_resized = cv2.resize(img, (640, 640))
+                results = _yolo_model(img_resized)
+                if DEBUG:
+                    results[0].show()
+                
+                raw_boxes = []
+                for box in results[0].boxes:
+                    class_id = int(box.cls[0].item())
+                    class_name = _yolo_model.names[class_id]
+                    coords = box.xyxy[0].tolist()  # [x1, y1, x2, y2]
+                    conf = float(box.conf[0].item()) if hasattr(box, 'conf') and box.conf is not None else 1.0
+                    raw_boxes.append({"class_name": class_name, "coords": coords, "conf": conf, "class_id": class_id})
+                
+                print(f"[YOLO ORIGINALE] Ingredienti rilevati: {[b['class_name'] for b in raw_boxes]}")
+                print(f"[YOLO ORIGINALE] Confidenze: {[round(b['conf'], 2) for b in raw_boxes]}")
+                
+                # Questa cosa si fa solo se ci sono ingredienti uguali rilevati
+                raw_boxes.sort(key=lambda x: x["conf"], reverse=True)
+                filtered_boxes = []
+                IOU_THRESHOLD = 0.5
+                
+                for current_box in raw_boxes:
+                    should_add = True
+                    for i, kept_box in enumerate(filtered_boxes):
+                        if current_box["class_name"] == kept_box["class_name"]:
+                            # Trovato un ingrediente uguale, controlliamo l'IoU
+                            iou_val = calculate_iou(current_box["coords"], kept_box["coords"])
+                            if iou_val > IOU_THRESHOLD:
+                                # Unisci le label identiche se la IoU è alta
+                                k_coords = kept_box["coords"]
+                                c_coords = current_box["coords"]
+                                filtered_boxes[i]["coords"] = [
+                                    min(k_coords[0], c_coords[0]),
+                                    min(k_coords[1], c_coords[1]),
+                                    max(k_coords[2], c_coords[2]),
+                                    max(k_coords[3], c_coords[3])
+                                ]
+                                # Essendo state unite, non aggiungiamo la box separatamente
+                                should_add = False
+                                break
+                            
+                    if should_add:
+                        filtered_boxes.append(current_box)
+                
+                detected_ingredients = [b["class_name"] for b in filtered_boxes]
+                bounding_boxes = [b["coords"] for b in filtered_boxes]
+                detected_confidences = [round(b["conf"], 2) for b in filtered_boxes]
+                    
+                print(f"[YOLO FILTRATO] Ingredienti rilevati ({len(detected_ingredients)}): {detected_ingredients}")
+                print(f"[YOLO FILTRATO] Coordinate Bounding Box: {bounding_boxes}")
+                print(f"[YOLO FILTRATO] Confidenze Bounding Box: {detected_confidences}")
+                
+                # --- VISUALIZZAZIONE DELLE NUOVE BOUNDING BOX ---
+                if DEBUG:
+                    from ultralytics.utils.plotting import colors, Annotator
+                    annotator = Annotator(img_resized.copy(), line_width=2, example=str(_yolo_model.names))
+                    for b in filtered_boxes:
+                        c = b["coords"]
+                        color = colors(b["class_id"], True)
+                        label = f'{b["class_name"]} {b["conf"]:.2f}'
+                        annotator.box_label(c, label, color=color)
+                    
+                    drawn_img = annotator.result()
+                    cv2.imshow("Modified Bounding Boxes", drawn_img)
+                    cv2.waitKey()  # Mostra l'immagine (premi un tasto per continuare)
+                    cv2.destroyAllWindows()
+                # ------------------------------------------------
+            else:
+                print(f"[Avviso] Impossibile leggere l'immagine con cv2: {full_image_path}")
+        except Exception as e:
+            print(f"[ERRORE YOLO] {e}")
+        return None  # Salta il passaggio al LLM per il momento
 
     # --- INIZIO CHIAMATA OLLAMA ---
     start_inference = time.time()
@@ -151,18 +257,18 @@ def main():
         client = GemmaClient(model_name=model)
         # Solo Gemma 4 richiede il token esplicito per il thinking
         system_instruction = "<|think|>\n" + base_system_instruction
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_gemma.json"
+        OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_gemma.json")
 
     elif PROVIDER == "qwen":
         model = os.environ.get("OLLAMA_QWEN_MODEL", "qwen3.5:4b")  # o "qwen3.5:9b"
         client = QwenClient(model_name=model)
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_qwen.json"
+        OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_qwen.json")
 
     elif PROVIDER == "minicpm":
         model = os.environ.get("OLLAMA_MINICPM_MODEL", "openbmb/minicpm-v4.5:8b")
         # Attiviamo la modalità Deep Thinking come default per questo task complesso
         client = MiniCPMClient(model_name=model, thinking_mode="deep")
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_minicpm.json"
+        OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_minicpm.json")
 
     else:
         raise ValueError(f"Provider '{PROVIDER}' non supportato. Scegli tra 'gemma', 'qwen', 'minicpm'.")
