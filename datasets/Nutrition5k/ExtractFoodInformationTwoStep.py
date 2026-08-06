@@ -207,11 +207,14 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
                 if DEBUG:
                     from ultralytics.utils.plotting import colors, Annotator
                     annotator = Annotator(img_resized.copy(), line_width=2, example=str(_yolo_model.names))
-                    for b in filtered_boxes:
-                        c = b["coords"]
-                        color = colors(b["class_id"], True)
-                        label = f'{b["class_name"]} {b["conf"]:.2f}'
-                        annotator.box_label(c, label, color=color)
+                    for idx, box in enumerate(filtered_boxes, start=1):
+                        coords = box["coords"]
+                        class_id = box["class_id"]
+                        
+                        # Creiamo la label solo con ID incrementale, senza confidenza
+                        label = f"{idx}"
+                        # Usiamo la funzione box_label che si occupa anche di assegnare i colori YOLO
+                        annotator.box_label(coords, label, color=colors(class_id, True))
                     
                     drawn_img = annotator.result()
                     cv2.imshow("Modified Bounding Boxes", drawn_img)
