@@ -133,38 +133,67 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
                     class_name = _yolo_model.names[class_id]
                     coords = box.xyxy[0].tolist()  # [x1, y1, x2, y2]
                     conf = float(box.conf[0].item()) if hasattr(box, 'conf') and box.conf is not None else 1.0
-                    raw_boxes.append({"class_name": class_name, "coords": coords, "conf": conf, "class_id": class_id})
+                    raw_boxes.append({"class_name": class_name, "coords": coords, "conf": conf, "class_id": class_id, "weight": conf, "count": 1})
                 
                 print(f"[YOLO ORIGINALE] Ingredienti rilevati: {[b['class_name'] for b in raw_boxes]}")
                 print(f"[YOLO ORIGINALE] Confidenze: {[round(b['conf'], 2) for b in raw_boxes]}")
                 
-                # Questa cosa si fa solo se ci sono ingredienti uguali rilevati
-                raw_boxes.sort(key=lambda x: x["conf"], reverse=True)
-                filtered_boxes = []
+                # Raggruppa i box che si sovrappongono e calcola la media pesata (WBF a gruppi)
                 IOU_THRESHOLD = 0.5
+                filtered_boxes = []
                 
-                for current_box in raw_boxes:
-                    should_add = True
-                    for i, kept_box in enumerate(filtered_boxes):
-                        if current_box["class_name"] == kept_box["class_name"]:
-                            # Trovato un ingrediente uguale, controlliamo l'IoU
-                            iou_val = calculate_iou(current_box["coords"], kept_box["coords"])
-                            if iou_val > IOU_THRESHOLD:
-                                # Unisci le label identiche se la IoU è alta
-                                k_coords = kept_box["coords"]
-                                c_coords = current_box["coords"]
-                                filtered_boxes[i]["coords"] = [
-                                    min(k_coords[0], c_coords[0]),
-                                    min(k_coords[1], c_coords[1]),
-                                    max(k_coords[2], c_coords[2]),
-                                    max(k_coords[3], c_coords[3])
-                                ]
-                                # Essendo state unite, non aggiungiamo la box separatamente
-                                should_add = False
-                                break
+                boxes_by_class = {}
+                for box in raw_boxes:
+                    cname = box["class_name"]
+                    if cname not in boxes_by_class:
+                        boxes_by_class[cname] = []
+                    boxes_by_class[cname].append(box)
+                    
+                for cname, class_boxes in boxes_by_class.items():
+                    groups = []
+                    for box in class_boxes:
+                        matching_groups_indices = []
+                        for i, group in enumerate(groups):
+                            overlaps = False
+                            for g_box in group:
+                                if calculate_iou(box["coords"], g_box["coords"]) > IOU_THRESHOLD:
+                                    overlaps = True
+                                    break
+                            if overlaps:
+                                matching_groups_indices.append(i)
+                        
+                        if not matching_groups_indices:
+                            groups.append([box])
+                        else:
+                            new_group = [box]
+                            for i in sorted(matching_groups_indices, reverse=True):
+                                new_group.extend(groups.pop(i))
+                            groups.append(new_group)
                             
-                    if should_add:
-                        filtered_boxes.append(current_box)
+                    for group in groups:
+                        total_weight = sum(b["weight"] for b in group)
+                        avg_coords = [0.0, 0.0, 0.0, 0.0]
+                        for b in group:
+                            w = b["weight"]
+                            c = b["coords"]
+                            avg_coords[0] += c[0] * w
+                            avg_coords[1] += c[1] * w
+                            avg_coords[2] += c[2] * w
+                            avg_coords[3] += c[3] * w
+                            
+                        avg_coords = [x / total_weight for x in avg_coords]
+                        
+                        filtered_boxes.append({
+                            "class_name": cname,
+                            "class_id": group[0]["class_id"],
+                            "coords": avg_coords,
+                            "conf": total_weight / len(group),
+                            "weight": total_weight,
+                            "count": len(group)
+                        })
+                
+                # Ordiniamo i box filtrati per confidenza decrescente
+                filtered_boxes.sort(key=lambda x: x["conf"], reverse=True)
                 
                 detected_ingredients = [b["class_name"] for b in filtered_boxes]
                 bounding_boxes = [b["coords"] for b in filtered_boxes]
