@@ -9,7 +9,15 @@ from OllamaClient.qwen_client import QwenClient
 from OllamaClient.miniCPM_client import MiniCPMClient
 from answer_schema.extraction import Macronutrients, IngredientWithNutrition, NutritionExtraction
 
+import os
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+
 PROVIDER = "minicpm"
+USE_YOLO = True
+DEBUG = False
+YOLO_WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "yolo_weights", "yolov8s.pt")
+_yolo_model = None
 
 # impostazioni checkpoint
 SAVE_EVERY_N_ITEMS = 5
@@ -18,8 +26,8 @@ NUM_EXAMPLES = 1
 
 # percorsi
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/universit/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
-TEST_DATASET_PATH = "datasets/Nutrition5k/data/ground truth/test_dataset.json"
-OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep.json"
+TEST_DATASET_PATH = os.path.join(SCRIPT_DIR, "data", "ground truth", "test_dataset.json")
+OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_twostep.json")
 
 
 # ==========================================
@@ -56,6 +64,20 @@ def save_json_safely(data, filepath):
         print(f"[ERRORE] Impossibile salvare il file JSON: {e}")
 
 
+def calculate_iou(boxA, boxB):
+    xA = max(boxA[0], boxB[0])
+    yA = max(boxA[1], boxB[1])
+    xB = min(boxA[2], boxB[2])
+    yB = min(boxA[3], boxB[3])
+    interArea = max(0, xB - xA) * max(0, yB - yA)
+    boxAArea = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1])
+    boxBArea = (boxB[2] - boxB[0]) * (boxB[3] - boxB[1])
+    denominator = float(boxAArea + boxBArea - interArea)
+    if denominator == 0:
+        return 0.0
+    return interArea / denominator
+
+
 def parse_llm_json(result_str, schema_model):
     if not result_str or not str(result_str).strip():
         return None
@@ -84,6 +106,122 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
         return None
 
     print(f"\n[{time.strftime('%H:%M:%S')}] Elaborazione in corso: {img_path}...")
+
+    if USE_YOLO:
+        print(f"[YOLO] Esecuzione inferenza su {img_path}...")
+        try:
+            import cv2
+            from ultralytics import YOLO
+            global _yolo_model
+            if _yolo_model is None:
+                _yolo_model = YOLO(YOLO_WEIGHTS_PATH)
+            
+            img = cv2.imread(full_image_path)
+            if img is not None:
+                img_resized = cv2.resize(img, (640, 640))
+                results = _yolo_model(img_resized)
+                if DEBUG:
+                    results[0].show()
+                
+                raw_boxes = []
+                for box in results[0].boxes:
+                    class_id = int(box.cls[0].item())
+                    class_name = _yolo_model.names[class_id]
+                    coords = box.xyxy[0].tolist()  # [x1, y1, x2, y2]
+                    conf = float(box.conf[0].item()) if hasattr(box, 'conf') and box.conf is not None else 1.0
+                    raw_boxes.append({"class_name": class_name, "coords": coords, "conf": conf, "class_id": class_id, "weight": conf, "count": 1})
+                
+                print(f"[YOLO ORIGINALE] Ingredienti rilevati: {[b['class_name'] for b in raw_boxes]}")
+                print(f"[YOLO ORIGINALE] Confidenze: {[round(b['conf'], 2) for b in raw_boxes]}")
+                
+                # Raggruppa i box che si sovrappongono e calcola la media pesata (WBF a gruppi)
+                IOU_THRESHOLD = 0.5
+                filtered_boxes = []
+                
+                boxes_by_class = {}
+                for box in raw_boxes:
+                    cname = box["class_name"]
+                    if cname not in boxes_by_class:
+                        boxes_by_class[cname] = []
+                    boxes_by_class[cname].append(box)
+                    
+                for cname, class_boxes in boxes_by_class.items():
+                    groups = []
+                    for box in class_boxes:
+                        matching_groups_indices = []
+                        for i, group in enumerate(groups):
+                            overlaps = False
+                            for g_box in group:
+                                if calculate_iou(box["coords"], g_box["coords"]) > IOU_THRESHOLD:
+                                    overlaps = True
+                                    break
+                            if overlaps:
+                                matching_groups_indices.append(i)
+                        
+                        if not matching_groups_indices:
+                            groups.append([box])
+                        else:
+                            new_group = [box]
+                            for i in sorted(matching_groups_indices, reverse=True):
+                                new_group.extend(groups.pop(i))
+                            groups.append(new_group)
+                            
+                    for group in groups:
+                        total_weight = sum(b["weight"] for b in group)
+                        avg_coords = [0.0, 0.0, 0.0, 0.0]
+                        for b in group:
+                            w = b["weight"]
+                            c = b["coords"]
+                            avg_coords[0] += c[0] * w
+                            avg_coords[1] += c[1] * w
+                            avg_coords[2] += c[2] * w
+                            avg_coords[3] += c[3] * w
+                            
+                        avg_coords = [x / total_weight for x in avg_coords]
+                        
+                        filtered_boxes.append({
+                            "class_name": cname,
+                            "class_id": group[0]["class_id"],
+                            "coords": avg_coords,
+                            "conf": total_weight / len(group),
+                            "weight": total_weight,
+                            "count": len(group)
+                        })
+                
+                # Ordiniamo i box filtrati per confidenza decrescente
+                filtered_boxes.sort(key=lambda x: x["conf"], reverse=True)
+                
+                detected_ingredients = [b["class_name"] for b in filtered_boxes]
+                bounding_boxes = [b["coords"] for b in filtered_boxes]
+                detected_confidences = [round(b["conf"], 2) for b in filtered_boxes]
+                    
+                print(f"[YOLO FILTRATO] Ingredienti rilevati ({len(detected_ingredients)}): {detected_ingredients}")
+                print(f"[YOLO FILTRATO] Coordinate Bounding Box: {bounding_boxes}")
+                print(f"[YOLO FILTRATO] Confidenze Bounding Box: {detected_confidences}")
+                
+                # --- VISUALIZZAZIONE DELLE NUOVE BOUNDING BOX ---
+                if DEBUG:
+                    from ultralytics.utils.plotting import colors, Annotator
+                    annotator = Annotator(img_resized.copy(), line_width=2, example=str(_yolo_model.names))
+                    for idx, box in enumerate(filtered_boxes, start=1):
+                        coords = box["coords"]
+                        class_id = box["class_id"]
+                        
+                        # Creiamo la label solo con ID incrementale, senza confidenza
+                        label = f"{idx}"
+                        # Usiamo la funzione box_label che si occupa anche di assegnare i colori YOLO
+                        annotator.box_label(coords, label, color=colors(class_id, True))
+                    
+                    drawn_img = annotator.result()
+                    cv2.imshow("Modified Bounding Boxes", drawn_img)
+                    cv2.waitKey()  # Mostra l'immagine (premi un tasto per continuare)
+                    cv2.destroyAllWindows()
+                # --------------------------------------------------
+            else:
+                print(f"[Avviso] Impossibile leggere l'immagine con cv2: {full_image_path}")
+        except Exception as e:
+            print(f"[ERRORE YOLO] {e}")
+        return None  # Salta il passaggio al LLM per il momento
 
     # ==========================
     # STEP 1: Analisi Visiva (Solo pesi e ingredienti)
@@ -229,17 +367,17 @@ def main():
         client = GemmaClient(model_name=model)
         step1_sys_prompt = "<|think|>\n" + base_step1_instruction
         step2_sys_prompt = "<|think|>\n" + base_step2_instruction
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_gemma.json"
+        OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_twostep_gemma.json")
 
     elif PROVIDER == "qwen":
         model = os.environ.get("OLLAMA_QWEN_MODEL", "qwen3.5:4b")
         client = QwenClient(model_name=model)
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_qwen.json"
+        OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_twostep_qwen.json")
 
     elif PROVIDER == "minicpm":
         model = os.environ.get("OLLAMA_MINICPM_MODEL", "openbmb/minicpm-v4.5:8b")
         client = MiniCPMClient(model_name=model, thinking_mode="deep")
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_minicpm.json"
+        OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_twostep_minicpm.json")
 
     else:
         raise ValueError(f"Provider '{PROVIDER}' non supportato.")
