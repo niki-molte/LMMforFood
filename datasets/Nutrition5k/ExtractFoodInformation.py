@@ -12,7 +12,7 @@ import os
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
 
-PROVIDER = "gemma"
+PROVIDER = "minicpm"
 USE_YOLO = True
 DEBUG = False
 YOLO_WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "yolo_weights", "yolov8s.pt")
@@ -221,11 +221,6 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
 
     yolo_image_modified = None
 
-    """prompt = (
-        "Analyze this dish. Provide the full breakdown of visible/hidden ingredients, "
-        "estimated weights, nutritional values and allergens. Output ONLY the JSON."
-    )"""
-
     prompt = (
         "Analyze this dish. Provide the full breakdown of visible/hidden ingredients, "
         "estimated weights, nutritional values and allergens. Output ONLY the JSON."
@@ -326,8 +321,8 @@ def main():
 
     schema_dict = NutritionExtraction.model_json_schema()
 
-    # 1. System Instruction BASE (Senza token specifici di modello)
-    """base_system_instruction = (
+
+    base_system_instruction = (
         "You are an expert nutritionist and food vision analyst. "
         "Your task is to analyze top-down RGB images of dishes to perform a precise nutritional breakdown.\n\n"
         "CORE DIRECTIVES:\n"
@@ -338,30 +333,31 @@ def main():
         "5. Calculate exact macronutrients based on the estimated weights.\n"
         "You MUST respond ONLY with a valid JSON strictly adhering to this schema:\n"
         f"{json.dumps(schema_dict)}"
-    )"""
-
-    base_system_instruction = (
-        "You are an expert nutritionist and food vision analyst. "
-        "Your task is to analyze top-down RGB images of dishes to perform a precise nutritional breakdown.\n"
-        "You will receive an image with bounding boxes drawn on it, each labeled with a unique numeric ID. "
-        "You will also receive a text report from an object detection model detailing the ingredient name, "
-        "shape descriptor, and relative area percentage for each ID.\n\n"
-        "CORE DIRECTIVES:\n"
-        "1. VALIDATE & CORRECT: Review the ingredients detected by the system (IDs). Use your visual reasoning to correct any obvious misclassifications.\n"
-        "2. DISCOVER MISSED VISIBLE INGREDIENTS: Carefully scan the un-boxed areas of the dish to identify any visible ingredients the detection model missed.\n"
-        "3. DEDUCE HIDDEN INGREDIENTS: Infer logically necessary but invisible components (e.g., cooking oils, butter, salt, dressings) based on the visible items and their typical preparation methods.\n"
-        "4. ALLERGENS: Extract all possible allergens (e.g., gluten, dairy) based on the complete list of validated, discovered, and hidden ingredients.\n"
-        "5. ESTIMATE WEIGHTS: For boxed items, use the relative area, shape, and 'Fill Rate' to estimate mass. For newly discovered or hidden items, deduce their weight purely from visual context and culinary logic.\n"
-        "6. CALCULATE MACRONUTRIENTS: Compute exact nutritional values based on the final estimated weights.\n"
-        "You MUST respond ONLY with a valid JSON strictly adhering to this schema:\n"
-        f"{json.dumps(schema_dict)}"
     )
+
+    if USE_YOLO:
+        base_system_instruction = (
+            "You are an expert nutritionist and food vision analyst. "
+            "Your task is to analyze top-down RGB images of dishes to perform a precise nutritional breakdown.\n"
+            "You will receive an image with bounding boxes drawn on it, each labeled with a unique numeric ID. "
+            "You will also receive a text report from an object detection model detailing the ingredient name, "
+            "shape descriptor, and relative area percentage for each ID.\n\n"
+            "CORE DIRECTIVES:\n"
+            "1. VALIDATE & CORRECT: Review the ingredients detected by the system (IDs). Use your visual reasoning to correct any obvious misclassifications.\n"
+            "2. DISCOVER MISSED VISIBLE INGREDIENTS: Carefully scan the un-boxed areas of the dish to identify any visible ingredients the detection model missed.\n"
+            "3. DEDUCE HIDDEN INGREDIENTS: Infer logically necessary but invisible components (e.g., cooking oils, butter, salt, dressings) based on the visible items and their typical preparation methods.\n"
+            "4. ALLERGENS: Extract all possible allergens (e.g., gluten, dairy) based on the complete list of validated, discovered, and hidden ingredients.\n"
+            "5. ESTIMATE WEIGHTS: For boxed items, use the relative area, shape, and 'Fill Rate' to estimate mass. For newly discovered or hidden items, deduce their weight purely from visual context and culinary logic.\n"
+            "6. CALCULATE MACRONUTRIENTS: Compute exact nutritional values based on the final estimated weights.\n"
+            "You MUST respond ONLY with a valid JSON strictly adhering to this schema:\n"
+            f"{json.dumps(schema_dict)}"
+        )
 
     # 2. Configurazione Dinamica del Provider
     system_instruction = base_system_instruction
 
     if PROVIDER == "gemma":
-        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e2b")
+        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e2b-it-q8_0") #gemma4:e2b-it-q8_0
         client = GemmaClient(model_name=model)
         # Solo Gemma 4 richiede il token esplicito per il thinking
         system_instruction = "<|think|>\n" + base_system_instruction
@@ -812,7 +808,6 @@ def main():
                                                                   carbohydrates=0.74,
                                                                   protein=0.09)),
         ],
-
         allergens=["None"],
         total_macronutrients=Macronutrients(calories=397.57, fat=25.73, carbohydrates=14.19, protein=28.21)
     ).model_dump_json()
@@ -1050,7 +1045,7 @@ def main():
     yolo_few_shot_examples = [
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1562012076.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1562012076.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1064,7 +1059,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1560442279.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1560442279.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1081,7 +1076,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1563395449.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1563395449.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1097,7 +1092,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1562086740.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1562086740.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1111,7 +1106,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1561491121.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1561491121.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1124,7 +1119,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1564590190.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1564590190.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1141,7 +1136,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1562615128.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1562615128.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1156,7 +1151,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1565640549.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1565640549.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1169,7 +1164,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1563207364.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1563207364.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1184,7 +1179,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1561575474.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1561575474.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1204,7 +1199,7 @@ def main():
         few_shot_examples = yolo_few_shot_examples[:NUM_EXAMPLES]
         
         # Generazione lazy delle immagini annotate se non esistono ancora fisicamente su disco
-        few_shot_dir = os.path.join(SCRIPT_DIR, "data", "few_shot_annotated")
+        few_shot_dir = os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image")
         for i, ex in enumerate(few_shot_examples):
             if not os.path.exists(ex["image_path"]):
                 orig_path = base_few_shot_examples[i]["image_path"]
