@@ -20,8 +20,8 @@ _yolo_model = None
 
 # impostazioni checkpoint
 SAVE_EVERY_N_ITEMS = 5
-MAX_ITEMS_TO_TEST = 10
-NUM_EXAMPLES = 1
+MAX_ITEMS_TO_TEST = 3
+NUM_EXAMPLES = 5
 
 # percorsi
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
@@ -65,6 +65,145 @@ def calculate_iou(boxA, boxB):
     return interArea / denominator
 
 
+def run_yolo_on_image(full_image_path, output_dir=None):
+    import cv2
+    from ultralytics import YOLO
+    from collections import defaultdict
+    from ultralytics.utils.plotting import colors, Annotator
+    global _yolo_model
+
+    if _yolo_model is None:
+        _yolo_model = YOLO(YOLO_WEIGHTS_PATH)
+
+    yolo_image_modified = None
+    yolo_extracted_data = ""
+
+    img = cv2.imread(full_image_path)
+    if img is not None:
+        img_resized = cv2.resize(img, (640, 640))
+        results = _yolo_model(img_resized)
+        if DEBUG:
+            results[0].show()
+
+        raw_boxes = []
+        for box in results[0].boxes:
+            class_id = int(box.cls[0].item())
+            class_name = _yolo_model.names[class_id]
+            coords = box.xyxy[0].tolist()  # [x1, y1, x2, y2]
+            conf = float(box.conf[0].item()) if hasattr(box, 'conf') and box.conf is not None else 1.0
+            raw_boxes.append({"class_name": class_name, "coords": coords, "conf": conf, "class_id": class_id, "weight": conf, "count": 1})
+
+        print(f"[YOLO ORIGINALE] Ingredienti rilevati per {os.path.basename(full_image_path)}: {[b['class_name'] for b in raw_boxes]}")
+        
+        IOU_THRESHOLD = 0.5
+        filtered_boxes = []
+
+        boxes_by_class = {}
+        for box in raw_boxes:
+            cname = box["class_name"]
+            if cname not in boxes_by_class:
+                boxes_by_class[cname] = []
+            boxes_by_class[cname].append(box)
+
+        for cname, class_boxes in boxes_by_class.items():
+            groups = []
+            for box in class_boxes:
+                matching_groups_indices = []
+                for i, group in enumerate(groups):
+                    overlaps = False
+                    for g_box in group:
+                        if calculate_iou(box["coords"], g_box["coords"]) > IOU_THRESHOLD:
+                            overlaps = True
+                            break
+                    if overlaps:
+                        matching_groups_indices.append(i)
+
+                if not matching_groups_indices:
+                    groups.append([box])
+                else:
+                    new_group = [box]
+                    for i in sorted(matching_groups_indices, reverse=True):
+                        new_group.extend(groups.pop(i))
+                    groups.append(new_group)
+
+            for group in groups:
+                total_weight = sum(b["weight"] for b in group)
+                avg_coords = [0.0, 0.0, 0.0, 0.0]
+                for b in group:
+                    w = b["weight"]
+                    c = b["coords"]
+                    avg_coords[0] += c[0] * w
+                    avg_coords[1] += c[1] * w
+                    avg_coords[2] += c[2] * w
+                    avg_coords[3] += c[3] * w
+
+                avg_coords = [x / total_weight for x in avg_coords]
+
+                filtered_boxes.append({
+                    "class_name": cname,
+                    "class_id": group[0]["class_id"],
+                    "coords": avg_coords,
+                    "conf": total_weight / len(group),
+                    "weight": total_weight,
+                    "count": len(group)
+                })
+
+        filtered_boxes.sort(key=lambda x: x["conf"], reverse=True)
+
+        annotator = Annotator(img_resized.copy(), line_width=2, example=str(_yolo_model.names))
+
+        ing_groups = defaultdict(list)
+
+        for idx, box in enumerate(filtered_boxes, start=1):
+            coords = box["coords"]
+            class_id = box["class_id"]
+            class_name = box["class_name"]
+
+            label = f"{idx}"
+            annotator.box_label(coords, label, color=colors(class_id, True))
+
+            box_area = (coords[2] - coords[0]) * (coords[3] - coords[1])
+            total_area = 640.0 * 640.0
+            rel_area = (box_area / total_area) * 100.0
+
+            ing_groups[class_name].append({"id": idx, "area": rel_area})
+
+        for name, items in ing_groups.items():
+            ids = [str(item["id"]) for item in items]
+            total_area = sum(item["area"] for item in items)
+
+            if len(ids) == 1:
+                id_str = f"ID {ids[0]}"
+                shape_str = "Compact shape"
+            elif len(ids) == 2:
+                id_str = f"ID {ids[0]} & {ids[1]}"
+                shape_str = "Scattered shape"
+            else:
+                id_str = f"ID {', '.join(ids[:-1])} & {ids[-1]}"
+                shape_str = "Scattered shape"
+
+            yolo_extracted_data += f"- {id_str} ({name}): {shape_str}. Total area covered: {total_area:.1f}%.\n"
+
+        drawn_img = annotator.result()
+        if output_dir is None:
+            output_dir = os.path.join(SCRIPT_DIR, "data", "prediction")
+        os.makedirs(output_dir, exist_ok=True)
+        dish_folder_name = os.path.basename(os.path.dirname(full_image_path))
+        safe_filename = f"annotated_{dish_folder_name}.png"
+        yolo_image_modified = os.path.join(output_dir, safe_filename)
+
+        cv2.imwrite(yolo_image_modified, drawn_img)
+
+        if DEBUG:
+            cv2.imshow("Modified Bounding Boxes", drawn_img)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+    else:
+        print(f"[Avviso] Impossibile leggere l'immagine con cv2: {full_image_path}")
+
+    return yolo_image_modified, yolo_extracted_data
+
+
 def process_single_image(item, client, system_instruction, few_shot_examples, processed_images):
     """Processa una singola immagine in modo sequenziale con logging di debug dettagliato."""
     img_path = item["image_path"]
@@ -97,156 +236,20 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
     if USE_YOLO:
         print(f"[YOLO] Esecuzione inferenza su {img_path}...")
         try:
-            import cv2
-            from ultralytics import YOLO
-            global _yolo_model
-            if _yolo_model is None:
-                _yolo_model = YOLO(YOLO_WEIGHTS_PATH)
+            yolo_image_modified, yolo_extracted_data = run_yolo_on_image(full_image_path)
             
-            img = cv2.imread(full_image_path)
-            if img is not None:
-                img_resized = cv2.resize(img, (640, 640))
-                results = _yolo_model(img_resized)
-                if DEBUG:
-                    results[0].show()
-                
-                raw_boxes = []
-                for box in results[0].boxes:
-                    class_id = int(box.cls[0].item())
-                    class_name = _yolo_model.names[class_id]
-                    coords = box.xyxy[0].tolist()  # [x1, y1, x2, y2]
-                    conf = float(box.conf[0].item()) if hasattr(box, 'conf') and box.conf is not None else 1.0
-                    raw_boxes.append({"class_name": class_name, "coords": coords, "conf": conf, "class_id": class_id, "weight": conf, "count": 1})
-                
-                print(f"[YOLO ORIGINALE] Ingredienti rilevati: {[b['class_name'] for b in raw_boxes]}")
-                print(f"[YOLO ORIGINALE] Confidenze: {[round(b['conf'], 2) for b in raw_boxes]}")
-                
-                # Raggruppa i box che si sovrappongono e calcola la media pesata (WBF a gruppi)
-                IOU_THRESHOLD = 0.5
-                filtered_boxes = []
-                
-                boxes_by_class = {}
-                for box in raw_boxes:
-                    cname = box["class_name"]
-                    if cname not in boxes_by_class:
-                        boxes_by_class[cname] = []
-                    boxes_by_class[cname].append(box)
-                    
-                for cname, class_boxes in boxes_by_class.items():
-                    groups = []
-                    for box in class_boxes:
-                        matching_groups_indices = []
-                        for i, group in enumerate(groups):
-                            overlaps = False
-                            for g_box in group:
-                                if calculate_iou(box["coords"], g_box["coords"]) > IOU_THRESHOLD:
-                                    overlaps = True
-                                    break
-                            if overlaps:
-                                matching_groups_indices.append(i)
-                        
-                        if not matching_groups_indices:
-                            groups.append([box])
-                        else:
-                            new_group = [box]
-                            for i in sorted(matching_groups_indices, reverse=True):
-                                new_group.extend(groups.pop(i))
-                            groups.append(new_group)
-                            
-                    for group in groups:
-                        total_weight = sum(b["weight"] for b in group)
-                        avg_coords = [0.0, 0.0, 0.0, 0.0]
-                        for b in group:
-                            w = b["weight"]
-                            c = b["coords"]
-                            avg_coords[0] += c[0] * w
-                            avg_coords[1] += c[1] * w
-                            avg_coords[2] += c[2] * w
-                            avg_coords[3] += c[3] * w
-                            
-                        avg_coords = [x / total_weight for x in avg_coords]
-                        
-                        filtered_boxes.append({
-                            "class_name": cname,
-                            "class_id": group[0]["class_id"],
-                            "coords": avg_coords,
-                            "conf": total_weight / len(group),
-                            "weight": total_weight,
-                            "count": len(group)
-                        })
-                
-                # Ordiniamo i box filtrati per confidenza decrescente
-                filtered_boxes.sort(key=lambda x: x["conf"], reverse=True)
-                
-                detected_ingredients = [b["class_name"] for b in filtered_boxes]
-                bounding_boxes = [b["coords"] for b in filtered_boxes]
-                detected_confidences = [round(b["conf"], 2) for b in filtered_boxes]
-                    
-                print(f"[YOLO FILTRATO] Ingredienti rilevati ({len(detected_ingredients)}): {detected_ingredients}")
-                print(f"[YOLO FILTRATO] Coordinate Bounding Box: {bounding_boxes}")
-                print(f"[YOLO FILTRATO] Confidenze Bounding Box: {detected_confidences}")
-                
-                # --- PREPARAZIONE IMMAGINE E PROMPT PER LLM ---
-                from collections import defaultdict
-                from ultralytics.utils.plotting import colors, Annotator
-                annotator = Annotator(img_resized.copy(), line_width=2, example=str(_yolo_model.names))
-                
-                ing_groups = defaultdict(list)
-                
-                for idx, box in enumerate(filtered_boxes, start=1):
-                    coords = box["coords"]
-                    class_id = box["class_id"]
-                    class_name = box["class_name"]
-                    
-                    # Creiamo la label solo con ID incrementale, senza confidenza
-                    label = f"{idx}"
-                    annotator.box_label(coords, label, color=colors(class_id, True))
-                    
-                    # Calcoliamo l'area relativa
-                    box_area = (coords[2] - coords[0]) * (coords[3] - coords[1])
-                    total_area = 640.0 * 640.0
-                    rel_area = (box_area / total_area) * 100.0
-                    
-                    ing_groups[class_name].append({"id": idx, "area": rel_area})
-                
-                yolo_extracted_data = ""
-                for name, items in ing_groups.items():
-                    ids = [str(item["id"]) for item in items]
-                    total_area = sum(item["area"] for item in items)
-                    
-                    if len(ids) == 1:
-                        id_str = f"ID {ids[0]}"
-                        shape_str = "Compact shape"
-                    elif len(ids) == 2:
-                        id_str = f"ID {ids[0]} & {ids[1]}"
-                        shape_str = "Scattered shape"
-                    else:
-                        id_str = f"ID {', '.join(ids[:-1])} & {ids[-1]}"
-                        shape_str = "Scattered shape"
-                        
-                    yolo_extracted_data += f"- {id_str} ({name}): {shape_str}. Total area covered: {total_area:.0f}%.\n"
-                
+            if yolo_image_modified is not None:
                 print(f"[YOLO INFO BOX]\n{yolo_extracted_data}")
-                
-                drawn_img = annotator.result()
-                yolo_image_modified = os.path.join(SCRIPT_DIR, "data", "prediction", f"annotated_{os.path.basename(full_image_path)}")
-                cv2.imwrite(yolo_image_modified, drawn_img)
                 
                 prompt = (
                     "Analyze this dish using the provided image and the following detection data:\n"
-                    f"{yolo_extracted_data}\n"
+                    f"{yolo_extracted_data}\n\n"
                     "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
                     "nutritional values and allergens. Output ONLY the JSON."
                 )
                 
                 if DEBUG:
                     print(f"\n[DEBUG PROMPT]\n{prompt}\n")
-                    cv2.imshow("Modified Bounding Boxes", drawn_img)
-                    cv2.waitKey(0)  # Mostra l'immagine (premi un tasto per continuare)
-                    cv2.destroyAllWindows()
-                # ------------------------------------------------
-            else:
-                print(f"[Avviso] Impossibile leggere l'immagine con cv2: {full_image_path}")
         except Exception as e:
             print(f"[ERRORE YOLO] {e}")
 
@@ -991,7 +994,7 @@ def main():
         total_macronutrients=Macronutrients(calories=120.06, fat=4.97, carbohydrates=17.41, protein=2.99)
     ).model_dump_json()
 
-    all_few_shot_examples = [
+    base_few_shot_examples = [
         {
             "image_path": normalize_path(
                 os.path.join(IMAGES_BASE_DIR, "imagery/realsense_overhead/dish_1562012076/rgb.png")),
@@ -1044,7 +1047,174 @@ def main():
         }
     ]
 
-    few_shot_examples = all_few_shot_examples[:NUM_EXAMPLES]
+    yolo_few_shot_examples = [
+        {
+            "image_path": normalize_path(
+                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1562012076.png")
+            ),
+            "prompt": (
+        "Analyze this dish using the provided image and the following detection data:\n"
+        "- ID 1 (rice): Compact shape. Total area covered: 22.3%.\n"
+        "- ID 2 (fried chicken): Compact shape. Total area covered: 19.4%.\n"
+        "\n"
+        "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+        "nutritional values and allergens. Output ONLY the JSON."
+            ),
+            "output": example_output
+        },
+        {
+            "image_path": normalize_path(
+                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1560442279.png")
+            ),
+            "prompt": (
+        "Analyze this dish using the provided image and the following detection data:\n"
+        "- ID 1 (mixed berries): Compact shape. Total area covered: 27.8%.\n"
+        "- ID 2 (bacon): Compact shape. Total area covered: 15.3%.\n"
+        "- ID 3 (cereal based cooked food): Compact shape. Total area covered: 10.2%.\n"
+        "- ID 4 (blueberry): Compact shape. Total area covered: 0.2%.\n"
+        "- ID 5 (blackberry): Compact shape. Total area covered: 0.4%.\n"
+        "\n"
+        "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+        "nutritional values and allergens. Output ONLY the JSON."
+            ),
+            "output": example_output_2
+        },
+        {
+            "image_path": normalize_path(
+                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1563395449.png")
+            ),
+            "prompt": (
+        "Analyze this dish using the provided image and the following detection data:\n"
+        "- ID 1 (spinach): Compact shape. Total area covered: 18.5%.\n"
+        "- ID 2 (pizza): Compact shape. Total area covered: 8.4%.\n"
+        "- ID 3 (carrot): Compact shape. Total area covered: 4.0%.\n"
+        "- ID 4 (cooked zucchini): Compact shape. Total area covered: 15.9%.\n"
+        "\n"
+        "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+        "nutritional values and allergens. Output ONLY the JSON."
+            ),
+            "output": example_output_3
+        },
+        {
+            "image_path": normalize_path(
+                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1562086740.png")
+            ),
+            "prompt": (
+        "Analyze this dish using the provided image and the following detection data:\n"
+        "- ID 1 (egg product): Compact shape. Total area covered: 21.6%.\n"
+        "- ID 2 (bacon): Compact shape. Total area covered: 16.0%.\n"
+        "\n"
+        "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+        "nutritional values and allergens. Output ONLY the JSON."
+            ),
+            "output": example_output_4
+        },
+        {
+            "image_path": normalize_path(
+                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1561491121.png")
+            ),
+            "prompt": (
+        "Analyze this dish using the provided image and the following detection data:\n"
+        "- ID 1 (spinach): Compact shape. Total area covered: 26.0%.\n"
+        "\n"
+        "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+        "nutritional values and allergens. Output ONLY the JSON."
+            ),
+            "output": example_output_5
+        },
+        {
+            "image_path": normalize_path(
+                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1564590190.png")
+            ),
+            "prompt": (
+        "Analyze this dish using the provided image and the following detection data:\n"
+        "- ID 1 (potatoes): Compact shape. Total area covered: 19.8%.\n"
+        "- ID 2 (mixed berries): Compact shape. Total area covered: 11.8%.\n"
+        "- ID 3 (watermelon): Compact shape. Total area covered: 10.4%.\n"
+        "- ID 4 (blueberry): Compact shape. Total area covered: 0.8%.\n"
+        "- ID 5 (egg product): Compact shape. Total area covered: 2.4%.\n"
+        "\n"
+        "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+        "nutritional values and allergens. Output ONLY the JSON."
+            ),
+            "output": example_output_6
+        },
+        {
+            "image_path": normalize_path(
+                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1562615128.png")
+            ),
+            "prompt": (
+        "Analyze this dish using the provided image and the following detection data:\n"
+        "- ID 1 (cooked eggplant): Compact shape. Total area covered: 13.0%.\n"
+        "- ID 2 (cooked food based on meat): Compact shape. Total area covered: 14.7%.\n"
+        "- ID 3 (salad fresh): Compact shape. Total area covered: 23.6%.\n"
+        "\n"
+        "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+        "nutritional values and allergens. Output ONLY the JSON."
+            ),
+            "output": example_output_7
+        },
+        {
+            "image_path": normalize_path(
+                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1565640549.png")
+            ),
+            "prompt": (
+        "Analyze this dish using the provided image and the following detection data:\n"
+        "- ID 1 (salad fresh): Compact shape. Total area covered: 35.6%.\n"
+        "\n"
+        "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+        "nutritional values and allergens. Output ONLY the JSON."
+            ),
+            "output": example_output_8
+        },
+        {
+            "image_path": normalize_path(
+                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1563207364.png")
+            ),
+            "prompt": (
+        "Analyze this dish using the provided image and the following detection data:\n"
+        "- ID 1, 3 & 5 (egg product): Scattered shape. Total area covered: 16.2%.\n"
+        "- ID 2, 4 & 7 (grapes): Scattered shape. Total area covered: 4.4%.\n"
+        "- ID 6 (sweet potatoes): Compact shape. Total area covered: 22.2%.\n"
+        "\n"
+        "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+        "nutritional values and allergens. Output ONLY the JSON."
+            ),
+            "output": example_output_9
+        },
+        {
+            "image_path": normalize_path(
+                os.path.join(SCRIPT_DIR, "data", "few_shot_annotated", "annotated_dish_1561575474.png")
+            ),
+            "prompt": (
+        "Analyze this dish using the provided image and the following detection data:\n"
+        "- ID 1 (cooked eggplant): Compact shape. Total area covered: 11.4%.\n"
+        "- ID 2, 3 & 6 (potatoes): Scattered shape. Total area covered: 7.3%.\n"
+        "- ID 4 & 5 (cauliflower): Scattered shape. Total area covered: 10.0%.\n"
+        "\n"
+        "Provide the full breakdown of visible/hidden ingredients, estimated weights, "
+        "nutritional values and allergens. Output ONLY the JSON."
+            ),
+            "output": example_output_10
+        },
+    ]
+
+    if USE_YOLO:
+        print("\n[*] Utilizzo degli esempi few-shot pre-annotati per YOLO...")
+        few_shot_examples = yolo_few_shot_examples[:NUM_EXAMPLES]
+        
+        # Generazione lazy delle immagini annotate se non esistono ancora fisicamente su disco
+        few_shot_dir = os.path.join(SCRIPT_DIR, "data", "few_shot_annotated")
+        for i, ex in enumerate(few_shot_examples):
+            if not os.path.exists(ex["image_path"]):
+                orig_path = base_few_shot_examples[i]["image_path"]
+                print(f"[*] Generazione immagine annotata mancante per l'esempio {i+1}...")
+                try:
+                    run_yolo_on_image(orig_path, output_dir=few_shot_dir)
+                except Exception as e:
+                    print(f"[ERRORE YOLO ESEMPIO] Impossibile processare {orig_path}: {e}")
+    else:
+        few_shot_examples = base_few_shot_examples[:NUM_EXAMPLES]
 
     os.makedirs(os.path.dirname(OUTPUT_PREDICTIONS_PATH), exist_ok=True)
 

@@ -29,7 +29,7 @@ class GemmaClient(BaseVisionClient):
         return config_kwargs
 
     def _prepare_contents(self, image_path: str, prompt: str, system_instruction: str = None,
-                         examples: list[dict] = None) -> list[dict]:
+                          examples: list[dict] = None) -> list[dict]:
         """Costruisce l'array di messaggi specifico per il formato chat di Ollama."""
         if not os.path.exists(image_path):
             raise FileNotFoundError(f"Immagine target non trovata: {image_path}")
@@ -47,7 +47,13 @@ class GemmaClient(BaseVisionClient):
                 if ex_img_path and not os.path.exists(ex_img_path):
                     raise FileNotFoundError(f"Immagine dell'esempio non trovata: {ex_img_path}")
 
-                user_msg = {"role": "user", "content": f"--- EXAMPLE {idx} INPUT ---"}
+                user_content = f"--- EXAMPLE {idx} INPUT ---"
+
+                if "prompt" in ex:
+                    user_content += f"\n{ex['prompt']}"
+
+                user_msg = {"role": "user", "content": user_content}
+
                 if ex_img_path:
                     user_msg["images"] = [ex_img_path]
 
