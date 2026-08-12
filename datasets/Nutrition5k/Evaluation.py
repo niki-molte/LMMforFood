@@ -274,12 +274,13 @@ class Nutrition5kEvaluator:
 # ==========================================
 
 GROUPS = ['E2B - Q4', 'E2B - Q8', 'E4B - Q4', 'E4B - Q8']
-VARIANTS = ['Standard (Low Temp.)', 'Two-Step (Low Temp.)', 'Hybrid (Low Temp.)', 'Hybrid strategy two']
+VARIANTS = ['Standard (Low Temp.)', 'Two-Step (Low Temp.)', 'Hybrid (Low Temp.)', 'Hybrid strategy two', 'YOLO (Low Temp.)']
 VARIANT_COLORS = {
     'Standard (Low Temp.)': '#1f77b4',  # Standard blue
     'Two-Step (Low Temp.)': '#87ceeb',  # Light blue
     'Hybrid (Low Temp.)': '#2ca02c',    # Green
-    'Hybrid strategy two': '#ff7f0e'    # Orange
+    'Hybrid strategy two': '#ff7f0e',   # Orange
+    'YOLO (Low Temp.)': '#d62728'       # Red
 }
 
 
@@ -302,6 +303,8 @@ def parse_model_name(name: str):
         variant = "Hybrid (Low Temp.)"
     elif "twostep" in name_lower:
         variant = "Two-Step (Low Temp.)"
+    elif "yolo" in name_lower:
+        variant = "YOLO (Low Temp.)"
     else:
         variant = "Standard (Low Temp.)"
 
@@ -341,7 +344,7 @@ def plot_nlp_metrics(all_nlp_results: dict, output_dir: str):
             ax.grid(True, axis='y', linestyle='--', alpha=0.7)
             ax.set_ylim(0, 1.05)
 
-        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=2)
+        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.10), ncol=3)
         plt.suptitle(f"NLP Metrics - {std_key}", fontsize=16, fontweight='bold', y=1.05)
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, f'nlp_metrics_combined_{file_suffix}.png'), bbox_inches='tight', dpi=300)
@@ -419,7 +422,7 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: 
             ax.grid(True, axis='y', linestyle='--', alpha=0.7)
 
         axes[5].axis('off')
-        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=4)
+        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=5)
         plt.suptitle(f"{title_prefix} Comparison of Macronutrients", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, f'macro_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
@@ -494,7 +497,7 @@ def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
             ax.grid(True, axis='y', linestyle='--', alpha=0.7)
 
         axes[5].axis('off')
-        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=4)
+        fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=5)
         file_suffix = "mae_perc" if metric_suffix == "MAE_%" else "mae_abs"
         plt.suptitle(f"Overall vs Exact Match: {ylabel}", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
@@ -589,9 +592,10 @@ def plot_threshold_study(thresholds, study_results, output_dir):
         mlines.Line2D([], [], color=VARIANT_COLORS['Standard (Low Temp.)'], linewidth=4, label='Standard Prompting'),
         mlines.Line2D([], [], color=VARIANT_COLORS['Two-Step (Low Temp.)'], linewidth=4, label='Two-Step'),
         mlines.Line2D([], [], color=VARIANT_COLORS['Hybrid (Low Temp.)'], linewidth=4, label='Hybrid'),
-        mlines.Line2D([], [], color=VARIANT_COLORS['Hybrid strategy two'], linewidth=4, label='Hybrid strategy two')
+        mlines.Line2D([], [], color=VARIANT_COLORS['Hybrid strategy two'], linewidth=4, label='Hybrid strategy two'),
+        mlines.Line2D([], [], color=VARIANT_COLORS['YOLO (Low Temp.)'], linewidth=4, label='YOLO')
     ]
-    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=4)
+    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.10), ncol=4)
 
     plt.suptitle("Influence of Similarity Threshold on NLP Metrics", fontsize=16, fontweight='bold', y=1.02)
     plt.tight_layout()
@@ -679,7 +683,8 @@ FEW_SHOT_VARIANTS = [
     '1 Example (Standard)', '5 Examples (Standard)', '10 Examples (Standard)',
     '1 Example (Two-Step)', '5 Examples (Two-Step)', '10 Examples (Two-Step)',
     '1 Example (Hybrid)', '5 Examples (Hybrid)', '10 Examples (Hybrid)',
-    '1 Example (Hybrid strategy two)', '5 Examples (Hybrid strategy two)', '10 Examples (Hybrid strategy two)'
+    '1 Example (Hybrid strategy two)', '5 Examples (Hybrid strategy two)', '10 Examples (Hybrid strategy two)',
+    '1 Example (YOLO)', '5 Examples (YOLO)', '10 Examples (YOLO)'
 ]
 FEW_SHOT_COLORS = {
     '1 Example (Standard)': '#66b3ff',
@@ -693,7 +698,10 @@ FEW_SHOT_COLORS = {
     '10 Examples (Hybrid)': '#006400',
     '1 Example (Hybrid strategy two)': '#ffb3e6',
     '5 Examples (Hybrid strategy two)': '#ff66b2',
-    '10 Examples (Hybrid strategy two)': '#cc0066'
+    '10 Examples (Hybrid strategy two)': '#cc0066',
+    '1 Example (YOLO)': '#ff9999',
+    '5 Examples (YOLO)': '#ff4d4d',
+    '10 Examples (YOLO)': '#cc0000'
 }
 
 def plot_few_shot_metrics(all_results: dict, output_dir: str):
@@ -737,7 +745,7 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
             ax.grid(True, axis='y', linestyle='--', alpha=0.7)
             ax.set_ylim(0, 1.05)
             
-        fig_nlp.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=3)
+        fig_nlp.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=4)
         plt.suptitle(f"Few-Shot Comparison - NLP Metrics ({std_key})", fontsize=16, fontweight='bold', y=1.05)
         plt.tight_layout()
         plt.savefig(os.path.join(nlp_dir, f'few_shot_nlp_combined_{file_suffix}.png'), bbox_inches='tight', dpi=300)
@@ -820,8 +828,8 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
             ax.grid(True, axis='y', linestyle='--', alpha=0.7)
             
         axes_macro[5].axis('off')
-        ncol = 4 if plot_baseline else 3
-        fig_macro.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), ncol=ncol)
+        ncol = 5 if plot_baseline else 4
+        fig_macro.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=ncol)
         plt.suptitle(f"Few-Shot Comparison - {title_prefix}", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
         plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
@@ -894,6 +902,8 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
                 var_name = f"{prefix} (Hybrid)"
             elif "Two-Step" in v_type:
                 var_name = f"{prefix} (Two-Step)"
+            elif "yolo" in v_type.lower():
+                var_name = f"{prefix} (YOLO)"
             else:
                 var_name = f"{prefix} (Standard)"
                 
@@ -1020,7 +1030,11 @@ if __name__ == "__main__":
         "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e4b_q4_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_hybrid_twostep_gemma4_e4b_q8_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_v2hybrid_twostep_gemma4_e4b_q4_tb.json",
-        "data/prediction/one_example/test_predictions_nutrition5k_v2hybrid_twostep_gemma4_e4b_q8_tb.json"
+        "data/prediction/one_example/test_predictions_nutrition5k_v2hybrid_twostep_gemma4_e4b_q8_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_yolo_gemma4_e2b_q4_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_yolo_gemma4_e2b_q8_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_yolo_gemma4_e4b_q4_tb.json",
+        "data/prediction/one_example/test_predictions_nutrition5k_yolo_gemma4_e4b_q8_tb.json"
     ]
     INGREDIENTS_CSV_PATH = "data/metadata/ingredients_metadata.csv"
     # ==================================================
