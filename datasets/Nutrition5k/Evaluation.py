@@ -1110,35 +1110,44 @@ if __name__ == "__main__":
         with open(study_json_path, 'r', encoding='utf-8') as f:
             threshold_study_results = json.load(f)
     else:
-        print("Computing threshold study...")
         threshold_study_results = {}
-        for pred_path in PRED_JSON_PATHS:
-            model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
-            threshold_study_results[model_name] = {'F1': [], 'IoU': []}
 
-            try:
-                evaluator = Nutrition5kEvaluator(
-                    pred_json_path=pred_path,
-                    nlp_model=nlp_model,
-                    vocabulary=vocabulary,
-                    vocab_embeddings=vocab_embeddings,
-                    threshold=1.0
-                )
+    updated = False
+    for pred_path in PRED_JSON_PATHS:
+        model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
+        if model_name in threshold_study_results:
+            continue
 
-                for thr in thresholds:
-                    evaluator.threshold = thr
-                    print(f"======== EVALUATING THRESHOLD {thr:.2f} ========")
-                    nlp_res = evaluator.evaluate_nlp_metrics()
-                    if nlp_res and "Standardized" in nlp_res:
-                        threshold_study_results[model_name]['F1'].append(nlp_res["Standardized"]["F1"])
-                        threshold_study_results[model_name]['IoU'].append(nlp_res["Standardized"]["IoU"])
-                    else:
-                        threshold_study_results[model_name]['F1'].append(0.0)
-                        threshold_study_results[model_name]['IoU'].append(0.0)
-            except Exception as e:
-                print(f"\n[!] Error during the threshold study of file {pred_path}:\n{e}")
+        print(f"Computing threshold study for missing model: {model_name}...")
+        updated = True
+        threshold_study_results[model_name] = {'F1': [], 'IoU': []}
 
-        # Save to JSON
+        try:
+            evaluator = Nutrition5kEvaluator(
+                pred_json_path=pred_path,
+                nlp_model=nlp_model,
+                vocabulary=vocabulary,
+                vocab_embeddings=vocab_embeddings,
+                threshold=1.0
+            )
+
+            for thr in thresholds:
+                evaluator.threshold = thr
+                print(f"======== EVALUATING THRESHOLD {thr:.2f} ========")
+                nlp_res = evaluator.evaluate_nlp_metrics()
+                if nlp_res and "Standardized" in nlp_res:
+                    threshold_study_results[model_name]['F1'].append(nlp_res["Standardized"]["F1"])
+                    threshold_study_results[model_name]['IoU'].append(nlp_res["Standardized"]["IoU"])
+                else:
+                    threshold_study_results[model_name]['F1'].append(0.0)
+                    threshold_study_results[model_name]['IoU'].append(0.0)
+        except Exception as e:
+            print(f"\n[!] Error during the threshold study of file {pred_path}:\n{e}")
+            if model_name in threshold_study_results:
+                del threshold_study_results[model_name]
+
+    if updated:
+        print("Saving updated threshold study results...")
         with open(study_json_path, 'w', encoding='utf-8') as f:
             json.dump(threshold_study_results, f, indent=4)
 
