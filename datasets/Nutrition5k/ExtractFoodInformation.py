@@ -357,7 +357,7 @@ def main():
     system_instruction = base_system_instruction
 
     if PROVIDER == "gemma":
-        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e2b-it-q8_0") #gemma4:e2b-it-q8_0
+        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e2b") #gemma4:e2b-it-q8_0
         client = GemmaClient(model_name=model)
         # Solo Gemma 4 richiede il token esplicito per il thinking
         system_instruction = "<|think|>\n" + base_system_instruction
