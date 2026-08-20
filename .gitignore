@@ -16,3 +16,12 @@ __pycache__/
 
 # Cartelle di progetto
 datasets/VireoFood172/
+
+# File
+datasets/Nutrition5k/compare_dish.py
+datasets/Nutrition5k/count_entries.py
+datasets/Nutrition5k/find_best_matches.py
+datasets/Nutrition5k/generate_few_shot.py
+datasets/Nutrition5k/generated_few_shot.py
+datasets/Nutrition5k/sample_optuna_subset.py
+datasets/Nutrition5k/update_extract.py
