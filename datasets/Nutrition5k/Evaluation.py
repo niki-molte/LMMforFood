@@ -881,6 +881,39 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
     
     all_few_shot_results = {g: {v: None for v in FEW_SHOT_VARIANTS} for g in GROUPS}
     
+    fs_csv_path = os.path.join("data/evaluation", "few_shot_evaluation.csv")
+    fs_yolo_csv_path = os.path.join("data/evaluation", "few_shot_yolo_evaluation.csv")
+    
+    def load_fs_csv(path):
+        if not os.path.exists(path):
+            return False
+        with open(path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                g = row['Group']
+                v = row['Variant']
+                if g in all_few_shot_results and v in all_few_shot_results[g]:
+                    all_few_shot_results[g][v] = {
+                        "nlp": {
+                            "Non-Standardized": {k: float(row[f"nlp_Non-Standardized_{k}"]) for k in ["P", "R", "F1", "IoU"]},
+                            "Standardized": {k: float(row[f"nlp_Standardized_{k}"]) for k in ["P", "R", "F1", "IoU"]}
+                        },
+                        "macro": {
+                            "overall": {f"{f_name}_{metric}": float(row[f"macro_overall_{f_name}_{metric}"]) 
+                                        for f_name in ["calories", "mass", "fat", "carbohydrates", "protein"]
+                                        for metric in ["MAE", "MAE_%"]},
+                            "exact_match": {f"{f_name}_{metric}": float(row[f"macro_exact_match_{f_name}_{metric}"]) 
+                                        for f_name in ["calories", "mass", "fat", "carbohydrates", "protein"]
+                                        for metric in ["MAE", "MAE_%"]}
+                        }
+                    }
+        return True
+
+    loaded_fs = load_fs_csv(fs_csv_path)
+    loaded_fs_yolo = load_fs_csv(fs_yolo_csv_path)
+    updated_fs = False
+    updated_fs_yolo = False
+
     for folder in folders:
         folder_path = os.path.join(base_dir, folder)
         if not os.path.exists(folder_path):
@@ -907,7 +940,19 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
             else:
                 var_name = f"{prefix} (Standard)"
                 
+            if "YOLO" in var_name:
+                if loaded_fs_yolo and all_few_shot_results[g][var_name] is not None:
+                    continue
+            else:
+                if loaded_fs and all_few_shot_results[g][var_name] is not None:
+                    continue
+                    
             print(f"Evaluating Few-Shot: {var_name} - {g}")
+            if "YOLO" in var_name:
+                updated_fs_yolo = True
+            else:
+                updated_fs = True
+
             try:
                 evaluator = Nutrition5kEvaluator(
                     pred_json_path=pred_path,
@@ -925,6 +970,42 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
                 }
             except Exception as e:
                 print(f"[!] Error in {pred_path}: {e}")
+
+    def save_fs_csv(path, is_yolo):
+        print(f"Saving {path}...")
+        with open(path, 'w', encoding='utf-8', newline='') as f:
+            fieldnames = ['Group', 'Variant']
+            for std_key in ["Non-Standardized", "Standardized"]:
+                for k in ["P", "R", "F1", "IoU"]:
+                    fieldnames.append(f"nlp_{std_key}_{k}")
+            for m_key in ["overall", "exact_match"]:
+                for f_name in ["calories", "mass", "fat", "carbohydrates", "protein"]:
+                    for metric in ["MAE", "MAE_%"]:
+                        fieldnames.append(f"macro_{m_key}_{f_name}_{metric}")
+            
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            for grp in GROUPS:
+                for var in FEW_SHOT_VARIANTS:
+                    if ("YOLO" in var) != is_yolo:
+                        continue
+                    res = all_few_shot_results[grp][var]
+                    if not res:
+                        continue
+                    row = {'Group': grp, 'Variant': var}
+                    for std_key in ["Non-Standardized", "Standardized"]:
+                        for k in ["P", "R", "F1", "IoU"]:
+                            row[f"nlp_{std_key}_{k}"] = res["nlp"][std_key][k]
+                    for m_key in ["overall", "exact_match"]:
+                        for f_name in ["calories", "mass", "fat", "carbohydrates", "protein"]:
+                            for metric in ["MAE", "MAE_%"]:
+                                row[f"macro_{m_key}_{f_name}_{metric}"] = res["macro"][m_key][f"{f_name}_{metric}"]
+                    writer.writerow(row)
+
+    if updated_fs:
+        save_fs_csv(fs_csv_path, False)
+    if updated_fs_yolo:
+        save_fs_csv(fs_yolo_csv_path, True)
                 
     # Generate Output Tables
     print("\n" + "=" * 120)
@@ -1049,13 +1130,40 @@ if __name__ == "__main__":
 
     all_nlp_results = {}
     all_macro_results = {}
+    eval_csv_path = os.path.join(OUTPUT_DIR, "nlp_evaluation.csv")
+    
+    if os.path.exists(eval_csv_path):
+        print(f"Loading existing evaluation results from {eval_csv_path}...")
+        with open(eval_csv_path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                m_name = row['model_name']
+                all_nlp_results[m_name] = {
+                    "Non-Standardized": {k: float(row[f"nlp_Non-Standardized_{k}"]) for k in ["P", "R", "F1", "IoU"]},
+                    "Standardized": {k: float(row[f"nlp_Standardized_{k}"]) for k in ["P", "R", "F1", "IoU"]}
+                }
+                all_macro_results[m_name] = {
+                    "overall": {},
+                    "exact_match": {}
+                }
+                for f_name in ["calories", "mass", "fat", "carbohydrates", "protein"]:
+                    all_macro_results[m_name]["overall"][f"{f_name}_MAE"] = float(row[f"macro_overall_{f_name}_MAE"])
+                    all_macro_results[m_name]["overall"][f"{f_name}_MAE_%"] = float(row[f"macro_overall_{f_name}_MAE_%"])
+                    all_macro_results[m_name]["exact_match"][f"{f_name}_MAE"] = float(row[f"macro_exact_match_{f_name}_MAE"])
+                    all_macro_results[m_name]["exact_match"][f"{f_name}_MAE_%"] = float(row[f"macro_exact_match_{f_name}_MAE_%"])
+
+    updated_evals = False
 
     for pred_path in PRED_JSON_PATHS:
         model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
+        
+        if model_name in all_nlp_results and model_name in all_macro_results:
+            continue
 
         print(f"\n{'=' * 70}")
         print(f"MODEL EVALUATION: {model_name}")
         print(f"{'=' * 70}")
+        updated_evals = True
 
         try:
             evaluator = Nutrition5kEvaluator(
@@ -1079,6 +1187,33 @@ if __name__ == "__main__":
 
         except Exception as e:
             print(f"\n[!] Error during the execution of file {pred_path}:\n{e}")
+
+    if updated_evals:
+        print(f"Saving evaluation results to {eval_csv_path}...")
+        with open(eval_csv_path, 'w', encoding='utf-8', newline='') as f:
+            fieldnames = ['model_name']
+            for std_key in ["Non-Standardized", "Standardized"]:
+                for k in ["P", "R", "F1", "IoU"]:
+                    fieldnames.append(f"nlp_{std_key}_{k}")
+            for m_key in ["overall", "exact_match"]:
+                for f_name in ["calories", "mass", "fat", "carbohydrates", "protein"]:
+                    fieldnames.append(f"macro_{m_key}_{f_name}_MAE")
+                    fieldnames.append(f"macro_{m_key}_{f_name}_MAE_%")
+            
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            for m_name in all_nlp_results:
+                if m_name not in all_macro_results:
+                    continue
+                row = {'model_name': m_name}
+                for std_key in ["Non-Standardized", "Standardized"]:
+                    for k in ["P", "R", "F1", "IoU"]:
+                        row[f"nlp_{std_key}_{k}"] = all_nlp_results[m_name][std_key][k]
+                for m_key in ["overall", "exact_match"]:
+                    for f_name in ["calories", "mass", "fat", "carbohydrates", "protein"]:
+                        row[f"macro_{m_key}_{f_name}_MAE"] = all_macro_results[m_name][m_key][f"{f_name}_MAE"]
+                        row[f"macro_{m_key}_{f_name}_MAE_%"] = all_macro_results[m_name][m_key][f"{f_name}_MAE_%"]
+                writer.writerow(row)
 
     print(f"\n{'=' * 70}")
     print("EVALUATION COMPLETED. GENERATING GRAPHS...")
