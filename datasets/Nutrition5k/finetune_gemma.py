@@ -112,7 +112,7 @@ def main():
 
     print("Aggiornamento dinamico dei path delle immagini...")
     train_dataset = train_dataset.map(fix_image_paths)
-    val_dataset = val_dataset.map(fix_images_path if 'fix_images_path' else fix_image_paths)
+    val_dataset = val_dataset.map(fix_images_paths)
 
     # ------------------------------------------------
 
