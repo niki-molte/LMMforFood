@@ -109,7 +109,7 @@ def main():
         logging_steps=5,
         learning_rate=2e-4,
         lr_scheduler_type="cosine",
-        warmup_ratio=0.05,
+        warmup_steps=30,
         fp16=True,
         bf16=False,
         optim="paged_adamw_8bit",
