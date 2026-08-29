@@ -125,8 +125,7 @@ def main():
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
         processing_class=processor,
-        args=training_args,
-        dataset_kwargs={"skip_prepare_dataset": True}  # Spostato qui per compatibilità
+        args=training_args
     )
 
     # 7. Addestramento
