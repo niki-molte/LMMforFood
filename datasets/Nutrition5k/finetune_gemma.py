@@ -54,19 +54,27 @@ def main():
         dtype=torch.float16
     )
 
-    # --- IL BYPASS SALVA-MEMORIA ---
-    print("Preparazione manuale del modello (Bypass float32)...")
+    # --- IL BYPASS SALVA-MEMORIA ED ERADICAZIONE BFLOAT16 ---
+    print("Preparazione manuale del modello (Bypass float32 ed eradicazione BFloat16)...")
 
-    # 1. Congela i pesi del modello base
+    # 1. Congela i pesi del modello base e converte TUTTO ciò che è bfloat16 in float16
     for param in model.parameters():
         param.requires_grad = False
+        # Se c'è un residuo di bfloat16, uccidilo e portalo a float16
+        if param.dtype == torch.bfloat16:
+            param.data = param.data.to(torch.float16)
+
+    # Stessa cosa per i buffer interni (spesso responsabili di questo errore)
+    for buffer in model.buffers():
+        if buffer.dtype == torch.bfloat16:
+            buffer.data = buffer.data.to(torch.float16)
 
     # 2. Abilita il gradient checkpointing per risparmiare memoria durante i passaggi
     model.gradient_checkpointing_enable()
 
     # 3. Forza l'input a richiedere i gradienti (necessario per PEFT)
     model.enable_input_require_grads()
-    # -------------------------------
+    # --------------------------------------------------------
 
     # 3. Configurazione LoRA
     print("Inizializzazione adapter LoRA...")
