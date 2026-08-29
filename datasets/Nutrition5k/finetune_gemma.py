@@ -12,8 +12,8 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from datasets import load_dataset
-from trl import SFTTrainer, SFTConfig
-
+from trl import SFTTrainer
+from transformers import TrainingArguments
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Finetuning Multimodale di Gemma 4 con QLoRA")
@@ -95,13 +95,13 @@ def main():
     val_dataset = load_dataset("json", data_files=args.val_path, split="train")
 
     # 5. Argomenti di Addestramento per VLM
-    training_args = SFTConfig(
+    # 5. Argomenti di Addestramento Standard
+    training_args = TrainingArguments(
         output_dir=args.output_dir,
         num_train_epochs=args.epochs,
-        per_device_train_batch_size=1,  # <-- RIDOTTO A 1
-        per_device_eval_batch_size=1,  # <-- RIDOTTO A 1
-        gradient_accumulation_steps=16,  # <-- AUMENTATO A 16
-        gradient_checkpointing=True,  # <-- AGGIUNTA FONDAMENTALE (Salva GB di VRAM)
+        per_device_train_batch_size=1,
+        per_device_eval_batch_size=1,
+        gradient_accumulation_steps=16,
         eval_strategy="steps",
         eval_steps=20,
         save_strategy="steps",
@@ -110,13 +110,13 @@ def main():
         learning_rate=2e-4,
         lr_scheduler_type="cosine",
         warmup_ratio=0.05,
-        fp16=True,  # <-- CAMBIATO A TRUE
-        bf16=False,  # <-- CAMBIATO A FALSE (La T4 non lo supporta nativamente)
+        fp16=True,
+        bf16=False,
         optim="paged_adamw_8bit",
         weight_decay=0.01,
         report_to="none",
-        dataset_kwargs={"skip_prepare_dataset": True},
         remove_unused_columns=False
+        # NOTA: dataset_kwargs è stato rimosso da qui
     )
 
     # 6. Trainer
@@ -126,6 +126,7 @@ def main():
         eval_dataset=val_dataset,
         processing_class=processor,
         args=training_args,
+        dataset_kwargs={"skip_prepare_dataset": True}  # Spostato qui per compatibilità
     )
 
     # 7. Addestramento
