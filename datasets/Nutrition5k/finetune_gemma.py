@@ -94,6 +94,19 @@ def main():
     train_dataset = load_dataset("json", data_files=args.train_path, split="train")
     val_dataset = load_dataset("json", data_files=args.val_path, split="train")
 
+    # --- INIZIO CORREZIONE FORMATO MESSAGGI ---
+    def fix_messages(example):
+        for msg in example["messages"]:
+            # Se il contenuto è una stringa (es. la risposta dell'assistant),
+            # avvolgilo nel dizionario text-only che si aspetta la libreria
+            if isinstance(msg["content"], str):
+                msg["content"] = [{"type": "text", "text": msg["content"]}]
+        return example
+
+    print("Allineamento struttura messaggi...")
+    train_dataset = train_dataset.map(fix_messages)
+    val_dataset = val_dataset.map(fix_messages)
+
     # 5. Argomenti di Addestramento per VLM
     # 5. Argomenti di Addestramento Standard
     training_args = TrainingArguments(
