@@ -1,0 +1,141 @@
+import os
+import argparse
+import torch
+import matplotlib.pyplot as plt
+from transformers import (
+    AutoModelForImageTextToText,
+    AutoProcessor,
+    BitsAndBytesConfig,
+)
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from datasets import load_dataset
+from trl import SFTTrainer, SFTConfig
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Finetuning Multimodale di Gemma 4 con QLoRA")
+    parser.add_argument("--model_id", type=str, default="google/gemma-4-e2b-it",
+                        help="HuggingFace model ID")
+    parser.add_argument("--train_path", type=str, default="./gemma4_train_data.jsonl",
+                        help="Path al file JSONL di training")
+    parser.add_argument("--val_path", type=str, default="./gemma4_val_data.jsonl",
+                        help="Path al file JSONL di validation")
+    parser.add_argument("--output_dir", type=str, default="./gemma4_vision_finetuned")
+    parser.add_argument("--epochs", type=int, default=4)
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+
+    # 1. Configurazione Quantizzazione 4-bit (QLoRA)
+    print("Configurando quantizzazione a 4-bit (Q4)...")
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16,
+        bnb_4bit_use_double_quant=True,
+    )
+
+    # 2. Caricamento Modello Multimodale e Processor
+    print(f"Caricando il modello vision {args.model_id}...")
+    processor = AutoProcessor.from_pretrained(args.model_id)
+
+    model = AutoModelForImageTextToText.from_pretrained(
+        args.model_id,
+        quantization_config=bnb_config,
+        device_map="auto"
+    )
+
+    # Preparazione per PEFT
+    model = prepare_model_for_kbit_training(model)
+
+    # 3. Configurazione LoRA
+    print("Inizializzazione adapter LoRA...")
+    lora_config = LoraConfig(
+        r=16,
+        lora_alpha=32,
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+        lora_dropout=0.05,
+        bias="none",
+        task_type="CAUSAL_LM"
+    )
+    model = get_peft_model(model, lora_config)
+    model.print_trainable_parameters()
+
+    # 4. Caricamento Dataset JSONL
+    print("Caricamento dataset di training e validation...")
+    train_dataset = load_dataset("json", data_files=args.train_path, split="train")
+    val_dataset = load_dataset("json", data_files=args.val_path, split="train")
+
+    # 5. Argomenti di Addestramento per VLM
+    training_args = SFTConfig(
+        output_dir=args.output_dir,
+        num_train_epochs=args.epochs,
+        per_device_train_batch_size=2,
+        per_device_eval_batch_size=2,
+        gradient_accumulation_steps=8,  # Batch effettivo di 16 (2 * 8)
+        eval_strategy="steps",
+        eval_steps=20,  # Valuta la validation loss ogni 20 step
+        save_strategy="steps",
+        save_steps=20,
+        logging_steps=5,  # Logga la training loss ogni 5 step
+        learning_rate=2e-4,  # LR ottimizzato per LoRA
+        lr_scheduler_type="cosine",  # Decadimento dolce del learning rate
+        warmup_ratio=0.05,  # Warmup del 5% per evitare instabilità iniziali
+        fp16=False,
+        bf16=torch.cuda.is_bf16_supported(),
+        optim="paged_adamw_8bit",
+        weight_decay=0.01,
+        report_to="none",
+        # Parametri critici per il training multimodale a messaggi
+        dataset_kwargs={"skip_prepare_dataset": True},
+        remove_unused_columns=False
+    )
+
+    # 6. Trainer
+    trainer = SFTTrainer(
+        model=model,
+        train_dataset=train_dataset,
+        eval_dataset=val_dataset,
+        processing_class=processor,
+        args=training_args,
+    )
+
+    # 7. Addestramento
+    print("Avvio del training multimodale...")
+    trainer.train()
+
+    # 8. Estrazione e Salvataggio del Grafico della Loss
+    print("Generazione del grafico della Loss...")
+    history = trainer.state.log_history
+    train_steps = [x["step"] for x in history if "loss" in x]
+    train_loss = [x["loss"] for x in history if "loss" in x]
+    val_steps = [x["step"] for x in history if "eval_loss" in x]
+    val_loss = [x["eval_loss"] for x in history if "eval_loss" in x]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(train_steps, train_loss, label="Training Loss", color="blue", alpha=0.7)
+    if val_loss:
+        plt.plot(val_steps, val_loss, label="Validation Loss", color="orange", linewidth=2)
+
+    plt.xlabel("Training Steps")
+    plt.ylabel("Cross Entropy Loss")
+    plt.title("Curva di Addestramento - Gemma 4 su Nutrition5k")
+    plt.legend()
+    plt.grid(True, linestyle="--", alpha=0.5)
+
+    plot_path = os.path.join(args.output_dir, "loss_curve.png")
+    plt.savefig(plot_path)
+    print(f"Grafico salvato in {plot_path}")
+
+    # 9. Salvataggio Pesi Fusi
+    print(f"Salvataggio del modello unito in {args.output_dir}_merged")
+    merged_model = trainer.model.merge_and_unload()
+    merged_model.save_pretrained(f"{args.output_dir}_merged")
+    processor.save_pretrained(f"{args.output_dir}_merged")
+    print("Addestramento completato con successo!")
+
+
+if __name__ == "__main__":
+    main()
