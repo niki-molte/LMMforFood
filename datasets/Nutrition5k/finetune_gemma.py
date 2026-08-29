@@ -72,7 +72,16 @@ def main():
     lora_config = LoraConfig(
         r=16,
         lora_alpha=32,
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+        # AGGIUNTO ".linear" a ogni target per bypassare il Gemma4ClippableLinear
+        target_modules=[
+            "q_proj.linear",
+            "k_proj.linear",
+            "v_proj.linear",
+            "o_proj.linear",
+            "gate_proj.linear",
+            "up_proj.linear",
+            "down_proj.linear"
+        ],
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM"
