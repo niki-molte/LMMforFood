@@ -145,7 +145,6 @@ def main():
     val_dataset = val_dataset.map(fix_messages)
 
     # 5. Argomenti di Addestramento per VLM
-    # 5. Argomenti di Addestramento Standard
     training_args = TrainingArguments(
         output_dir=args.output_dir,
         num_train_epochs=args.epochs,
@@ -160,13 +159,12 @@ def main():
         learning_rate=2e-4,
         lr_scheduler_type="cosine",
         warmup_steps=30,
-        fp16=True,
-        bf16=False,
+        fp16=False,  # <-- disattiva GradScaler: la precisione è già gestita a mano
+        bf16=False,  # T4 non ha supporto hardware nativo per bf16, quindi evitalo comunque
         optim="paged_adamw_8bit",
         weight_decay=0.01,
         report_to="none",
         remove_unused_columns=False
-        # NOTA: dataset_kwargs è stato rimosso da qui
     )
 
     # 6. Trainer
