@@ -44,11 +44,13 @@ def main():
     print(f"Caricando il modello vision {args.model_id}...")
     processor = AutoProcessor.from_pretrained(args.model_id)
 
+    # Capisce in automatico se si trova sulla GPU 0 o sulla GPU 1
+    local_rank = int(os.environ.get("LOCAL_RANK", 0))
+
     model = AutoModelForImageTextToText.from_pretrained(
         args.model_id,
         quantization_config=bnb_config,
-        device_map="auto",
-        max_memory={0: "12GB", 1: "12GB"}
+        device_map={"": local_rank}  # <--- Assegna l'intero modello alla GPU corretta
     )
 
     # Preparazione per PEFT
