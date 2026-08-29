@@ -47,7 +47,8 @@ def main():
     model = AutoModelForImageTextToText.from_pretrained(
         args.model_id,
         quantization_config=bnb_config,
-        device_map="auto"
+        device_map="auto",
+        max_memory={0: "12GB", 1: "12GB"}
     )
 
     # Preparazione per PEFT
@@ -75,23 +76,23 @@ def main():
     training_args = SFTConfig(
         output_dir=args.output_dir,
         num_train_epochs=args.epochs,
-        per_device_train_batch_size=2,
-        per_device_eval_batch_size=2,
-        gradient_accumulation_steps=8,  # Batch effettivo di 16 (2 * 8)
+        per_device_train_batch_size=1,  # <-- RIDOTTO A 1
+        per_device_eval_batch_size=1,  # <-- RIDOTTO A 1
+        gradient_accumulation_steps=16,  # <-- AUMENTATO A 16
+        gradient_checkpointing=True,  # <-- AGGIUNTA FONDAMENTALE (Salva GB di VRAM)
         eval_strategy="steps",
-        eval_steps=20,  # Valuta la validation loss ogni 20 step
+        eval_steps=20,
         save_strategy="steps",
         save_steps=20,
-        logging_steps=5,  # Logga la training loss ogni 5 step
-        learning_rate=2e-4,  # LR ottimizzato per LoRA
-        lr_scheduler_type="cosine",  # Decadimento dolce del learning rate
-        warmup_ratio=0.05,  # Warmup del 5% per evitare instabilità iniziali
-        fp16=False,
-        bf16=torch.cuda.is_bf16_supported(),
+        logging_steps=5,
+        learning_rate=2e-4,
+        lr_scheduler_type="cosine",
+        warmup_ratio=0.05,
+        fp16=True,  # <-- CAMBIATO A TRUE
+        bf16=False,  # <-- CAMBIATO A FALSE (La T4 non lo supporta nativamente)
         optim="paged_adamw_8bit",
         weight_decay=0.01,
         report_to="none",
-        # Parametri critici per il training multimodale a messaggi
         dataset_kwargs={"skip_prepare_dataset": True},
         remove_unused_columns=False
     )
