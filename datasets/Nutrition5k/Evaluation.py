@@ -26,12 +26,13 @@ def load_vocabulary(path: str) -> list:
 
 
 class Nutrition5kEvaluator:
-    def __init__(self, pred_json_path: str, nlp_model, vocabulary: list, vocab_embeddings, threshold: float):
+    def __init__(self, pred_json_path: str, nlp_model, vocabulary: list, vocab_embeddings, threshold: float, optuna_scalars: dict = None):
         self.pred_path = pred_json_path
         self.threshold = threshold
         self.nlp_model = nlp_model
         self.vocabulary = vocabulary
         self.vocab_embeddings = vocab_embeddings
+        self.optuna_scalars = optuna_scalars
 
         self.predictions = self._load_json(self.pred_path)
         self.similarity_log = []
@@ -203,6 +204,25 @@ class Nutrition5kEvaluator:
             
             gt_vals_ex = {"calories": gt_cal_ex, "mass": gt_mass_ex, "fat": gt_fat_ex, "carbohydrates": gt_carbs_ex, "protein": gt_prot_ex}
             pred_vals_ex = {"calories": pred_cal_ex, "mass": pred_mass_ex, "fat": pred_fat_ex, "carbohydrates": pred_carbs_ex, "protein": pred_prot_ex}
+            
+            if self.optuna_scalars:
+                scale_mass = self.optuna_scalars.get("scale_mass", 1.0)
+                scale_cal = self.optuna_scalars.get("scale_cal", 1.0)
+                scale_fat = self.optuna_scalars.get("scale_fat", 1.0)
+                scale_carbs = self.optuna_scalars.get("scale_carbs", 1.0)
+                scale_protein = self.optuna_scalars.get("scale_protein", 1.0)
+                
+                pred_vals["mass"] *= scale_mass
+                pred_vals["calories"] *= scale_cal
+                pred_vals["fat"] *= scale_fat
+                pred_vals["carbohydrates"] *= scale_carbs
+                pred_vals["protein"] *= scale_protein
+                
+                pred_vals_ex["mass"] *= scale_mass
+                pred_vals_ex["calories"] *= scale_cal
+                pred_vals_ex["fat"] *= scale_fat
+                pred_vals_ex["carbohydrates"] *= scale_carbs
+                pred_vals_ex["protein"] *= scale_protein
 
             for field in DATA_FIELDNAMES:
                 groundtruth_values[field].append(gt_vals[field])
@@ -274,13 +294,14 @@ class Nutrition5kEvaluator:
 # ==========================================
 
 GROUPS = ['E2B - Q4', 'E2B - Q8', 'E4B - Q4', 'E4B - Q8']
-VARIANTS = ['Standard (Low Temp.)', 'Two-Step (Low Temp.)', 'Hybrid (Low Temp.)', 'Hybrid strategy two', 'YOLO (Low Temp.)']
+VARIANTS = ['Standard (Low Temp.)', 'Two-Step (Low Temp.)', 'Hybrid (Low Temp.)', 'Hybrid strategy two', 'YOLO (Low Temp.)', 'YOLO Optuna (Low Temp.)']
 VARIANT_COLORS = {
     'Standard (Low Temp.)': '#1f77b4',  # Standard blue
     'Two-Step (Low Temp.)': '#87ceeb',  # Light blue
     'Hybrid (Low Temp.)': '#2ca02c',    # Green
     'Hybrid strategy two': '#ff7f0e',   # Orange
-    'YOLO (Low Temp.)': '#d62728'       # Red
+    'YOLO (Low Temp.)': '#d62728',      # Red
+    'YOLO Optuna (Low Temp.)': '#6600cc' # Purple
 }
 
 
@@ -297,7 +318,9 @@ def parse_model_name(name: str):
         group = "E4B - Q8"
 
     variant = "Unknown"
-    if "v2hybrid" in name_lower:
+    if "optuna" in name_lower and "yolo" in name_lower:
+        variant = "YOLO Optuna (Low Temp.)"
+    elif "v2hybrid" in name_lower:
         variant = "Hybrid strategy two"
     elif "hybrid" in name_lower:
         variant = "Hybrid (Low Temp.)"
@@ -393,19 +416,20 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: 
         if g in GROUPS and v in VARIANTS:
             data_structured[g][v] = res
 
-    def plot_macro_type(metric_suffix, file_suffix, ylabel, title_prefix):
+    def plot_macro_type(metric_suffix, file_suffix, ylabel, title_prefix, log_scale=False):
         fig_combined, axes = plt.subplots(2, 3, figsize=(18, 12))
         axes = axes.flatten()
 
         for idx, f in enumerate(fields):
             ax = axes[idx]
             x = np.arange(len(GROUPS))
-            width = 0.2
+            width = 0.15
             offsets = [(i - len(VARIANTS)/2 + 0.5) * width for i in range(len(VARIANTS))]
 
             for i, var in enumerate(VARIANTS):
                 vals = [data_structured[g][var][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in
                         GROUPS]
+                vals = [max(v, 0.01) if log_scale else v for v in vals]
                 ax.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black',
                        label=var if idx == 0 else "")
 
@@ -414,7 +438,9 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: 
                 ax.axhline(y=base_val, color='r', linestyle='--', linewidth=2,
                            label='Nutrition 5k (2D direct)' if idx == 0 else "")
 
-            ax.set_ylabel(ylabel)
+            ax.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
+            if log_scale:
+                ax.set_yscale('log')
             ax.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
             ax.set_xticks(x)
             ax.set_xticklabels(GROUPS, rotation=0)
@@ -423,26 +449,31 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: 
 
         axes[5].axis('off')
         fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=5)
-        plt.suptitle(f"{title_prefix} Comparison of Macronutrients", fontsize=16, fontweight='bold', y=0.98)
+        title_suffix = " (Log Scale)" if log_scale else ""
+        plt.suptitle(f"{title_prefix} Comparison of Macronutrients{title_suffix}", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
-        plt.savefig(os.path.join(output_dir, f'macro_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
+        file_suffix_out = f"{file_suffix}_log" if log_scale else file_suffix
+        plt.savefig(os.path.join(output_dir, f'macro_{file_suffix_out}_combined.png'), bbox_inches='tight', dpi=300)
         plt.close()
 
         for f in fields:
             fig_single, ax_single = plt.subplots(figsize=(10, 8))
             x = np.arange(len(GROUPS))
-            width = 0.2
+            width = 0.15
             offsets = [(i - len(VARIANTS)/2 + 0.5) * width for i in range(len(VARIANTS))]
             for i, var in enumerate(VARIANTS):
                 vals = [data_structured[g][var][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in
                         GROUPS]
+                vals = [max(v, 0.01) if log_scale else v for v in vals]
                 ax_single.bar(x + offsets[i], vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=var)
 
             if plot_baseline:
                 base_val = baseline[f"{f}_{metric_suffix}"]
                 ax_single.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k (2D direct)')
 
-            ax_single.set_ylabel(ylabel)
+            ax_single.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
+            if log_scale:
+                ax_single.set_yscale('log')
             ax_single.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
             ax_single.set_xticks(x)
             ax_single.set_xticklabels(GROUPS, rotation=0)
@@ -451,11 +482,14 @@ def plot_macro_metrics(all_macro_results: dict, output_dir: str, plot_baseline: 
 
             ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=4)
             plt.tight_layout()
-            plt.savefig(os.path.join(output_dir, f'macro_{file_suffix}_{f}.png'), bbox_inches='tight', dpi=300)
+            file_suffix_out = f"{file_suffix}_log" if log_scale else file_suffix
+            plt.savefig(os.path.join(output_dir, f'macro_{file_suffix_out}_{f}.png'), bbox_inches='tight', dpi=300)
             plt.close()
 
-    plot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE")
-    plot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE")
+    plot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE", log_scale=False)
+    plot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE", log_scale=False)
+    plot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE", log_scale=True)
+    plot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE", log_scale=True)
 
 
 def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
@@ -470,26 +504,31 @@ def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
 
     os.makedirs(output_dir, exist_ok=True)
 
-    for metric_suffix, ylabel in metric_types.items():
+    def plot_overlay_type(metric_suffix, file_suffix, ylabel, log_scale=False):
         fig_combined, axes = plt.subplots(2, 3, figsize=(18, 12))
         axes = axes.flatten()
 
         for idx, f in enumerate(fields):
             ax = axes[idx]
             x = np.arange(len(GROUPS))
-            width = 0.1
+            width = 0.08
             offsets = [(i - (len(VARIANTS)*2)/2 + 0.5) * width for i in range(len(VARIANTS)*2)]
 
             for i, var in enumerate(VARIANTS):
                 overall_vals = [data_structured[g][var]["overall"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
                 exact_vals = [data_structured[g][var]["exact_match"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
+                
+                overall_vals = [max(v, 0.01) if log_scale else v for v in overall_vals]
+                exact_vals = [max(v, 0.01) if log_scale else v for v in exact_vals]
 
                 ax.bar(x + offsets[i*2], overall_vals, width, color=VARIANT_COLORS[var], edgecolor='black', 
                        label=f"{var} - Overall" if idx == 0 else "")
                 ax.bar(x + offsets[i*2 + 1], exact_vals, width, color=VARIANT_COLORS[var], edgecolor='black', hatch='//', alpha=0.8, 
                        label=f"{var} - Exact Match" if idx == 0 else "")
 
-            ax.set_ylabel(ylabel)
+            ax.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
+            if log_scale:
+                ax.set_yscale('log')
             ax.set_title(f'Overlay: {f.capitalize()}', fontweight='bold')
             ax.set_xticks(x)
             ax.set_xticklabels(GROUPS, rotation=0)
@@ -498,26 +537,33 @@ def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
 
         axes[5].axis('off')
         fig_combined.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=5)
-        file_suffix = "mae_perc" if metric_suffix == "MAE_%" else "mae_abs"
-        plt.suptitle(f"Overall vs Exact Match: {ylabel}", fontsize=16, fontweight='bold', y=0.98)
+        file_suffix_base = "mae_perc" if metric_suffix == "MAE_%" else "mae_abs"
+        file_suffix_out = f"{file_suffix_base}_log" if log_scale else file_suffix_base
+        title_suffix = " (Log Scale)" if log_scale else ""
+        plt.suptitle(f"Overall vs Exact Match: {ylabel}{title_suffix}", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
-        plt.savefig(os.path.join(output_dir, f'overlay_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
+        plt.savefig(os.path.join(output_dir, f'overlay_{file_suffix_out}_combined.png'), bbox_inches='tight', dpi=300)
         plt.close()
 
         # Generate individual plots as well
         for f in fields:
             fig_single, ax_single = plt.subplots(figsize=(10, 8))
             x = np.arange(len(GROUPS))
-            width = 0.1
+            width = 0.08
             offsets = [(i - (len(VARIANTS)*2)/2 + 0.5) * width for i in range(len(VARIANTS)*2)]
             for i, var in enumerate(VARIANTS):
                 overall_vals = [data_structured[g][var]["overall"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
                 exact_vals = [data_structured[g][var]["exact_match"][f"{f}_{metric_suffix}"] if data_structured[g][var] else 0.0 for g in GROUPS]
+                
+                overall_vals = [max(v, 0.01) if log_scale else v for v in overall_vals]
+                exact_vals = [max(v, 0.01) if log_scale else v for v in exact_vals]
 
                 ax_single.bar(x + offsets[i*2], overall_vals, width, color=VARIANT_COLORS[var], edgecolor='black', label=f"{var} - Overall")
                 ax_single.bar(x + offsets[i*2 + 1], exact_vals, width, color=VARIANT_COLORS[var], edgecolor='black', hatch='//', alpha=0.8, label=f"{var} - Exact Match")
 
-            ax_single.set_ylabel(ylabel)
+            ax_single.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
+            if log_scale:
+                ax_single.set_yscale('log')
             ax_single.set_title(f'Overall vs Exact Match: {f.capitalize()}', fontweight='bold')
             ax_single.set_xticks(x)
             ax_single.set_xticklabels(GROUPS, rotation=0)
@@ -526,8 +572,13 @@ def plot_overlay_macro_metrics(all_macro_results: dict, output_dir: str):
 
             ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=2)
             plt.tight_layout()
-            plt.savefig(os.path.join(output_dir, f'overlay_{file_suffix}_{f}.png'), bbox_inches='tight', dpi=300)
+            plt.savefig(os.path.join(output_dir, f'overlay_{file_suffix_out}_{f}.png'), bbox_inches='tight', dpi=300)
             plt.close()
+
+    plot_overlay_type("MAE", "mae_abs", "Mean Absolute Error (Value)", log_scale=False)
+    plot_overlay_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", log_scale=False)
+    plot_overlay_type("MAE", "mae_abs", "Mean Absolute Error (Value)", log_scale=True)
+    plot_overlay_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", log_scale=True)
 
 
 # --- NUOVE FUNZIONI DI SUPPORTO PER IL GRAFICO THRESHOLD ---
@@ -684,7 +735,8 @@ FEW_SHOT_VARIANTS = [
     '1 Example (Two-Step)', '5 Examples (Two-Step)', '10 Examples (Two-Step)',
     '1 Example (Hybrid)', '5 Examples (Hybrid)', '10 Examples (Hybrid)',
     '1 Example (Hybrid strategy two)', '5 Examples (Hybrid strategy two)', '10 Examples (Hybrid strategy two)',
-    '1 Example (YOLO)', '5 Examples (YOLO)', '10 Examples (YOLO)'
+    '1 Example (YOLO)', '5 Examples (YOLO)', '10 Examples (YOLO)',
+    '1 Example (YOLO Optuna)', '5 Examples (YOLO Optuna)', '10 Examples (YOLO Optuna)'
 ]
 FEW_SHOT_COLORS = {
     '1 Example (Standard)': '#66b3ff',
@@ -701,7 +753,10 @@ FEW_SHOT_COLORS = {
     '10 Examples (Hybrid strategy two)': '#cc0066',
     '1 Example (YOLO)': '#ff9999',
     '5 Examples (YOLO)': '#ff4d4d',
-    '10 Examples (YOLO)': '#cc0000'
+    '10 Examples (YOLO)': '#cc0000',
+    '1 Example (YOLO Optuna)': '#d8b3ff',
+    '5 Examples (YOLO Optuna)': '#9933ff',
+    '10 Examples (YOLO Optuna)': '#6600cc'
 }
 
 def plot_few_shot_metrics(all_results: dict, output_dir: str):
@@ -723,7 +778,7 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for idx, m in enumerate(combined_metrics):
             ax = axes_nlp[idx]
             x = np.arange(len(GROUPS))
-            width = 0.06
+            width = 0.04
             offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
             
             for i, var in enumerate(FEW_SHOT_VARIANTS):
@@ -755,7 +810,7 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for m in metrics_nlp:
             fig_single, ax_single = plt.subplots(figsize=(8, 6))
             x = np.arange(len(GROUPS))
-            width = 0.06
+            width = 0.04
             offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
@@ -793,7 +848,7 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         "protein_MAE": 5.5, "protein_MAE_%": 29.5
     }
     
-    def plot_few_shot_macro_type(metric_suffix, file_suffix, ylabel, title_prefix, subset="overall", plot_baseline=True):
+    def plot_few_shot_macro_type(metric_suffix, file_suffix, ylabel, title_prefix, subset="overall", plot_baseline=True, log_scale=False):
         out_dir = mae_overall_dir if subset == "overall" else mae_exact_dir
         fig_macro, axes_macro = plt.subplots(2, 3, figsize=(18, 12))
         axes_macro = axes_macro.flatten()
@@ -801,7 +856,7 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         for idx, f in enumerate(fields):
             ax = axes_macro[idx]
             x = np.arange(len(GROUPS))
-            width = 0.06
+            width = 0.04
             offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
             
             for i, var in enumerate(FEW_SHOT_VARIANTS):
@@ -813,6 +868,10 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
                     else:
                         vals.append(0.0)
                 
+                # To prevent log(0) issues, replace 0 with a very small number or handle it gracefully
+                # Matplotlib handles 0 on log scale by hiding the bar, which is fine, but let's avoid warnings.
+                vals = [max(v, 0.01) if log_scale else v for v in vals]
+                
                 ax.bar(x + offsets[i], vals, width, color=FEW_SHOT_COLORS[var], edgecolor='black', label=var if idx == 0 else "")
                 
             if plot_baseline:
@@ -820,7 +879,9 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
                 ax.axhline(y=base_val, color='r', linestyle='--', linewidth=2,
                            label='Nutrition 5k (2D direct)' if idx == 0 else "")
 
-            ax.set_ylabel(ylabel)
+            ax.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
+            if log_scale:
+                ax.set_yscale('log')
             ax.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
             ax.set_xticks(x)
             ax.set_xticklabels(GROUPS, rotation=0)
@@ -830,16 +891,18 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         axes_macro[5].axis('off')
         ncol = 5 if plot_baseline else 4
         fig_macro.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=ncol)
-        plt.suptitle(f"Few-Shot Comparison - {title_prefix}", fontsize=16, fontweight='bold', y=0.98)
+        title_suffix = " (Log Scale)" if log_scale else ""
+        plt.suptitle(f"Few-Shot Comparison - {title_prefix}{title_suffix}", fontsize=16, fontweight='bold', y=0.98)
         plt.tight_layout()
-        plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix}_combined.png'), bbox_inches='tight', dpi=300)
+        file_suffix_out = f"{file_suffix}_log" if log_scale else file_suffix
+        plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix_out}_combined.png'), bbox_inches='tight', dpi=300)
         plt.close()
 
         # Single plots
         for f in fields:
             fig_single, ax_single = plt.subplots(figsize=(10, 8))
             x = np.arange(len(GROUPS))
-            width = 0.06
+            width = 0.04
             offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
             for i, var in enumerate(FEW_SHOT_VARIANTS):
                 vals = []
@@ -849,27 +912,38 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
                         vals.append(res["macro"][subset][f"{f}_{metric_suffix}"])
                     else:
                         vals.append(0.0)
+                
+                vals = [max(v, 0.01) if log_scale else v for v in vals]
                 ax_single.bar(x + offsets[i], vals, width, color=FEW_SHOT_COLORS[var], edgecolor='black', label=var)
             
             if plot_baseline:
                 base_val = baseline[f"{f}_{metric_suffix}"]
                 ax_single.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k (2D direct)')
 
-            ax_single.set_ylabel(ylabel)
+            ax_single.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
+            if log_scale:
+                ax_single.set_yscale('log')
             ax_single.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
             ax_single.set_xticks(x)
             ax_single.set_xticklabels(GROUPS, rotation=0)
             ax_single.grid(False, axis='x')
             ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
+            ncol = 5 if plot_baseline else 4
             ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=ncol)
             plt.tight_layout()
-            plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix}_{f}.png'), bbox_inches='tight', dpi=300)
+            file_suffix_out = f"{file_suffix}_log" if log_scale else file_suffix
+            plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix_out}_{f}.png'), bbox_inches='tight', dpi=300)
             plt.close()
 
     plot_few_shot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", plot_baseline=True)
     plot_few_shot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", plot_baseline=True)
     plot_few_shot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", plot_baseline=False)
     plot_few_shot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", plot_baseline=False)
+
+    plot_few_shot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", plot_baseline=True, log_scale=True)
+    plot_few_shot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", plot_baseline=True, log_scale=True)
+    plot_few_shot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", plot_baseline=False, log_scale=True)
+    plot_few_shot_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", plot_baseline=False, log_scale=True)
 
 def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshold, base_dir="data/prediction"):
     print("\n" + "=" * 70)
@@ -940,34 +1014,76 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
             else:
                 var_name = f"{prefix} (Standard)"
                 
-            if "YOLO" in var_name:
+            is_yolo = "YOLO" in var_name
+            var_name_optuna = f"{prefix} (YOLO Optuna)" if is_yolo else None
+            
+            needs_base = True
+            needs_optuna = False
+            
+            if is_yolo:
                 if loaded_fs_yolo and all_few_shot_results[g][var_name] is not None:
-                    continue
+                    needs_base = False
+                needs_optuna = True
+                if loaded_fs_yolo and all_few_shot_results[g].get(var_name_optuna) is not None:
+                    needs_optuna = False
             else:
                 if loaded_fs and all_few_shot_results[g][var_name] is not None:
-                    continue
+                    needs_base = False
                     
-            print(f"Evaluating Few-Shot: {var_name} - {g}")
-            if "YOLO" in var_name:
+            if not needs_base and not needs_optuna:
+                continue
+                
+            if is_yolo:
                 updated_fs_yolo = True
             else:
                 updated_fs = True
 
             try:
-                evaluator = Nutrition5kEvaluator(
-                    pred_json_path=pred_path,
-                    nlp_model=nlp_model,
-                    vocabulary=vocabulary,
-                    vocab_embeddings=vocab_embeddings,
-                    threshold=threshold
-                )
-                nlp_res = evaluator.evaluate_nlp_metrics()
-                macro_res = evaluator.evaluate_macronutrients()
+                if needs_base:
+                    print(f"Evaluating Few-Shot: {var_name} - {g}")
+                    evaluator = Nutrition5kEvaluator(
+                        pred_json_path=pred_path,
+                        nlp_model=nlp_model,
+                        vocabulary=vocabulary,
+                        vocab_embeddings=vocab_embeddings,
+                        threshold=threshold
+                    )
+                    nlp_res = evaluator.evaluate_nlp_metrics()
+                    macro_res = evaluator.evaluate_macronutrients()
+                    
+                    all_few_shot_results[g][var_name] = {
+                        "nlp": nlp_res,
+                        "macro": macro_res
+                    }
                 
-                all_few_shot_results[g][var_name] = {
-                    "nlp": nlp_res,
-                    "macro": macro_res
-                }
+                if needs_optuna:
+                    print(f"Evaluating Few-Shot: {var_name_optuna} - {g}")
+                    optuna_summary_path = os.path.join("data", "optuna", "few_shot_yolo_image", folder, "optuna_summary.json")
+                    optuna_scalars = None
+                    if os.path.exists(optuna_summary_path):
+                        with open(optuna_summary_path, 'r', encoding='utf-8') as f:
+                            optuna_data = json.load(f)
+                        model_identifier = filename.replace('test_predictions_nutrition5k_yolo_', '').replace('.json', '')
+                        for key, val in optuna_data.items():
+                            if model_identifier in key:
+                                optuna_scalars = val.get("optimal_scalars")
+                                break
+                    if optuna_scalars:
+                        evaluator_opt = Nutrition5kEvaluator(
+                            pred_json_path=pred_path,
+                            nlp_model=nlp_model,
+                            vocabulary=vocabulary,
+                            vocab_embeddings=vocab_embeddings,
+                            threshold=threshold,
+                            optuna_scalars=optuna_scalars
+                        )
+                        all_few_shot_results[g][var_name_optuna] = {
+                            "nlp": evaluator_opt.evaluate_nlp_metrics(),
+                            "macro": evaluator_opt.evaluate_macronutrients()
+                        }
+                    else:
+                        print(f"[!] Could not find optuna scalars for {filename} in {optuna_summary_path}")
+
             except Exception as e:
                 print(f"[!] Error in {pred_path}: {e}")
 
@@ -1157,7 +1273,13 @@ if __name__ == "__main__":
     for pred_path in PRED_JSON_PATHS:
         model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
         
-        if model_name in all_nlp_results and model_name in all_macro_results:
+        is_yolo = "yolo" in model_name.lower()
+        model_name_optuna = model_name + "_optuna"
+        
+        needs_base = model_name not in all_nlp_results or model_name not in all_macro_results
+        needs_optuna = is_yolo and (model_name_optuna not in all_nlp_results or model_name_optuna not in all_macro_results)
+        
+        if not needs_base and not needs_optuna:
             continue
 
         print(f"\n{'=' * 70}")
@@ -1166,24 +1288,52 @@ if __name__ == "__main__":
         updated_evals = True
 
         try:
-            evaluator = Nutrition5kEvaluator(
-                pred_json_path=pred_path,
-                nlp_model=nlp_model,
-                vocabulary=vocabulary,
-                vocab_embeddings=vocab_embeddings,
-                threshold=THRESHOLD
-            )
+            if needs_base:
+                evaluator = Nutrition5kEvaluator(
+                    pred_json_path=pred_path,
+                    nlp_model=nlp_model,
+                    vocabulary=vocabulary,
+                    vocab_embeddings=vocab_embeddings,
+                    threshold=THRESHOLD
+                )
 
-            nlp_res = evaluator.evaluate_nlp_metrics()
-            all_nlp_results[model_name] = nlp_res
+                nlp_res = evaluator.evaluate_nlp_metrics()
+                all_nlp_results[model_name] = nlp_res
 
-            # Export and print similarity results for the model
-            sim_path = os.path.join(SIMILARITY_DIR, f"similarity_analysis_{model_name}.json")
-            evaluator.export_similarity_log_to_json(sim_path)
-            evaluator.print_similarity_summary()
+                # Export and print similarity results for the model
+                sim_path = os.path.join(SIMILARITY_DIR, f"similarity_analysis_{model_name}.json")
+                evaluator.export_similarity_log_to_json(sim_path)
+                evaluator.print_similarity_summary()
 
-            macro_res = evaluator.evaluate_macronutrients()
-            all_macro_results[model_name] = macro_res
+                macro_res = evaluator.evaluate_macronutrients()
+                all_macro_results[model_name] = macro_res
+
+            if needs_optuna:
+                print(f"--- Evaluating YOLO Optuna variant: {model_name_optuna} ---")
+                optuna_summary_path = os.path.join("data", "optuna", "few_shot_yolo_image", "one_example", "optuna_summary.json")
+                optuna_scalars = None
+                if os.path.exists(optuna_summary_path):
+                    with open(optuna_summary_path, 'r', encoding='utf-8') as f:
+                        optuna_data = json.load(f)
+                    model_identifier = model_name.replace("yolo_", "")
+                    for key, val in optuna_data.items():
+                        if model_identifier in key:
+                            optuna_scalars = val.get("optimal_scalars")
+                            break
+                            
+                if optuna_scalars:
+                    evaluator_opt = Nutrition5kEvaluator(
+                        pred_json_path=pred_path,
+                        nlp_model=nlp_model,
+                        vocabulary=vocabulary,
+                        vocab_embeddings=vocab_embeddings,
+                        threshold=THRESHOLD,
+                        optuna_scalars=optuna_scalars
+                    )
+                    all_nlp_results[model_name_optuna] = evaluator_opt.evaluate_nlp_metrics()
+                    all_macro_results[model_name_optuna] = evaluator_opt.evaluate_macronutrients()
+                else:
+                    print(f"[!] Could not find optuna scalars for {model_name} in {optuna_summary_path}")
 
         except Exception as e:
             print(f"\n[!] Error during the execution of file {pred_path}:\n{e}")
@@ -1291,5 +1441,219 @@ if __name__ == "__main__":
     # === FEW SHOT EVALUATION ===
     evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, THRESHOLD)
 
+    # === YOLO OPTUNA COMPARISON ===
+    def plot_yolo_optuna_metrics(results: dict, output_dir: str):
+        os.makedirs(output_dir, exist_ok=True)
+        # We compare "X Examples (YOLO)" vs "X Examples (YOLO Optuna)"
+        yolo_variants = [
+            '1 Example (YOLO)', '1 Example (YOLO Optuna)',
+            '5 Examples (YOLO)', '5 Examples (YOLO Optuna)',
+            '10 Examples (YOLO)',
+    '1 Example (YOLO Optuna)', '5 Examples (YOLO Optuna)', '10 Examples (YOLO Optuna)', '10 Examples (YOLO Optuna)'
+        ]
+        
+        yolo_colors = {
+            '1 Example (YOLO)': '#ff9999',
+            '1 Example (YOLO Optuna)': '#d8b3ff',
+            '5 Examples (YOLO)': '#ff6666',
+            '5 Examples (YOLO Optuna)': '#9933ff',
+            '10 Examples (YOLO)': '#ff3333',
+            '10 Examples (YOLO Optuna)': '#6600cc'
+        }
+        
+        fields = ["calories", "mass", "fat", "carbohydrates", "protein"]
+        
+        baseline = {
+            "calories_MAE": 70.6, "calories_MAE_%": 26.1,
+            "mass_MAE": 40.4, "mass_MAE_%": 18.8,
+            "fat_MAE": 5.0, "fat_MAE_%": 34.2,
+            "carbohydrates_MAE": 6.1, "carbohydrates_MAE_%": 31.9,
+            "protein_MAE": 5.5, "protein_MAE_%": 29.5
+        }
+        
+        def plot_yolo_macro_type(metric_suffix, file_suffix, ylabel, title_prefix, subset="overall", plot_baseline=True, log_scale=False):
+            out_dir = os.path.join(output_dir, subset)
+            os.makedirs(out_dir, exist_ok=True)
+            
+            fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+            axes = axes.flatten()
+            
+            for idx, f in enumerate(fields):
+                ax = axes[idx]
+                x = np.arange(len(GROUPS))
+                width = 0.12
+                offsets = [(i - len(yolo_variants)/2 + 0.5) * width for i in range(len(yolo_variants))]
+                
+                for i, var in enumerate(yolo_variants):
+                    vals = []
+                    for g in GROUPS:
+                        res = results.get(g, {}).get(var)
+                        if res and "macro" in res and subset in res["macro"]:
+                            vals.append(res["macro"][subset][f"{f}_{metric_suffix}"])
+                        else:
+                            vals.append(0.0)
+                    
+                    vals = [max(v, 0.01) if log_scale else v for v in vals]
+                    ax.bar(x + offsets[i], vals, width, color=yolo_colors[var], edgecolor='black', label=var if idx == 0 else "")
+                    
+                if plot_baseline:
+                    base_val = baseline[f"{f}_{metric_suffix}"]
+                    ax.axhline(y=base_val, color='r', linestyle='--', linewidth=2,
+                               label='Nutrition 5k (2D direct)' if idx == 0 else "")
+                    
+                ax.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
+                if log_scale:
+                    ax.set_yscale('log')
+                ax.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
+                ax.set_xticks(x)
+                ax.set_xticklabels(GROUPS, rotation=0)
+                ax.grid(False, axis='x')
+                ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+                
+            axes[5].axis('off')
+            ncol = 4 if plot_baseline else 3
+            fig.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=ncol)
+            title_suffix = " (Log Scale)" if log_scale else ""
+            plt.suptitle(f"YOLO Optuna Comparison - {title_prefix}{title_suffix}", fontsize=16, fontweight='bold', y=0.98)
+            plt.tight_layout()
+            file_suffix_out = f"{file_suffix}_log" if log_scale else file_suffix
+            plt.savefig(os.path.join(out_dir, f'yolo_optuna_{subset}_{file_suffix_out}_combined.png'), bbox_inches='tight', dpi=300)
+            plt.close()
+
+            # Single plots
+            for f in fields:
+                fig_single, ax_single = plt.subplots(figsize=(10, 8))
+                x = np.arange(len(GROUPS))
+                width = 0.12
+                offsets = [(i - len(yolo_variants)/2 + 0.5) * width for i in range(len(yolo_variants))]
+                for i, var in enumerate(yolo_variants):
+                    vals = []
+                    for g in GROUPS:
+                        res = results.get(g, {}).get(var)
+                        if res and "macro" in res and subset in res["macro"]:
+                            vals.append(res["macro"][subset][f"{f}_{metric_suffix}"])
+                        else:
+                            vals.append(0.0)
+                    vals = [max(v, 0.01) if log_scale else v for v in vals]
+                    ax_single.bar(x + offsets[i], vals, width, color=yolo_colors[var], edgecolor='black', label=var)
+                
+                if plot_baseline:
+                    base_val = baseline[f"{f}_{metric_suffix}"]
+                    ax_single.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k (2D direct)')
+
+                ax_single.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
+                if log_scale:
+                    ax_single.set_yscale('log')
+                ax_single.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
+                ax_single.set_xticks(x)
+                ax_single.set_xticklabels(GROUPS, rotation=0)
+                ax_single.grid(False, axis='x')
+                ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
+                ncol = 4 if plot_baseline else 3
+                ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=ncol)
+                plt.tight_layout()
+                file_suffix_out = f"{file_suffix}_log" if log_scale else file_suffix
+                plt.savefig(os.path.join(out_dir, f'yolo_optuna_{subset}_{file_suffix_out}_{f}.png'), bbox_inches='tight', dpi=300)
+                plt.close()
+
+        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", plot_baseline=True, log_scale=False)
+        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", plot_baseline=True, log_scale=False)
+        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", plot_baseline=False, log_scale=False)
+        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", plot_baseline=False, log_scale=False)
+
+        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", plot_baseline=True, log_scale=True)
+        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", plot_baseline=True, log_scale=True)
+        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", plot_baseline=False, log_scale=True)
+        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", plot_baseline=False, log_scale=True)
+
+    def evaluate_yolo_optuna_comparison(nlp_model, vocabulary, vocab_embeddings, threshold, base_dir="data/prediction"):
+        print("\n" + "=" * 70)
+        print("STARTING YOLO OPTUNA EVALUATION COMPARISON")
+        print("=" * 70)
+        
+        folders = ["one_example", "five_example", "ten_example"]
+        folder_to_prefix = {"one_example": "1 Example", "five_example": "5 Examples", "ten_example": "10 Examples"}
+        
+        results = {}
+        yolo_optuna_json_path = "data/evaluation/few_shot_yolo_optuna_evaluation.json"
+
+        if os.path.exists(yolo_optuna_json_path):
+            print(f"Loading existing YOLO Optuna evaluation from {yolo_optuna_json_path}")
+            with open(yolo_optuna_json_path, 'r', encoding='utf-8') as f:
+                results = json.load(f)
+        
+        updated = False
+        
+        for folder in folders:
+            pred_folder = os.path.join(base_dir, folder)
+            optuna_summary_path = os.path.join("data", "optuna", "few_shot_yolo_image", folder, "optuna_summary.json")
+            
+            if not os.path.exists(pred_folder) or not os.path.exists(optuna_summary_path):
+                continue
+                
+            with open(optuna_summary_path, 'r', encoding='utf-8') as f:
+                optuna_data = json.load(f)
+                
+            for filename in os.listdir(pred_folder):
+                if not filename.endswith('.json') or 'yolo' not in filename.lower():
+                    continue
+                    
+                g, v_type = parse_model_name(filename)
+                if g not in GROUPS: continue
+                
+                prefix = folder_to_prefix[folder]
+                var_name = f"{prefix} (YOLO)"
+                var_name_optuna = f"{prefix} (YOLO Optuna)"
+                
+                if g not in results:
+                    results[g] = {}
+                    
+                if var_name_optuna in results[g] and var_name in results[g]:
+                    continue
+                    
+                updated = True
+                
+                # Extract the base model identifier to match the optuna json key
+                # filename: test_predictions_nutrition5k_yolo_gemma4_e2b_q4_tb.json
+                # optuna key: optuna_train_predictions_gemma4_e2b_q4_tb.json
+                model_identifier = filename.replace('test_predictions_nutrition5k_yolo_', '').replace('.json', '')
+                
+                optuna_scalars = None
+                for key, val in optuna_data.items():
+                    if model_identifier in key:
+                        optuna_scalars = val.get("optimal_scalars")
+                        break
+                        
+                if not optuna_scalars:
+                    print(f"[!] Could not find optuna scalars for {filename} in {optuna_summary_path}")
+                    continue
+                    
+                print(f"Evaluating YOLO Optuna: {var_name_optuna} - {g}")
+                pred_path = os.path.join(pred_folder, filename)
+                
+                # Evaluate WITHOUT optuna (if not already in results)
+                if var_name not in results[g]:
+                    evaluator_base = Nutrition5kEvaluator(pred_path, nlp_model, vocabulary, vocab_embeddings, threshold)
+                    results[g][var_name] = {
+                        "nlp": evaluator_base.evaluate_nlp_metrics(),
+                        "macro": evaluator_base.evaluate_macronutrients()
+                    }
+                    
+                # Evaluate WITH optuna
+                evaluator_opt = Nutrition5kEvaluator(pred_path, nlp_model, vocabulary, vocab_embeddings, threshold, optuna_scalars=optuna_scalars)
+                results[g][var_name_optuna] = {
+                    "nlp": evaluator_opt.evaluate_nlp_metrics(),
+                    "macro": evaluator_opt.evaluate_macronutrients()
+                }
+                
+        if updated:
+            with open(yolo_optuna_json_path, 'w', encoding='utf-8') as f:
+                json.dump(results, f, indent=4)
+                
+        # Now plot the comparison graphs...
+        plot_yolo_optuna_metrics(results, output_dir="data/evaluation/yolo_optuna_metrics")
+        print(f"YOLO Optuna charts saved in data/evaluation/yolo_optuna_metrics")
+
+    evaluate_yolo_optuna_comparison(nlp_model, vocabulary, vocab_embeddings, THRESHOLD)
 
     print(f"\nAll graphs (single and combined) have been saved in the folder: {OUTPUT_DIR}")
