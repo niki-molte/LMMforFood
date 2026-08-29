@@ -50,7 +50,8 @@ def main():
     model = AutoModelForImageTextToText.from_pretrained(
         args.model_id,
         quantization_config=bnb_config,
-        device_map="auto"  # Lasciamo che divida il peso al 50% tra le due GPU
+        device_map="auto",
+        torch_dtype=torch.float16
     )
 
     # --- IL BYPASS SALVA-MEMORIA ---
