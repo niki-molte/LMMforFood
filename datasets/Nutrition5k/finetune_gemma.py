@@ -1,4 +1,7 @@
 import os
+import time
+
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import argparse
 import torch
 import matplotlib.pyplot as plt
@@ -33,7 +36,7 @@ def main():
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.bfloat16,
+        bnb_4bit_compute_dtype=torch.float16,
         bnb_4bit_use_double_quant=True,
     )
 
@@ -103,8 +106,14 @@ def main():
     )
 
     # 7. Addestramento
+    start = time.time()
+
     print("Avvio del training multimodale...")
     trainer.train()
+
+    stop = time.time()
+
+    print("Tempo di addestramento: ", stop - start, "ms")
 
     # 8. Estrazione e Salvataggio del Grafico della Loss
     print("Generazione del grafico della Loss...")
