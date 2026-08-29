@@ -50,11 +50,22 @@ def main():
     model = AutoModelForImageTextToText.from_pretrained(
         args.model_id,
         quantization_config=bnb_config,
-        device_map={"": local_rank}  # <--- Assegna l'intero modello alla GPU corretta
+        device_map="auto"  # Lasciamo che divida il peso al 50% tra le due GPU
     )
 
-    # Preparazione per PEFT
-    model = prepare_model_for_kbit_training(model)
+    # --- IL BYPASS SALVA-MEMORIA ---
+    print("Preparazione manuale del modello (Bypass float32)...")
+
+    # 1. Congela i pesi del modello base
+    for param in model.parameters():
+        param.requires_grad = False
+
+    # 2. Abilita il gradient checkpointing per risparmiare memoria durante i passaggi
+    model.gradient_checkpointing_enable()
+
+    # 3. Forza l'input a richiedere i gradienti (necessario per PEFT)
+    model.enable_input_require_grads()
+    # -------------------------------
 
     # 3. Configurazione LoRA
     print("Inizializzazione adapter LoRA...")
