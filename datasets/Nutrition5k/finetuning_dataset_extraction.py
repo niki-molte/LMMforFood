@@ -41,15 +41,14 @@ def jsonl_finetuning_gemma(json_input_path, jsonl_output_path, jsonl_val_output_
     all_samples = []
 
     for entry in data:
-        # Prende il path relativo esattamente come scritto nel file JSON originale
+        # Mantiene il path relativo esatto (es. imagery/realsense_overhead/dish_.../rgb.png)
         img_path = entry["image_path"]
 
-        # Salta le immagini che fanno parte degli esempi few-shot
         if any(dish_id in img_path for dish_id in few_shot_dishes):
             continue
 
         ingredients = entry.get("ingredients", [])
-        if any("deprecated" in ing["name"].lower() for ing in ingredients):
+        if any("deprecated" in ing["name"].lower() for ing in ingredients): 
             continue
 
         visible_ingredients = []
@@ -60,8 +59,8 @@ def jsonl_finetuning_gemma(json_input_path, jsonl_output_path, jsonl_val_output_
         total_protein = 0.0
 
         for ing in ingredients:
-            if ing["weight_grams"] < 1.0:
-                continue
+            # Rimosso il filtro: if ing["weight_grams"] < 1.0: continue
+            
             m = ing["macronutrients"]
             
             macronutrients_obj = Macronutrients(
@@ -81,7 +80,7 @@ def jsonl_finetuning_gemma(json_input_path, jsonl_output_path, jsonl_val_output_
                 hidden_ingredients.append(ing_obj)
             else:
                 visible_ingredients.append(ing_obj)
-            
+
             total_calories += m["calories"]
             total_fat += m["fat"]
             total_carbohydrates += m["carbohydrates"]
@@ -105,39 +104,35 @@ def jsonl_finetuning_gemma(json_input_path, jsonl_output_path, jsonl_val_output_
         )
 
         sample = {
-            "image": img_path.replace("\\", "/"), # Mantiene la formattazione corretta delle slash
+            "images": [img_path.replace("\\", "/")],  # Path relativo pulito
             "messages": [
                 {"role": "user", "content": [
-                    {"type": "image"},
-                    {"type": "text", "text": "Analyze this dish. Provide the full breakdown of visible/hidden ingredients," 
-                                             "estimated weights, nutritional values and allergens. Output ONLY the JSON."}
+                {"type": "image"},
+                {"type": "text", "text": "Analyze this dish. Provide the full breakdown of visible/hidden ingredients, "
+                                         "estimated weights, nutritional values and allergens. Output ONLY the JSON."}
                 ]},
-                {"role": "assistant", "content": nutrition_extraction.model_dump_json()}
+                {"role": "assistant", "content": [{"type": "text", "text": nutrition_extraction.model_dump_json()}]}
             ]
         }
         all_samples.append(sample)
 
-    # Mischiamo il dataset e creiamo lo split 90/10
     random.seed(42)
     random.shuffle(all_samples)
-    
+
     val_size = int(len(all_samples) * 0.1)
     val_samples = all_samples[:val_size]
     train_samples = all_samples[val_size:]
 
-    # Salviamo il train set
-    with open(jsonl_output_path, "w") as out_file:
+    with open(jsonl_output_path, "w", encoding="utf-8") as out_file:
         for s in train_samples:
             out_file.write(json.dumps(s) + "\n")
-            
-    # Salviamo il validation set
-    with open(jsonl_val_output_path, "w") as val_file:
+
+    with open(jsonl_val_output_path, "w", encoding="utf-8") as val_file:
         for s in val_samples:
             val_file.write(json.dumps(s) + "\n")
-            
+
     print(f"Creati {len(train_samples)} esempi di train in {jsonl_output_path}")
     print(f"Creati {len(val_samples)} esempi di validation in {jsonl_val_output_path}")
-
 
 # Esecuzione in locale:
 jsonl_finetuning_gemma(

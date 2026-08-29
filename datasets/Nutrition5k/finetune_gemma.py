@@ -94,6 +94,28 @@ def main():
     train_dataset = load_dataset("json", data_files=args.train_path, split="train")
     val_dataset = load_dataset("json", data_files=args.val_path, split="train")
 
+    # --- AGGIORNAMENTO DINAMICO DEI PATH SU KAGGLE ---
+    KAGGLE_IMG_ROOT = "/kaggle/input/datasets/gillesokhin/nutrition5k-dataset/"
+
+    def fix_image_paths(example):
+        # Se siamo su Kaggle, anteponi la root del dataset ai path esistenti
+        if os.path.exists("/kaggle/input"):
+            updated_images = []
+            for img_path in example["images"]:
+                # Pulisce eventuali slash sballate e unisce i path
+                clean_path = img_path.replace("\\", "/")
+                if not clean_path.startswith("/kaggle/input"):
+                    clean_path = os.path.join(KAGGLE_IMG_ROOT, clean_path)
+                updated_images.append(clean_path)
+            example["images"] = updated_images
+        return example
+
+    print("Aggiornamento dinamico dei path delle immagini...")
+    train_dataset = train_dataset.map(fix_image_paths)
+    val_dataset = val_dataset.map(fix_images_path if 'fix_images_path' else fix_image_paths)
+
+    # ------------------------------------------------
+
     # --- INIZIO CORREZIONE FORMATO MESSAGGI ---
     def fix_messages(example):
         for msg in example["messages"]:
