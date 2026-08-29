@@ -51,7 +51,7 @@ def main():
         args.model_id,
         quantization_config=bnb_config,
         device_map="auto",
-        torch_dtype=torch.float16
+        dtype=torch.float16
     )
 
     # --- IL BYPASS SALVA-MEMORIA ---
@@ -73,7 +73,6 @@ def main():
     lora_config = LoraConfig(
         r=16,
         lora_alpha=32,
-        # AGGIUNTO ".linear" a ogni target per bypassare il Gemma4ClippableLinear
         target_modules=[
             "q_proj.linear",
             "k_proj.linear",
@@ -88,6 +87,13 @@ def main():
         task_type="CAUSAL_LM"
     )
     model = get_peft_model(model, lora_config)
+
+    # --- FORZA I PESI LORA ADDESTRABILI IN FLOAT16 ---
+    for param in model.parameters():
+        if param.requires_grad:
+            param.data = param.data.to(torch.float16)
+    # ------------------------------------------------
+
     model.print_trainable_parameters()
 
     # 4. Caricamento Dataset JSONL
