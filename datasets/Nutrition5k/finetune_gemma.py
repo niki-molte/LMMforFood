@@ -111,16 +111,20 @@ def main():
 
     # --- AGGIORNAMENTO DINAMICO DEI PATH SU KAGGLE ---
     KAGGLE_IMG_ROOT = "/kaggle/input/datasets/gillesokhin/nutrition5k-dataset/"
+    PATCH_ROOT = "/kaggle/working/nutrition5k_patched/"
 
     def fix_image_paths(example):
-        # Se siamo su Kaggle, anteponi la root del dataset ai path esistenti
         if os.path.exists("/kaggle/input"):
             updated_images = []
             for img_path in example["images"]:
-                # Pulisce eventuali slash sballate e unisce i path
                 clean_path = img_path.replace("\\", "/")
                 if not clean_path.startswith("/kaggle/input"):
                     clean_path = os.path.join(KAGGLE_IMG_ROOT, clean_path)
+                # se esiste una versione recuperata (patchata), usa quella al posto dell'originale mancante
+                rel = os.path.relpath(clean_path, KAGGLE_IMG_ROOT)
+                patched = os.path.join(PATCH_ROOT, rel)
+                if os.path.isfile(patched):
+                    clean_path = patched
                 updated_images.append(clean_path)
             example["images"] = updated_images
         return example
