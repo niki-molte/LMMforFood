@@ -133,6 +133,17 @@ def main():
     train_dataset = train_dataset.map(fix_image_paths)
     val_dataset = val_dataset.map(fix_image_paths)
 
+    # --- FILTRO IMMAGINI MANCANTI/IRRECUPERABILI (es. upload .gstmp troncati) ---
+    def all_images_present(example):
+        return all(os.path.isfile(p) for p in example["images"])
+
+    before_train, before_val = len(train_dataset), len(val_dataset)
+    train_dataset = train_dataset.filter(all_images_present)
+    val_dataset = val_dataset.filter(all_images_present)
+    print(f"Train: {before_train} -> {len(train_dataset)} esempi "
+          f"(scartati {before_train - len(train_dataset)} per immagini mancanti)")
+    print(f"Val:   {before_val} -> {len(val_dataset)} esempi "
+          f"(scartati {before_val - len(val_dataset)} per immagini mancanti)")
     # ------------------------------------------------
 
     # --- INIZIO CORREZIONE FORMATO MESSAGGI ---
