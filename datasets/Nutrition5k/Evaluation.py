@@ -293,43 +293,49 @@ class Nutrition5kEvaluator:
 # GRAPH FUNCTIONS
 # ==========================================
 
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+
 GROUPS = ['E2B - Q4', 'E2B - Q8', 'E4B - Q4', 'E4B - Q8']
-VARIANTS = ['Standard (Low Temp.)', 'Two-Step (Low Temp.)', 'Hybrid (Low Temp.)', 'Hybrid strategy two', 'YOLO (Low Temp.)', 'YOLO Optuna (Low Temp.)']
-VARIANT_COLORS = {
-    'Standard (Low Temp.)': '#1f77b4',  # Standard blue
-    'Two-Step (Low Temp.)': '#87ceeb',  # Light blue
-    'Hybrid (Low Temp.)': '#2ca02c',    # Green
-    'Hybrid strategy two': '#ff7f0e',   # Orange
-    'YOLO (Low Temp.)': '#d62728',      # Red
-    'YOLO Optuna (Low Temp.)': '#6600cc' # Purple
-}
+
+
+def get_dynamic_variants_and_colors():
+    import glob
+    files = glob.glob("data/prediction/one_example/*.json")
+    # Includiamo YOLO ma rimuoviamo Optuna
+    requested = [f for f in files if "optuna" not in f.lower()]
+    var_set = set()
+    for f in requested:
+        import os
+        filename = os.path.basename(f)
+        _, v = parse_model_name(filename.replace('test_predictions_nutrition5k_', '').replace('.json', ''))
+        if v != "Unknown" and "Optuna" not in v:
+            var_set.add(v)
+
+    variants = sorted(list(var_set))
+    cmap = plt.get_cmap('tab10')
+    colors = {v: mcolors.to_hex(cmap(i)) for i, v in enumerate(variants)}
+    return variants, colors
+
+VARIANTS, VARIANT_COLORS = [], {}
 
 
 def parse_model_name(name: str):
+    # (Mantieni la tua funzione parse_model_name identica a come l'hai già)
     name_lower = name.lower()
     group = "Unknown"
-    if "e2b" in name_lower and "q4" in name_lower:
-        group = "E2B - Q4"
-    elif "e2b" in name_lower and "q8" in name_lower:
-        group = "E2B - Q8"
-    elif "e4b" in name_lower and "q4" in name_lower:
-        group = "E4B - Q4"
-    elif "e4b" in name_lower and "q8" in name_lower:
-        group = "E4B - Q8"
+    if "e2b" in name_lower and "q4" in name_lower: group = "E2B - Q4"
+    elif "e2b" in name_lower and "q8" in name_lower: group = "E2B - Q8"
+    elif "e4b" in name_lower and "q4" in name_lower: group = "E4B - Q4"
+    elif "e4b" in name_lower and "q8" in name_lower: group = "E4B - Q8"
 
     variant = "Unknown"
-    if "optuna" in name_lower and "yolo" in name_lower:
-        variant = "YOLO Optuna (Low Temp.)"
-    elif "v2hybrid" in name_lower:
-        variant = "Hybrid strategy two"
-    elif "hybrid" in name_lower:
-        variant = "Hybrid (Low Temp.)"
-    elif "twostep" in name_lower:
-        variant = "Two-Step (Low Temp.)"
-    elif "yolo" in name_lower:
-        variant = "YOLO (Low Temp.)"
-    else:
-        variant = "Standard (Low Temp.)"
+    if "optuna" in name_lower and "yolo" in name_lower: variant = "YOLO Optuna"
+    elif "v2hybrid" in name_lower: variant = "Hybrid v2"
+    elif "hybrid" in name_lower: variant = "Hybrid v1"
+    elif "twostep" in name_lower: variant = "Two-Step"
+    elif "yolo" in name_lower: variant = "YOLO"
+    else: variant = "Standard"
 
     return group, variant
 
@@ -640,12 +646,8 @@ def plot_threshold_study(thresholds, study_results, output_dir):
         mlines.Line2D([], [], color='gray', linestyle='-', linewidth=2, label='Q4 Quantization'),
         mlines.Line2D([], [], color='gray', linestyle='--', linewidth=2, label='Q8 Quantization'),
         # Tecniche di Prompting (Colonna 3)
-        mlines.Line2D([], [], color=VARIANT_COLORS['Standard (Low Temp.)'], linewidth=4, label='Standard Prompting'),
-        mlines.Line2D([], [], color=VARIANT_COLORS['Two-Step (Low Temp.)'], linewidth=4, label='Two-Step'),
-        mlines.Line2D([], [], color=VARIANT_COLORS['Hybrid (Low Temp.)'], linewidth=4, label='Hybrid'),
-        mlines.Line2D([], [], color=VARIANT_COLORS['Hybrid strategy two'], linewidth=4, label='Hybrid strategy two'),
-        mlines.Line2D([], [], color=VARIANT_COLORS['YOLO (Low Temp.)'], linewidth=4, label='YOLO')
-    ]
+        # Dynamic variants
+] + [mlines.Line2D([], [], color=VARIANT_COLORS[var], linewidth=4, label=var) for var in VARIANTS]
     fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.10), ncol=4)
 
     plt.suptitle("Influence of Similarity Threshold on NLP Metrics", fontsize=16, fontweight='bold', y=1.02)
@@ -730,34 +732,49 @@ def print_summary_tables(all_nlp_results: dict, all_macro_results: dict):
             print("\n")
 
 
-FEW_SHOT_VARIANTS = [
-    '1 Example (Standard)', '5 Examples (Standard)', '10 Examples (Standard)',
-    '1 Example (Two-Step)', '5 Examples (Two-Step)', '10 Examples (Two-Step)',
-    '1 Example (Hybrid)', '5 Examples (Hybrid)', '10 Examples (Hybrid)',
-    '1 Example (Hybrid strategy two)', '5 Examples (Hybrid strategy two)', '10 Examples (Hybrid strategy two)',
-    '1 Example (YOLO)', '5 Examples (YOLO)', '10 Examples (YOLO)',
-    '1 Example (YOLO Optuna)', '5 Examples (YOLO Optuna)', '10 Examples (YOLO Optuna)'
-]
-FEW_SHOT_COLORS = {
-    '1 Example (Standard)': '#66b3ff',
-    '5 Examples (Standard)': '#1f77b4',
-    '10 Examples (Standard)': '#004080',
-    '1 Example (Two-Step)': '#ccebff',
-    '5 Examples (Two-Step)': '#87ceeb',
-    '10 Examples (Two-Step)': '#33ccff',
-    '1 Example (Hybrid)': '#98df8a',
-    '5 Examples (Hybrid)': '#2ca02c',
-    '10 Examples (Hybrid)': '#006400',
-    '1 Example (Hybrid strategy two)': '#ffb3e6',
-    '5 Examples (Hybrid strategy two)': '#ff66b2',
-    '10 Examples (Hybrid strategy two)': '#cc0066',
-    '1 Example (YOLO)': '#ff9999',
-    '5 Examples (YOLO)': '#ff4d4d',
-    '10 Examples (YOLO)': '#cc0000',
-    '1 Example (YOLO Optuna)': '#d8b3ff',
-    '5 Examples (YOLO Optuna)': '#9933ff',
-    '10 Examples (YOLO Optuna)': '#6600cc'
-}
+FEW_SHOT_VARIANTS, FEW_SHOT_COLORS = [], {}
+
+
+def init_dynamic_globals():
+    global VARIANTS, VARIANT_COLORS, FEW_SHOT_VARIANTS, FEW_SHOT_COLORS
+    VARIANTS, VARIANT_COLORS = get_dynamic_variants_and_colors()
+
+    # Mappa dei colori Gerarchica
+    color_map = {
+        'Standard': ['#99c2ff', '#3385ff', '#0047b3'],  # Blu
+        'Two-Step': ['#ffb3b3', '#ff4d4d', '#b30000'],  # Rosso
+        'Hybrid v1': ['#a3e0a3', '#47d147', '#1f7a1f'],  # Verde
+        'Hybrid v2': ['#d1b3ff', '#9933ff', '#4d0099'],  # Viola
+        'YOLO': ['#ffcc99', '#ff9933', '#cc6600']        # Arancione
+    }
+
+    fs_vars = []
+    FEW_SHOT_COLORS = {}
+
+    for p_idx, p in enumerate(['1 Example', '5 Examples', '10 Examples']):
+        for v in VARIANTS:
+            if 'Standard' in v:
+                name = f"{p} (Standard)"
+                fs_vars.append(name)
+                FEW_SHOT_COLORS[name] = color_map['Standard'][p_idx]
+            elif 'Two-Step' in v:
+                name = f"{p} (Two-Step)"
+                fs_vars.append(name)
+                FEW_SHOT_COLORS[name] = color_map['Two-Step'][p_idx]
+            elif 'Hybrid v2' in v:
+                name = f"{p} (Hybrid v2)"
+                fs_vars.append(name)
+                FEW_SHOT_COLORS[name] = color_map['Hybrid v2'][p_idx]
+            elif 'Hybrid v1' in v:
+                name = f"{p} (Hybrid v1)"
+                fs_vars.append(name)
+                FEW_SHOT_COLORS[name] = color_map['Hybrid v1'][p_idx]
+            elif 'YOLO' in v and 'Optuna' not in v:
+                name = f"{p} (YOLO)"
+                fs_vars.append(name)
+                FEW_SHOT_COLORS[name] = color_map['YOLO'][p_idx]
+
+    FEW_SHOT_VARIANTS = list(dict.fromkeys(fs_vars))
 
 def plot_few_shot_metrics(all_results: dict, output_dir: str):
     nlp_dir = os.path.join(output_dir, "nlp_metrics")
@@ -769,68 +786,112 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
     os.makedirs(mae_exact_dir, exist_ok=True)
     
     # 1. NLP Metrics
+    # 1. NLP Metrics
     def plot_few_shot_nlp_type(std_key, file_suffix):
+        import matplotlib.lines as mlines
         metrics_nlp = ["P", "R", "F1", "IoU"]
-        
-        # Combined plot for F1 and IoU
+
+        # Mappature per il Dot Plot
+        # Mappature per il Dot Plot
+        strategies = ['Standard', 'Two-Step', 'Hybrid v1', 'Hybrid v2', 'YOLO']
+        examples = ['1 Example', '5 Examples', '10 Examples']
+
+        strat_colors = {
+            'Standard': '#3385ff',
+            'Two-Step': '#ff4d4d',
+            'Hybrid v1': '#47d147',
+            'Hybrid v2': '#9933ff',
+            'YOLO': '#ff9933'  # Arancione
+        }
+        strat_markers = {
+            'Standard': 'o',
+            'Two-Step': 's',
+            'Hybrid v1': '^',
+            'Hybrid v2': 'D',
+            'YOLO': 'P'  # Simbolo della croce riempita (Plus)
+        }
+        # Offset sull'asse X per raggruppare visivamente gli esempi
+        ex_offsets = {'1 Example': -0.22, '5 Examples': 0.0, '10 Examples': 0.22}
+
+        def draw_nlp_dot_plot(ax, m):
+            for grp_idx, g in enumerate(GROUPS):
+                # Linee divisorie verticali
+                if grp_idx > 0:
+                    ax.axvline(x=grp_idx - 0.5, color='#e0e0e0', linestyle='-', linewidth=1, zorder=0)
+
+                for ex_name in examples:
+                    x_pos = grp_idx + ex_offsets[ex_name]
+
+                    for strat in strategies:
+                        var_name = f"{ex_name} ({strat})"
+                        res = all_results.get(g, {}).get(var_name)
+
+                        val = 0.0
+                        if res and "nlp" in res and std_key in res["nlp"]:
+                            val = res["nlp"][std_key][m]
+
+                        if val > 0.0:
+                            # Disegno del marker con alpha per gestire overplotting
+                            ax.scatter(x_pos, val, color=strat_colors[strat], marker=strat_markers[strat],
+                                       s=90, edgecolors='white', linewidth=0.8, alpha=0.85, zorder=4)
+
+            # Tipografia e assi
+            ax.set_ylabel('Score', fontsize=12)
+            ax.set_title(f'NLP {std_key}: {m}', fontsize=14, fontweight='bold')
+            ax.set_xticks(np.arange(len(GROUPS)))
+            ax.set_xticklabels(GROUPS, fontsize=12, fontweight='bold')
+            ax.tick_params(axis='y', labelsize=11)
+            ax.grid(False, axis='x')
+            ax.grid(True, axis='y', linestyle=':', color='#cccccc', zorder=0)
+            ax.set_xlim(-0.5, len(GROUPS) - 0.5)
+            # Fissiamo l'asse Y tra 0 e 1 (con un piccolo margine in alto) per le metriche NLP
+            ax.set_ylim(0, 1.05)
+
+        # -----------------------------------------------------------------
+        # COSTRUZIONE GRAFICO COMBINATO (F1 e IoU)
+        # -----------------------------------------------------------------
         combined_metrics = ["F1", "IoU"]
         fig_nlp, axes_nlp = plt.subplots(1, 2, figsize=(14, 6))
         for idx, m in enumerate(combined_metrics):
-            ax = axes_nlp[idx]
-            x = np.arange(len(GROUPS))
-            width = 0.04
-            offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
-            
-            for i, var in enumerate(FEW_SHOT_VARIANTS):
-                vals = []
-                for g in GROUPS:
-                    res = all_results.get(g, {}).get(var)
-                    if res and "nlp" in res and std_key in res["nlp"]:
-                        vals.append(res["nlp"][std_key][m])
-                    else:
-                        vals.append(0.0)
-                
-                ax.bar(x + offsets[i], vals, width, color=FEW_SHOT_COLORS[var], edgecolor='black', label=var if idx == 0 else "")
-                
-            ax.set_ylabel('Score')
-            ax.set_title(f'NLP {std_key}: {m}', fontweight='bold')
-            ax.set_xticks(x)
-            ax.set_xticklabels(GROUPS, rotation=0)
-            ax.grid(False, axis='x')
-            ax.grid(True, axis='y', linestyle='--', alpha=0.7)
-            ax.set_ylim(0, 1.05)
-            
-        fig_nlp.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=4)
-        plt.suptitle(f"Few-Shot Comparison - NLP Metrics ({std_key})", fontsize=16, fontweight='bold', y=1.05)
-        plt.tight_layout()
+            draw_nlp_dot_plot(axes_nlp[idx], m)
+
+        # Creazione di una legenda unificata orizzontale
+        legend_elements = []
+        legend_elements.append(mlines.Line2D([], [], color='none', label='STRATEGIA:'))
+        for strat in strategies:
+            legend_elements.append(mlines.Line2D([], [], color='none', marker=strat_markers[strat],
+                                                 markerfacecolor=strat_colors[strat], markeredgecolor='white',
+                                                 markersize=9, label=strat))
+
+        legend_elements.append(mlines.Line2D([], [], color='none', label='  |  ESEMPI (X):'))
+        legend_elements.append(mlines.Line2D([], [], color='none', marker='|', markeredgecolor='black', markersize=10,
+                                             label='Sinistra = 1'))
+        legend_elements.append(
+            mlines.Line2D([], [], color='none', marker='|', markeredgecolor='black', markersize=10, label='Centro = 5'))
+        legend_elements.append(mlines.Line2D([], [], color='none', marker='|', markeredgecolor='black', markersize=10,
+                                             label='Destra = 10'))
+
+        fig_nlp.legend(handles=legend_elements, loc='lower center', bbox_to_anchor=(0.5, 0.02),
+                       ncol=9, fontsize=10, frameon=False, columnspacing=0.8)
+
+        plt.suptitle(f"Few-Shot Comparison - NLP Metrics ({std_key})", fontsize=16, fontweight='bold', y=0.98)
+        # Margine inferiore aumentato per fare spazio alla legenda
+        plt.tight_layout(rect=[0, 0.10, 1, 0.95])
         plt.savefig(os.path.join(nlp_dir, f'few_shot_nlp_combined_{file_suffix}.png'), bbox_inches='tight', dpi=300)
         plt.close()
 
-        # Single plots
+        # -----------------------------------------------------------------
+        # COSTRUZIONE GRAFICI SINGOLI
+        # -----------------------------------------------------------------
         for m in metrics_nlp:
             fig_single, ax_single = plt.subplots(figsize=(8, 6))
-            x = np.arange(len(GROUPS))
-            width = 0.04
-            offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
-            for i, var in enumerate(FEW_SHOT_VARIANTS):
-                vals = []
-                for g in GROUPS:
-                    res = all_results.get(g, {}).get(var)
-                    if res and "nlp" in res and std_key in res["nlp"]:
-                        vals.append(res["nlp"][std_key][m])
-                    else:
-                        vals.append(0.0)
-                ax_single.bar(x + offsets[i], vals, width, color=FEW_SHOT_COLORS[var], edgecolor='black', label=var)
-            
-            ax_single.set_ylabel('Score')
-            ax_single.set_title(f'NLP {std_key}: {m}', fontweight='bold')
-            ax_single.set_xticks(x)
-            ax_single.set_xticklabels(GROUPS, rotation=0)
-            ax_single.grid(False, axis='x')
-            ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
-            ax_single.set_ylim(0, 1.05)
-            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=3)
-            plt.tight_layout()
+            draw_nlp_dot_plot(ax_single, m)
+
+            # Legenda compatta strutturata su 2 righe per i grafici stretti
+            fig_single.legend(handles=legend_elements, loc='lower center', bbox_to_anchor=(0.5, 0.0),
+                              ncol=5, fontsize=10, frameon=False)
+
+            plt.tight_layout(rect=[0, 0.15, 1, 0.95])
             plt.savefig(os.path.join(nlp_dir, f'few_shot_nlp_{m}_{file_suffix}.png'), bbox_inches='tight', dpi=300)
             plt.close()
 
@@ -847,92 +908,157 @@ def plot_few_shot_metrics(all_results: dict, output_dir: str):
         "carbohydrates_MAE": 6.1, "carbohydrates_MAE_%": 31.9,
         "protein_MAE": 5.5, "protein_MAE_%": 29.5
     }
-    
-    def plot_few_shot_macro_type(metric_suffix, file_suffix, ylabel, title_prefix, subset="overall", plot_baseline=True, log_scale=False):
+
+    def plot_few_shot_macro_type(metric_suffix, file_suffix, ylabel, title_prefix, subset="overall", plot_baseline=True,
+                                 log_scale=False):
+        import matplotlib.lines as mlines
+        from matplotlib.ticker import ScalarFormatter
+
         out_dir = mae_overall_dir if subset == "overall" else mae_exact_dir
         fig_macro, axes_macro = plt.subplots(2, 3, figsize=(18, 12))
         axes_macro = axes_macro.flatten()
-        
-        for idx, f in enumerate(fields):
-            ax = axes_macro[idx]
-            x = np.arange(len(GROUPS))
-            width = 0.04
-            offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
-            
-            for i, var in enumerate(FEW_SHOT_VARIANTS):
-                vals = []
-                for g in GROUPS:
-                    res = all_results.get(g, {}).get(var)
-                    if res and "macro" in res and subset in res["macro"]:
-                        vals.append(res["macro"][subset][f"{f}_{metric_suffix}"])
-                    else:
-                        vals.append(0.0)
-                
-                # To prevent log(0) issues, replace 0 with a very small number or handle it gracefully
-                # Matplotlib handles 0 on log scale by hiding the bar, which is fine, but let's avoid warnings.
-                vals = [max(v, 0.01) if log_scale else v for v in vals]
-                
-                ax.bar(x + offsets[i], vals, width, color=FEW_SHOT_COLORS[var], edgecolor='black', label=var if idx == 0 else "")
-                
+
+        # Mappature per il Dot Plot
+        # Mappature per il Dot Plot
+        strategies = ['Standard', 'Two-Step', 'Hybrid v1', 'Hybrid v2', 'YOLO']
+        examples = ['1 Example', '5 Examples', '10 Examples']
+
+        strat_colors = {
+            'Standard': '#3385ff',
+            'Two-Step': '#ff4d4d',
+            'Hybrid v1': '#47d147',
+            'Hybrid v2': '#9933ff',
+            'YOLO': '#ff9933'  # Arancione
+        }
+        strat_markers = {
+            'Standard': 'o',
+            'Two-Step': 's',
+            'Hybrid v1': '^',
+            'Hybrid v2': 'D',
+            'YOLO': 'P'  # Simbolo della croce riempita (Plus)
+        }
+        # Offset sull'asse X per raggruppare visivamente gli esempi
+        ex_offsets = {'1 Example': -0.22, '5 Examples': 0.0, '10 Examples': 0.22}
+
+        # Funzione helper per disegnare il Dot Plot sia sui pannelli combinati che singoli
+        def draw_dot_plot(ax, f):
+            # Linea di Baseline e Testo inline
             if plot_baseline:
                 base_val = baseline[f"{f}_{metric_suffix}"]
-                ax.axhline(y=base_val, color='r', linestyle='--', linewidth=2,
-                           label='Nutrition 5k (2D direct)' if idx == 0 else "")
+                ax.axhline(y=base_val, color='gray', linestyle='--', linewidth=1.2, zorder=1)
 
-            ax.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
+                # Posiziona l'etichetta del baseline a sinistra
+                text_y = base_val * 1.05 if log_scale else base_val + (base_val * 0.02)
+                ax.text(x=-0.45, y=text_y, s=' Nutrition 5k', color='gray', fontsize=11,
+                        va='bottom', fontweight='bold', zorder=2)
+
+            for grp_idx, g in enumerate(GROUPS):
+                # Linee divisorie verticali chiare tra i gruppi di modelli
+                if grp_idx > 0:
+                    ax.axvline(x=grp_idx - 0.5, color='lightgray', linestyle=':', linewidth=1.5, zorder=0)
+
+                for ex_name in examples:
+                    x_pos = grp_idx + ex_offsets[ex_name]
+
+                    for strat in strategies:
+                        var_name = f"{ex_name} ({strat})"
+                        res = all_results.get(g, {}).get(var_name)
+
+                        val = 0.0
+                        if res and "macro" in res and subset in res["macro"]:
+                            val = res["macro"][subset][f"{f}_{metric_suffix}"]
+
+                        val = max(val, 0.01) if log_scale else val
+
+                        if val > 0.01 or not log_scale:
+                            # Evidenzia chi batte il baseline
+                            is_below = plot_baseline and (val < base_val)
+                            edgecolor = 'black' if is_below else 'white'
+                            lw = 1.5 if is_below else 0.5
+                            size = 110 if is_below else 70
+
+                            ax.scatter(x_pos, val, color=strat_colors[strat], marker=strat_markers[strat],
+                                       s=size, edgecolors=edgecolor, linewidth=lw, zorder=4)
+
+            # Tipografia migliorata (Punti 4, 6 e 7)
+            ax.set_ylabel(ylabel, fontsize=12)
             if log_scale:
                 ax.set_yscale('log')
-            ax.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
-            ax.set_xticks(x)
-            ax.set_xticklabels(GROUPS, rotation=0)
+                ax.yaxis.set_major_formatter(ScalarFormatter())
+
+            ax.set_title(f'{f.capitalize()}', fontsize=14, fontweight='bold')
+            ax.set_xticks(np.arange(len(GROUPS)))
+            ax.set_xticklabels(GROUPS, fontsize=12, fontweight='bold')
+            ax.tick_params(axis='y', labelsize=11)
             ax.grid(False, axis='x')
-            ax.grid(True, axis='y', linestyle='--', alpha=0.7)
-            
+            ax.grid(True, axis='y', linestyle='-', color='#eeeeee', zorder=0)
+            ax.set_xlim(-0.5, len(GROUPS) - 0.5)
+
+        # -----------------------------------------------------------------
+        # COSTRUZIONE GRAFICO COMBINATO (2x3)
+        # -----------------------------------------------------------------
+        for idx, f in enumerate(fields):
+            draw_dot_plot(axes_macro[idx], f)
+
+        # 6° Riquadro: Legenda Pulita ed Esplicativa
         axes_macro[5].axis('off')
-        ncol = 5 if plot_baseline else 4
-        fig_macro.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=ncol)
+        legend_elements = []
+
+        # Sezione: Strategie
+        legend_elements.append(mlines.Line2D([], [], color='none', label='STRATEGIA (Forma e Colore):'))
+        for strat in strategies:
+            legend_elements.append(mlines.Line2D([], [], color='none', marker=strat_markers[strat],
+                                                 markerfacecolor=strat_colors[strat], markeredgecolor='white',
+                                                 markersize=9, label=f"  {strat}"))
+
+        # Sezione: Posizionamento (Esempi)
+        legend_elements.append(mlines.Line2D([], [], color='none', label=''))  # Spazio
+        legend_elements.append(mlines.Line2D([], [], color='none', label='N. ESEMPI (Posizione su asse X):'))
+        legend_elements.append(mlines.Line2D([], [], color='none', marker='|', markeredgecolor='black', markersize=10,
+                                             label='  Sinistra = 1 Esempio'))
+        legend_elements.append(mlines.Line2D([], [], color='none', marker='|', markeredgecolor='black', markersize=10,
+                                             label='  Centro = 5 Esempi'))
+        legend_elements.append(mlines.Line2D([], [], color='none', marker='|', markeredgecolor='black', markersize=10,
+                                             label='  Destra = 10 Esempi'))
+
+        if plot_baseline:
+            legend_elements.append(mlines.Line2D([], [], color='none', label=''))  # Spazio
+            legend_elements.append(mlines.Line2D([], [], color='none', marker='o', markerfacecolor='#e0e0e0',
+                                                 markeredgecolor='black', linewidth=1.5, markersize=12,
+                                                 label='Bordo nero = Migliore del Baseline'))
+
+        axes_macro[5].legend(handles=legend_elements, loc='center left', fontsize=11, frameon=False, borderpad=1)
+
         title_suffix = " (Log Scale)" if log_scale else ""
-        plt.suptitle(f"Few-Shot Comparison - {title_prefix}{title_suffix}", fontsize=16, fontweight='bold', y=0.98)
-        plt.tight_layout()
+        plt.suptitle(f"{title_prefix}{title_suffix}", fontsize=18, fontweight='bold', y=0.98)
+
+        plt.tight_layout(rect=[0, 0.02, 1, 0.96])
         file_suffix_out = f"{file_suffix}_log" if log_scale else file_suffix
-        plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix_out}_combined.png'), bbox_inches='tight', dpi=300)
+        plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix_out}_combined.png'),
+                    bbox_inches='tight', dpi=300)
         plt.close()
 
-        # Single plots
+        # -----------------------------------------------------------------
+        # COSTRUZIONE GRAFICI SINGOLI
+        # -----------------------------------------------------------------
         for f in fields:
             fig_single, ax_single = plt.subplots(figsize=(10, 8))
-            x = np.arange(len(GROUPS))
-            width = 0.04
-            offsets = [(i - len(FEW_SHOT_VARIANTS)/2 + 0.5) * width for i in range(len(FEW_SHOT_VARIANTS))]
-            for i, var in enumerate(FEW_SHOT_VARIANTS):
-                vals = []
-                for g in GROUPS:
-                    res = all_results.get(g, {}).get(var)
-                    if res and "macro" in res and subset in res["macro"]:
-                        vals.append(res["macro"][subset][f"{f}_{metric_suffix}"])
-                    else:
-                        vals.append(0.0)
-                
-                vals = [max(v, 0.01) if log_scale else v for v in vals]
-                ax_single.bar(x + offsets[i], vals, width, color=FEW_SHOT_COLORS[var], edgecolor='black', label=var)
-            
-            if plot_baseline:
-                base_val = baseline[f"{f}_{metric_suffix}"]
-                ax_single.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k (2D direct)')
+            draw_dot_plot(ax_single, f)
 
-            ax_single.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
-            if log_scale:
-                ax_single.set_yscale('log')
-            ax_single.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
-            ax_single.set_xticks(x)
-            ax_single.set_xticklabels(GROUPS, rotation=0)
-            ax_single.grid(False, axis='x')
-            ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
-            ncol = 5 if plot_baseline else 4
-            ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=ncol)
-            plt.tight_layout()
-            file_suffix_out = f"{file_suffix}_log" if log_scale else file_suffix
-            plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix_out}_{f}.png'), bbox_inches='tight', dpi=300)
+            # Per i singoli riquadri creiamo una legenda orizzontale compatta
+            single_leg_elements = []
+            for strat in strategies:
+                single_leg_elements.append(mlines.Line2D([], [], color='none', marker=strat_markers[strat],
+                                                         markerfacecolor=strat_colors[strat], markeredgecolor='white',
+                                                         markersize=9, label=strat))
+
+            ax_single.legend(handles=single_leg_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15),
+                             ncol=4, fontsize=11, title="Strategie (Sinistra=1 ex, Centro=5 ex, Destra=10 ex)",
+                             title_fontsize=12, frameon=False)
+
+            plt.tight_layout(rect=[0, 0.15, 1, 1])
+            plt.savefig(os.path.join(out_dir, f'few_shot_macro_{subset}_{file_suffix_out}_{f}.png'),
+                        bbox_inches='tight', dpi=300)
             plt.close()
 
     plot_few_shot_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", plot_baseline=True)
@@ -992,34 +1118,35 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
         folder_path = os.path.join(base_dir, folder)
         if not os.path.exists(folder_path):
             continue
-            
+
         for filename in os.listdir(folder_path):
             if not filename.endswith('.json'):
                 continue
+            # RIMOSSA LA RIGA: if "yolo" in filename.lower(): continue
 
             pred_path = os.path.join(folder_path, filename)
             g, v_type = parse_model_name(filename)
             if g not in GROUPS:
                 continue
-                
+
             prefix = folder_to_prefix[folder]
-            if "v2hybrid" in v_type.lower() or "Hybrid strategy two" in v_type:
-                var_name = f"{prefix} (Hybrid strategy two)"
+            if "v2hybrid" in v_type.lower() or "Hybrid v2" in v_type:
+                var_name = f"{prefix} (Hybrid v2)"
             elif "Hybrid" in v_type:
-                var_name = f"{prefix} (Hybrid)"
+                var_name = f"{prefix} (Hybrid v1)"
             elif "Two-Step" in v_type:
                 var_name = f"{prefix} (Two-Step)"
             elif "yolo" in v_type.lower():
                 var_name = f"{prefix} (YOLO)"
             else:
                 var_name = f"{prefix} (Standard)"
-                
+
             is_yolo = "YOLO" in var_name
-            var_name_optuna = f"{prefix} (YOLO Optuna)" if is_yolo else None
-            
+            var_name_optuna = f"{prefix} (YOLO Optuna)" if is_yolo else None  # <-- RIGA DA AGGIUNGERE
+
             needs_base = True
             needs_optuna = False
-            
+
             if is_yolo:
                 if loaded_fs_yolo and all_few_shot_results[g][var_name] is not None:
                     needs_base = False
@@ -1029,14 +1156,9 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
             else:
                 if loaded_fs and all_few_shot_results[g][var_name] is not None:
                     needs_base = False
-                    
+
             if not needs_base and not needs_optuna:
                 continue
-                
-            if is_yolo:
-                updated_fs_yolo = True
-            else:
-                updated_fs = True
 
             try:
                 if needs_base:
@@ -1196,6 +1318,7 @@ def evaluate_few_shot_learning(nlp_model, vocabulary, vocab_embeddings, threshol
 
 
 if __name__ == "__main__":
+    init_dynamic_globals()
 
     # ================= CONFIGURATIONS =================
     THRESHOLD = 0.6
@@ -1233,6 +1356,7 @@ if __name__ == "__main__":
         "data/prediction/one_example/test_predictions_nutrition5k_yolo_gemma4_e4b_q4_tb.json",
         "data/prediction/one_example/test_predictions_nutrition5k_yolo_gemma4_e4b_q8_tb.json"
     ]
+
     INGREDIENTS_CSV_PATH = "data/metadata/ingredients_metadata.csv"
     # ==================================================
     print("Loading vocabulary from CSV...")
@@ -1272,13 +1396,14 @@ if __name__ == "__main__":
 
     for pred_path in PRED_JSON_PATHS:
         model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
-        
+
         is_yolo = "yolo" in model_name.lower()
         model_name_optuna = model_name + "_optuna"
-        
+
         needs_base = model_name not in all_nlp_results or model_name not in all_macro_results
-        needs_optuna = is_yolo and (model_name_optuna not in all_nlp_results or model_name_optuna not in all_macro_results)
-        
+        needs_optuna = is_yolo and (
+                    model_name_optuna not in all_nlp_results or model_name_optuna not in all_macro_results)
+
         if not needs_base and not needs_optuna:
             continue
 
@@ -1443,26 +1568,13 @@ if __name__ == "__main__":
 
     # === YOLO OPTUNA COMPARISON ===
     def plot_yolo_optuna_metrics(results: dict, output_dir: str):
+        import matplotlib.lines as mlines
+        from matplotlib.ticker import ScalarFormatter
+
         os.makedirs(output_dir, exist_ok=True)
-        # We compare "X Examples (YOLO)" vs "X Examples (YOLO Optuna)"
-        yolo_variants = [
-            '1 Example (YOLO)', '1 Example (YOLO Optuna)',
-            '5 Examples (YOLO)', '5 Examples (YOLO Optuna)',
-            '10 Examples (YOLO)',
-    '1 Example (YOLO Optuna)', '5 Examples (YOLO Optuna)', '10 Examples (YOLO Optuna)', '10 Examples (YOLO Optuna)'
-        ]
-        
-        yolo_colors = {
-            '1 Example (YOLO)': '#ff9999',
-            '1 Example (YOLO Optuna)': '#d8b3ff',
-            '5 Examples (YOLO)': '#ff6666',
-            '5 Examples (YOLO Optuna)': '#9933ff',
-            '10 Examples (YOLO)': '#ff3333',
-            '10 Examples (YOLO Optuna)': '#6600cc'
-        }
-        
+
         fields = ["calories", "mass", "fat", "carbohydrates", "protein"]
-        
+
         baseline = {
             "calories_MAE": 70.6, "calories_MAE_%": 26.1,
             "mass_MAE": 40.4, "mass_MAE_%": 18.8,
@@ -1470,101 +1582,163 @@ if __name__ == "__main__":
             "carbohydrates_MAE": 6.1, "carbohydrates_MAE_%": 31.9,
             "protein_MAE": 5.5, "protein_MAE_%": 29.5
         }
-        
-        def plot_yolo_macro_type(metric_suffix, file_suffix, ylabel, title_prefix, subset="overall", plot_baseline=True, log_scale=False):
+
+        # 1. Definizione Simboli e Colori (YOLO vs YOLO Optuna)
+        strategies = ['YOLO', 'YOLO Optuna']
+        examples = ['1 Example', '5 Examples', '10 Examples']
+
+        strat_colors = {
+            'YOLO': '#ff9933',  # Arancione
+            'YOLO Optuna': '#cc0000'  # Rosso Scuro
+        }
+        strat_markers = {
+            'YOLO': 'P',  # Croce riempita (Plus)
+            'YOLO Optuna': 'X'  # X maiuscola
+        }
+
+        # Offset leggermente più vicini visto che ci sono solo 2 strategie per colonna
+        ex_offsets = {'1 Example': -0.15, '5 Examples': 0.0, '10 Examples': 0.15}
+
+        def plot_yolo_macro_type(metric_suffix, file_suffix, ylabel, title_prefix, subset="overall", plot_baseline=True,
+                                 log_scale=False):
             out_dir = os.path.join(output_dir, subset)
             os.makedirs(out_dir, exist_ok=True)
-            
-            fig, axes = plt.subplots(2, 3, figsize=(18, 12))
-            axes = axes.flatten()
-            
-            for idx, f in enumerate(fields):
-                ax = axes[idx]
-                x = np.arange(len(GROUPS))
-                width = 0.12
-                offsets = [(i - len(yolo_variants)/2 + 0.5) * width for i in range(len(yolo_variants))]
-                
-                for i, var in enumerate(yolo_variants):
-                    vals = []
-                    for g in GROUPS:
-                        res = results.get(g, {}).get(var)
-                        if res and "macro" in res and subset in res["macro"]:
-                            vals.append(res["macro"][subset][f"{f}_{metric_suffix}"])
-                        else:
-                            vals.append(0.0)
-                    
-                    vals = [max(v, 0.01) if log_scale else v for v in vals]
-                    ax.bar(x + offsets[i], vals, width, color=yolo_colors[var], edgecolor='black', label=var if idx == 0 else "")
-                    
+
+            fig_macro, axes_macro = plt.subplots(2, 3, figsize=(18, 12))
+            axes_macro = axes_macro.flatten()
+
+            def draw_dot_plot(ax, f):
+                # Linea di Baseline
                 if plot_baseline:
                     base_val = baseline[f"{f}_{metric_suffix}"]
-                    ax.axhline(y=base_val, color='r', linestyle='--', linewidth=2,
-                               label='Nutrition 5k (2D direct)' if idx == 0 else "")
-                    
-                ax.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
+                    ax.axhline(y=base_val, color='gray', linestyle='--', linewidth=1.2, zorder=1)
+
+                    text_y = base_val * 1.05 if log_scale else base_val
+                    ax.text(x=-0.45, y=text_y, s=' Nutrition 5k ', color='#333333', fontsize=10,
+                            va='center', fontweight='bold', zorder=5,
+                            bbox=dict(facecolor='white', alpha=0.9, edgecolor='none', pad=2))
+
+                for grp_idx, g in enumerate(GROUPS):
+                    if grp_idx > 0:
+                        ax.axvline(x=grp_idx - 0.5, color='#e0e0e0', linestyle='-', linewidth=1, zorder=0)
+
+                    for ex_name in examples:
+                        x_pos = grp_idx + ex_offsets[ex_name]
+
+                        for strat in strategies:
+                            var_name = f"{ex_name} ({strat})"
+                            res = results.get(g, {}).get(var_name)
+
+                            val = 0.0
+                            if res and "macro" in res and subset in res["macro"]:
+                                val = res["macro"][subset][f"{f}_{metric_suffix}"]
+
+                            val = max(val, 0.01) if log_scale else val
+
+                            if val > 0.01 or not log_scale:
+                                is_below = plot_baseline and (val < base_val)
+                                edgecolor = 'black' if is_below else 'white'
+                                lw = 1.5 if is_below else 0.8
+
+                                ax.scatter(x_pos, val, color=strat_colors[strat], marker=strat_markers[strat],
+                                           s=110, edgecolors=edgecolor, linewidth=lw, alpha=0.85, zorder=4)
+
+                ax.set_ylabel(ylabel, fontsize=12)
                 if log_scale:
                     ax.set_yscale('log')
-                ax.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
-                ax.set_xticks(x)
-                ax.set_xticklabels(GROUPS, rotation=0)
+                    ax.yaxis.set_major_formatter(ScalarFormatter())
+
+                ax.set_title(f'{f.capitalize()}', fontsize=14, fontweight='bold')
+                ax.set_xticks(np.arange(len(GROUPS)))
+                ax.set_xticklabels(GROUPS, fontsize=12, fontweight='bold')
+                ax.tick_params(axis='y', labelsize=11)
                 ax.grid(False, axis='x')
-                ax.grid(True, axis='y', linestyle='--', alpha=0.7)
-                
-            axes[5].axis('off')
-            ncol = 4 if plot_baseline else 3
-            fig.legend(loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=ncol)
+                ax.grid(True, axis='y', linestyle=':', color='#cccccc', zorder=0)
+                ax.set_xlim(-0.5, len(GROUPS) - 0.5)
+
+            # Combina i 5 grafici
+            for idx, f in enumerate(fields):
+                draw_dot_plot(axes_macro[idx], f)
+
+            # Sesto Riquadro per la Legenda
+            axes_macro[5].axis('off')
+            legend_elements = []
+
+            legend_elements.append(mlines.Line2D([], [], color='none', label='STRATEGIA (Forma e Colore):'))
+            for strat in strategies:
+                legend_elements.append(mlines.Line2D([], [], color='none', marker=strat_markers[strat],
+                                                     markerfacecolor=strat_colors[strat], markeredgecolor='white',
+                                                     markersize=10, label=f"  {strat}"))
+
+            legend_elements.append(mlines.Line2D([], [], color='none', label=''))
+            legend_elements.append(mlines.Line2D([], [], color='none', label='N. ESEMPI (Posizione su asse X):'))
+            legend_elements.append(
+                mlines.Line2D([], [], color='none', marker='|', markeredgecolor='black', markersize=10,
+                              label='  Sinistra = 1 Esempio'))
+            legend_elements.append(
+                mlines.Line2D([], [], color='none', marker='|', markeredgecolor='black', markersize=10,
+                              label='  Centro = 5 Esempi'))
+            legend_elements.append(
+                mlines.Line2D([], [], color='none', marker='|', markeredgecolor='black', markersize=10,
+                              label='  Destra = 10 Esempi'))
+
+            if plot_baseline:
+                legend_elements.append(mlines.Line2D([], [], color='none', label=''))
+                legend_elements.append(mlines.Line2D([], [], color='none', marker='o', markerfacecolor='#e0e0e0',
+                                                     markeredgecolor='black', linewidth=1.5, markersize=12,
+                                                     label='Bordo nero = Migliore del Baseline'))
+
+            axes_macro[5].legend(handles=legend_elements, loc='center left', fontsize=11, frameon=False, borderpad=1)
+
             title_suffix = " (Log Scale)" if log_scale else ""
-            plt.suptitle(f"YOLO Optuna Comparison - {title_prefix}{title_suffix}", fontsize=16, fontweight='bold', y=0.98)
-            plt.tight_layout()
+            plt.suptitle(f"YOLO Optuna Comparison - {title_prefix}{title_suffix}", fontsize=18, fontweight='bold',
+                         y=0.98)
+            plt.tight_layout(rect=[0, 0.02, 1, 0.96])
+
             file_suffix_out = f"{file_suffix}_log" if log_scale else file_suffix
-            plt.savefig(os.path.join(out_dir, f'yolo_optuna_{subset}_{file_suffix_out}_combined.png'), bbox_inches='tight', dpi=300)
+            plt.savefig(os.path.join(out_dir, f'yolo_optuna_{subset}_{file_suffix_out}_combined.png'),
+                        bbox_inches='tight', dpi=300)
             plt.close()
 
-            # Single plots
+            # Disegna i grafici singoli
             for f in fields:
                 fig_single, ax_single = plt.subplots(figsize=(10, 8))
-                x = np.arange(len(GROUPS))
-                width = 0.12
-                offsets = [(i - len(yolo_variants)/2 + 0.5) * width for i in range(len(yolo_variants))]
-                for i, var in enumerate(yolo_variants):
-                    vals = []
-                    for g in GROUPS:
-                        res = results.get(g, {}).get(var)
-                        if res and "macro" in res and subset in res["macro"]:
-                            vals.append(res["macro"][subset][f"{f}_{metric_suffix}"])
-                        else:
-                            vals.append(0.0)
-                    vals = [max(v, 0.01) if log_scale else v for v in vals]
-                    ax_single.bar(x + offsets[i], vals, width, color=yolo_colors[var], edgecolor='black', label=var)
-                
-                if plot_baseline:
-                    base_val = baseline[f"{f}_{metric_suffix}"]
-                    ax_single.axhline(y=base_val, color='r', linestyle='--', linewidth=2, label='Nutrition 5k (2D direct)')
+                draw_dot_plot(ax_single, f)
 
-                ax_single.set_ylabel(ylabel + (" (Log Scale)" if log_scale else ""))
-                if log_scale:
-                    ax_single.set_yscale('log')
-                ax_single.set_title(f'{title_prefix}: {f.capitalize()}', fontweight='bold')
-                ax_single.set_xticks(x)
-                ax_single.set_xticklabels(GROUPS, rotation=0)
-                ax_single.grid(False, axis='x')
-                ax_single.grid(True, axis='y', linestyle='--', alpha=0.7)
-                ncol = 4 if plot_baseline else 3
-                ax_single.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=ncol)
-                plt.tight_layout()
-                file_suffix_out = f"{file_suffix}_log" if log_scale else file_suffix
-                plt.savefig(os.path.join(out_dir, f'yolo_optuna_{subset}_{file_suffix_out}_{f}.png'), bbox_inches='tight', dpi=300)
+                single_leg_elements = []
+                for strat in strategies:
+                    single_leg_elements.append(mlines.Line2D([], [], color='none', marker=strat_markers[strat],
+                                                             markerfacecolor=strat_colors[strat],
+                                                             markeredgecolor='white',
+                                                             markersize=10, label=strat))
+
+                ax_single.legend(handles=single_leg_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15),
+                                 ncol=2, fontsize=11, title="Strategie (Sinistra=1 ex, Centro=5 ex, Destra=10 ex)",
+                                 title_fontsize=12, frameon=False)
+
+                plt.tight_layout(rect=[0, 0.15, 1, 1])
+                plt.savefig(os.path.join(out_dir, f'yolo_optuna_{subset}_{file_suffix_out}_{f}.png'),
+                            bbox_inches='tight', dpi=300)
                 plt.close()
 
-        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", plot_baseline=True, log_scale=False)
-        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", plot_baseline=True, log_scale=False)
-        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", plot_baseline=False, log_scale=False)
-        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", plot_baseline=False, log_scale=False)
+        # Richiama la funzione per generare tutte le varianti (lineari e logaritmiche)
+        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall",
+                             plot_baseline=True, log_scale=False)
+        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall",
+                             plot_baseline=True, log_scale=False)
+        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)",
+                             "exact_match", plot_baseline=False, log_scale=False)
+        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)",
+                             "exact_match", plot_baseline=False, log_scale=False)
 
-        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", plot_baseline=True, log_scale=True)
-        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", plot_baseline=True, log_scale=True)
-        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", plot_baseline=False, log_scale=True)
-        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", plot_baseline=False, log_scale=True)
+        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall",
+                             plot_baseline=True, log_scale=True)
+        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall",
+                             plot_baseline=True, log_scale=True)
+        plot_yolo_macro_type("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)",
+                             "exact_match", plot_baseline=False, log_scale=True)
+        plot_yolo_macro_type("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)",
+                             "exact_match", plot_baseline=False, log_scale=True)
 
     def evaluate_yolo_optuna_comparison(nlp_model, vocabulary, vocab_embeddings, threshold, base_dir="data/prediction"):
         print("\n" + "=" * 70)
@@ -1655,5 +1829,6 @@ if __name__ == "__main__":
         print(f"YOLO Optuna charts saved in data/evaluation/yolo_optuna_metrics")
 
     evaluate_yolo_optuna_comparison(nlp_model, vocabulary, vocab_embeddings, THRESHOLD)
+
 
     print(f"\nAll graphs (single and combined) have been saved in the folder: {OUTPUT_DIR}")
