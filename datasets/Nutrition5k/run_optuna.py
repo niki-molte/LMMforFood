@@ -4,128 +4,111 @@ import os
 import glob
 
 # ================= CONFIGURAZIONI =================
-# Variabile per decidere quale strategia di ottimizzazione usare:
-# False -> Solo moltiplicatori (Strategia originale)
-# True  -> Moltiplicatori + Intercetta (Scala + Bias)
-USE_BIAS_STRATEGY = True
-# ==================================================
-
 # 1. PERCORSI
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 GROUND_TRUTH_FILE = os.path.join(BASE_DIR, "data", "ground truth", "train_set_optuna.json")
 PREDICTIONS_BASE_DIR = os.path.join(BASE_DIR, "data", "optuna")
 
 
+# ==================================================
+
 def load_json(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 
-# Carichiamo la ground truth una volta sola
+# Carichiamo la ground truth una volta sola all'avvio
 print("Caricamento Ground Truth...")
 ground_truth_data = load_json(GROUND_TRUTH_FILE)
 gt_dict = {item['food_id']: item for item in ground_truth_data}
 
 
-def optimize_for_file(predictions_file, use_bias):
+def optimize_for_file(predictions_file):
     predictions_data = load_json(predictions_file)
 
-    def objective(trial):
-        # 1. Moltiplicatori (sempre usati in entrambe le strategie)
-        scale_mass = trial.suggest_float("scale_mass", 0.3, 2.0)
-        scale_cal = trial.suggest_float("scale_cal", 0.3, 2.0)
-        scale_fat = trial.suggest_float("scale_fat", 0.3, 2.0)
-        scale_carbs = trial.suggest_float("scale_carbs", 0.3, 2.0)
-        scale_protein = trial.suggest_float("scale_protein", 0.3, 2.0)
+    best_params = {}
+    total_mae_perc = 0.0
 
-        # 2. Intercette (usate solo se la strategia Bias è attiva)
-        if use_bias:
-            bias_mass = trial.suggest_float("bias_mass", -100.0, 100.0)
-            bias_cal = trial.suggest_float("bias_cal", -100.0, 100.0)
-            bias_fat = trial.suggest_float("bias_fat", -50.0, 50.0)
-            bias_carbs = trial.suggest_float("bias_carbs", -50.0, 50.0)
-            bias_protein = trial.suggest_float("bias_protein", -50.0, 50.0)
-        else:
-            bias_mass = 0.0
-            bias_cal = 0.0
-            bias_fat = 0.0
-            bias_carbs = 0.0
-            bias_protein = 0.0
+    # Analizziamo un nutriente alla volta in modo completamente indipendente
+    nutrients = ["mass", "cal", "fat", "carbs", "protein"]
 
-        errors = {"mass": [], "cal": [], "fat": [], "carbs": [], "protein": []}
-        gt_totals = {"mass": 0, "cal": 0, "fat": 0, "carbs": 0, "protein": 0}
+    for nut in nutrients:
+        def objective(trial):
+            # Range di ricerca impostato tra 0.05 e 4.0 per la strategia solo scalari
+            scale = trial.suggest_float(f"scale_{nut}", 0.005, 5.0)
 
-        for pred in predictions_data:
-            food_id = pred.get("food_id")
-            if food_id not in gt_dict:
-                continue
+            errors = []
+            gt_total = 0.0
 
-            gt = gt_dict[food_id]
+            for pred in predictions_data:
+                food_id = pred.get("food_id")
+                if food_id not in gt_dict:
+                    continue
 
-            # Lettura corretta dalla struttura annidata total_macronutrients
-            gt_nut = gt.get("total_macronutrients", {})
-            gt_mass = gt_nut.get("total_mass_grams", gt.get("total_mass", 0))
-            gt_cal = gt_nut.get("calories", gt.get("total_calories", 0))
-            gt_fat = gt_nut.get("fat", gt.get("total_fat", 0))
-            gt_carbs = gt_nut.get("carbohydrates", gt.get("total_carbs", 0))
-            gt_protein = gt_nut.get("protein", gt.get("total_protein", 0))
+                gt = gt_dict[food_id]
+                gt_nut = gt.get("total_macronutrients", {})
 
-            if gt_mass <= 0:
-                continue
+                # Recupero Ground Truth specifico per il nutriente corrente
+                if nut == "mass":
+                    gt_val = gt_nut.get("total_mass_grams", gt.get("total_mass", 0))
+                elif nut == "cal":
+                    gt_val = gt_nut.get("calories", gt.get("total_calories", 0))
+                elif nut == "fat":
+                    gt_val = gt_nut.get("fat", gt.get("total_fat", 0))
+                elif nut == "carbs":
+                    gt_val = gt_nut.get("carbohydrates", gt.get("total_carbs", 0))
+                elif nut == "protein":
+                    gt_val = gt_nut.get("protein", gt.get("total_protein", 0))
 
-            gt_totals["mass"] += gt_mass
-            gt_totals["cal"] += gt_cal
-            gt_totals["fat"] += gt_fat
-            gt_totals["carbs"] += gt_carbs
-            gt_totals["protein"] += gt_protein
+                # Evita problemi se la massa è assente nel ground truth
+                if gt_val <= 0 and nut == "mass":
+                    continue
 
-            # Recupero dati predetti (compatibile con Step 1, Two-Step e Hybrid)
-            pred_block = pred.get("predicted_nutrition", pred.get("predicted_nutrition_step2", {}))
-            pred_nut = pred_block.get("total_macronutrients", {})
+                gt_total += gt_val
 
-            ingredients = pred_block.get("visible_ingredients", []) + pred_block.get("hidden_ingredients", [])
-            pred_mass = sum(ing.get("weight_grams", 0) for ing in ingredients)
+                # Recupero Predizione specifica
+                pred_block = pred.get("predicted_nutrition", pred.get("predicted_nutrition_step2", {}))
+                pred_nut_dict = pred_block.get("total_macronutrients", {})
 
-            pred_cal = pred_nut.get("calories", 0)
-            pred_fat = pred_nut.get("fat", 0)
-            pred_carbs = pred_nut.get("carbohydrates", 0)
-            pred_protein = pred_nut.get("protein", 0)
+                if nut == "mass":
+                    ingredients = pred_block.get("visible_ingredients", []) + pred_block.get("hidden_ingredients", [])
+                    pred_val = sum(ing.get("weight_grams", 0) for ing in ingredients)
+                elif nut == "cal":
+                    pred_val = pred_nut_dict.get("calories", 0)
+                elif nut == "fat":
+                    pred_val = pred_nut_dict.get("fat", 0)
+                elif nut == "carbs":
+                    pred_val = pred_nut_dict.get("carbohydrates", 0)
+                elif nut == "protein":
+                    pred_val = pred_nut_dict.get("protein", 0)
 
-            # 3. Applicazione (Scale + Bias con protezione dai negativi)
-            adj_mass = max(0.0, (pred_mass * scale_mass) + bias_mass)
-            adj_cal = max(0.0, (pred_cal * scale_cal) + bias_cal)
-            adj_fat = max(0.0, (pred_fat * scale_fat) + bias_fat)
-            adj_carbs = max(0.0, (pred_carbs * scale_carbs) + bias_carbs)
-            adj_protein = max(0.0, (pred_protein * scale_protein) + bias_protein)
+                # Applicazione correzione: solo moltiplicatore (niente bias)
+                adj_val = max(0.0, pred_val * scale)
+                errors.append(abs(adj_val - gt_val))
 
-            errors["mass"].append(abs(adj_mass - gt_mass))
-            errors["cal"].append(abs(adj_cal - gt_cal))
-            errors["fat"].append(abs(adj_fat - gt_fat))
-            errors["carbs"].append(abs(adj_carbs - gt_carbs))
-            errors["protein"].append(abs(adj_protein - gt_protein))
+            # Controllo di sicurezza contro divisioni per zero
+            if gt_total == 0 or len(errors) == 0:
+                return 9999.0
 
-        # Controllo di sicurezza contro divisioni per zero
-        if gt_totals["mass"] == 0 or len(errors["mass"]) == 0:
-            return 9999.0
+            # Ritorna il MAE % specifico del singolo nutriente
+            return (sum(errors) / gt_total) * 100
 
-        mae_perc_mass = (sum(errors["mass"]) / gt_totals["mass"]) * 100
-        mae_perc_cal = (sum(errors["cal"]) / gt_totals["cal"]) * 100
-        mae_perc_fat = (sum(errors["fat"]) / gt_totals["fat"]) * 100
-        mae_perc_carbs = (sum(errors["carbs"]) / gt_totals["carbs"]) * 100
-        mae_perc_protein = (sum(errors["protein"]) / gt_totals["protein"]) * 100
+        # Silenziamo l'output di Optuna per non inondare la console
+        optuna.logging.set_verbosity(optuna.logging.WARNING)
+        study = optuna.create_study(direction="minimize")
 
-        return (mae_perc_mass + mae_perc_cal + mae_perc_fat + mae_perc_carbs + mae_perc_protein) / 5
+        # Eseguiamo 2000 tentativi mirati a trovare il valore ottimale per il singolo nutriente
+        study.optimize(objective, n_trials=5000)
 
-    optuna.logging.set_verbosity(optuna.logging.WARNING)
-    study = optuna.create_study(direction="minimize")
-    study.optimize(objective, n_trials=2000)
+        # Salviamo il parametro scalare migliore trovato e sommiamo l'errore per la media finale
+        best_params.update(study.best_params)
+        total_mae_perc += study.best_value
 
-    return study.best_value, study.best_params
+    # Restituiamo la media aritmetica dei 5 MAE indipendenti e il dizionario combinato dei pesi ottimali
+    return total_mae_perc / 5, best_params
 
 
 if __name__ == "__main__":
-    import csv
-
     search_pattern = os.path.join(PREDICTIONS_BASE_DIR, "**", "*.json")
     json_files = glob.glob(search_pattern, recursive=True)
 
@@ -134,8 +117,7 @@ if __name__ == "__main__":
 
     folder_results = {}
 
-    strategy_name = "Scala + Intercetta (Bias)" if USE_BIAS_STRATEGY else "Solo Moltiplicatori"
-    print(f"\nAvvio ottimizzazione Optuna. Strategia in uso: {strategy_name}\n")
+    print(f"\nAvvio ottimizzazione Optuna Indipendente (Solo Moltiplicatori: 0.05x - 4.0x)\n")
 
     for filepath in sorted(json_files):
         # Ignoriamo i file di summary già presenti per evitare di ri-analizzarli
@@ -143,8 +125,8 @@ if __name__ == "__main__":
             continue
 
         print(f"-> Ottimizzazione in corso per: {filepath}")
-        best_mae, best_params = optimize_for_file(filepath, USE_BIAS_STRATEGY)
-        print(f"   MAE% Raggiunto: {best_mae:.2f}%")
+        best_mae, best_params = optimize_for_file(filepath)
+        print(f"   MAE% Medio Combinato Raggiunto: {best_mae:.2f}%")
 
         folder_path = os.path.dirname(filepath)
         config_name = os.path.basename(filepath)
