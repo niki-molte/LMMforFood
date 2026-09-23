@@ -13,7 +13,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
 
 PROVIDER = "minicpm"
-USE_YOLO = True
+USE_YOLO = False
 DEBUG = False
 YOLO_WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "yolo_weights", "yolov8s.pt")
 _yolo_model = None
