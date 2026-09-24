@@ -1,0 +1,42 @@
+{
+    "optuna_train_predictions_gemma4_e2b_q4_tb.json": {
+        "best_combined_mae_perc": 56.31,
+        "optimal_scalars": {
+            "scale_mass": 0.5114446864435999,
+            "scale_cal": 0.4368755470150666,
+            "scale_fat": 0.3839541691798744,
+            "scale_carbs": 0.2852697390926079,
+            "scale_protein": 0.6223392969948197
+        }
+    },
+    "optuna_train_predictions_gemma4_e2b_q8_tb.json": {
+        "best_combined_mae_perc": 61.21,
+        "optimal_scalars": {
+            "scale_mass": 0.6116752978813725,
+            "scale_cal": 0.49691996558685053,
+            "scale_fat": 0.5117701127863439,
+            "scale_carbs": 0.4620466708765528,
+            "scale_protein": 0.8167187543340441
+        }
+    },
+    "optuna_train_predictions_gemma4_e4b_q4_tb.json": {
+        "best_combined_mae_perc": 46.19,
+        "optimal_scalars": {
+            "scale_mass": 0.8087834860328925,
+            "scale_cal": 0.6920994472873285,
+            "scale_fat": 0.5616588778041428,
+            "scale_carbs": 0.7435311064867447,
+            "scale_protein": 0.7619193255076323
+        }
+    },
+    "optuna_train_predictions_gemma4_e4b_q8_tb.json": {
+        "best_combined_mae_perc": 49.09,
+        "optimal_scalars": {
+            "scale_mass": 1.050758329612805,
+            "scale_cal": 0.8354095176256934,
+            "scale_fat": 0.6586299004009435,
+            "scale_carbs": 0.8647133592861075,
+            "scale_protein": 0.8685969984247117
+        }
+    }
+}

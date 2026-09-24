@@ -1,0 +1,35 @@
+{
+    "_strategy_info": {
+        "name": "linear_mass_only",
+        "description": "Moltiplicatore lineare ottimizzato solo per la massa totale",
+        "nutrients_optimized": [
+            "mass"
+        ],
+        "param_type": "linear_scale",
+        "n_trials": 5000
+    },
+    "optuna_train_predictions_gemma4_e2b_q4_tb.json": {
+        "best_combined_mae_perc": 54.47,
+        "optimal_scalars": {
+            "scale_mass": 0.6606043363931703
+        }
+    },
+    "optuna_train_predictions_gemma4_e2b_q8_tb.json": {
+        "best_combined_mae_perc": 63.14,
+        "optimal_scalars": {
+            "scale_mass": 0.6707497484396875
+        }
+    },
+    "optuna_train_predictions_gemma4_e4b_q4_tb.json": {
+        "best_combined_mae_perc": 37.9,
+        "optimal_scalars": {
+            "scale_mass": 0.9632146884474844
+        }
+    },
+    "optuna_train_predictions_gemma4_e4b_q8_tb.json": {
+        "best_combined_mae_perc": 39.31,
+        "optimal_scalars": {
+            "scale_mass": 1.174052078037085
+        }
+    }
+}

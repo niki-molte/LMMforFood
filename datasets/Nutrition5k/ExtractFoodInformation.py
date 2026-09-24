@@ -357,7 +357,7 @@ def main():
     system_instruction = base_system_instruction
 
     if PROVIDER == "gemma":
-        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e4b") #gemma4:e2b-it-q8_0
+        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e2b") #gemma4:e2b-it-q8_0
         client = GemmaClient(model_name=model)
         # Solo Gemma 4 richiede il token esplicito per il thinking
         system_instruction = "<|think|>\n" + base_system_instruction
@@ -1045,7 +1045,7 @@ def main():
     yolo_few_shot_examples = [
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1562012076.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo", "annotated_dish_1562012076.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1059,7 +1059,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1560442279.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo", "annotated_dish_1560442279.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1076,7 +1076,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1563395449.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo", "annotated_dish_1563395449.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1092,7 +1092,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1562086740.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo", "annotated_dish_1562086740.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1106,7 +1106,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1561491121.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo", "annotated_dish_1561491121.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1119,7 +1119,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1564590190.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo", "annotated_dish_1564590190.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1136,7 +1136,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1562615128.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo", "annotated_dish_1562615128.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1151,7 +1151,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1565640549.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo", "annotated_dish_1565640549.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1164,7 +1164,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1563207364.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo", "annotated_dish_1563207364.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1179,7 +1179,7 @@ def main():
         },
         {
             "image_path": normalize_path(
-                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image", "annotated_dish_1561575474.png")
+                os.path.join(SCRIPT_DIR, "data", "few_shot_yolo", "annotated_dish_1561575474.png")
             ),
             "prompt": (
         "Analyze this dish using the provided image and the following detection data:\n"
@@ -1199,7 +1199,7 @@ def main():
         few_shot_examples = yolo_few_shot_examples[:NUM_EXAMPLES]
         
         # Generazione lazy delle immagini annotate se non esistono ancora fisicamente su disco
-        few_shot_dir = os.path.join(SCRIPT_DIR, "data", "few_shot_yolo_image")
+        few_shot_dir = os.path.join(SCRIPT_DIR, "data", "few_shot_yolo")
         for i, ex in enumerate(few_shot_examples):
             if not os.path.exists(ex["image_path"]):
                 orig_path = base_few_shot_examples[i]["image_path"]
