@@ -26,31 +26,31 @@ STRATEGY_CATALOG = {
         "nutrients": ["mass", "cal", "fat", "carbs", "protein"],
         "description": "Moltiplicatore lineare indipendente per ciascuno dei 5 macronutrienti",
         "param_type": "linear_scale",
-        "n_trials": 2000,
+        "n_trials": 5000,
     },
     "linear_mass_only": {
         "nutrients": ["mass"],
         "description": "Moltiplicatore lineare ottimizzato solo per la massa totale",
         "param_type": "linear_scale",
-        "n_trials": 2000,
+        "n_trials": 5000,
     },
     "power_law_all5": {
         "nutrients": ["mass", "cal", "fat", "carbs", "protein"],
         "description": "Correzione esponenziale: scale * (pred_val ^ power) per ogni nutriente (10 parametri)",
         "param_type": "power_scale",
-        "n_trials": 2000,
+        "n_trials": 5000,
     },
     "piecewise_all5": {
         "nutrients": ["mass", "cal", "fat", "carbs", "protein"],
         "description": "Moltiplicatore a soglia: scale_small se pred < threshold, altrimenti scale_large (15 parametri)",
         "param_type": "piecewise_scale",
-        "n_trials": 2000,
+        "n_trials": 5000,
     },
     "linear_bias_all5": {
         "nutrients": ["mass", "cal", "fat", "carbs", "protein"],
         "description": "Modello lineare con scale e bias (adj_val = pred * scale + bias)",
         "param_type": "linear_scale_bias",
-        "n_trials": 2000,
+        "n_trials": 5000,
     },
 }
 
