@@ -3,6 +3,7 @@ import sys
 import pandas as pd
 import numpy as np
 import matplotlib
+from PIL import Image
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 1000)
@@ -177,7 +178,144 @@ class AnalyzeNutrition5k:
         if save_dir:
             plt.savefig(os.path.join(save_dir, "4_ingredienti_invisibili.png"), dpi=300)
 
-    def run_all_analyses(self, top_n: int, save_dir: str = None, show_plots: bool = True):
+    def save_example_images(self, imagery_root: str, save_dir: str = None):
+        """
+        5. Salvataggio di immagini singole di esempio + metadati JSON.
+
+        Per ogni categoria viene creata una sottocartella in save_dir e salvate
+        4 immagini singole (una per quartile) più un file JSON con le informazioni
+        complete del piatto (ingredienti, macronutrienti, ecc.).
+
+        Categorie:
+          a) num_ingredienti  – 4 fasce per numero di ingredienti (quartili)
+          b) calorie          – 4 fasce per calorie (quartili)
+          c) massa            – 4 fasce per massa totale (quartili)
+          d) estremi          – piatti con >= 15 ingredienti O >= 1000 kcal (fino a 4)
+        """
+        import shutil
+        import json as json_lib
+
+        # --- preparazione colonne ausiliarie ---
+        df = self.dataset.copy()
+        df["num_ingredients"] = df["ingredients"].apply(
+            lambda x: len([i for i in x if isinstance(i, dict) and i.get("name", "").strip()])
+            if isinstance(x, list) else 0
+        )
+        df["cal"] = df["total_macronutrients"].apply(
+            lambda x: x.get("calories") if isinstance(x, dict) else np.nan
+        )
+        df["mass"] = df["total_macronutrients"].apply(
+            lambda x: x.get("total_mass_grams") if isinstance(x, dict) else np.nan
+        )
+
+        def _build_metadata(row) -> dict:
+            """Costruisce il dizionario di metadati per un singolo piatto."""
+            macros = row.get("total_macronutrients", {}) or {}
+            ingredients = row.get("ingredients", []) or []
+            return {
+                "food_id": row.get("food_id", ""),
+                "food_category": row.get("food_category", ""),
+                "image_path": row.get("image_path", ""),
+                "num_ingredients": int(row["num_ingredients"]),
+                "total_macronutrients": {
+                    "calories": macros.get("calories"),
+                    "total_mass_grams": macros.get("total_mass_grams"),
+                    "fat": macros.get("fat"),
+                    "carbohydrates": macros.get("carbohydrates"),
+                    "protein": macros.get("protein"),
+                },
+                "ingredients": [
+                    {
+                        "name": ing.get("name", ""),
+                        "weight_grams": ing.get("weight_grams"),
+                    }
+                    for ing in ingredients
+                    if isinstance(ing, dict) and ing.get("name", "").strip()
+                ],
+            }
+
+        def _copy_image(row, dest_path: str) -> bool:
+            """Copia il file rgb.png dal dataset originale nella destinazione."""
+            src = os.path.join(imagery_root, row.get("image_path", ""))
+            if os.path.exists(src):
+                shutil.copy2(src, dest_path)
+                return True
+            return False
+
+        def _sample_by_quartiles(subset: pd.DataFrame, val_col: str,
+                                 n_per_bin: int = 1) -> pd.DataFrame:
+            """Restituisce al massimo n_per_bin righe per ognuno dei 4 quartili."""
+            q = np.linspace(0, 1, 5)
+            selected = []
+            for i in range(4):
+                lo = subset[val_col].quantile(q[i])
+                hi = subset[val_col].quantile(q[i + 1])
+                mask = (subset[val_col] >= lo) & (subset[val_col] <= hi)
+                candidates = subset[mask].dropna(subset=["image_path"])
+                if not candidates.empty:
+                    sampled = candidates.sample(min(n_per_bin, len(candidates)),
+                                                random_state=42 + i)
+                    selected.append(sampled)
+            return pd.concat(selected).drop_duplicates(subset=["food_id"]) if selected else pd.DataFrame()
+
+        def _save_category(category_name: str, rows: pd.DataFrame, label_col: str, unit: str):
+            """Salva le immagini singole e il JSON per una categoria."""
+            if rows.empty:
+                print(f"  [WARN] Nessun piatto trovato per: {category_name}")
+                return
+            cat_dir = os.path.join(save_dir, category_name)
+            os.makedirs(cat_dir, exist_ok=True)
+            records = []
+            for _, row in rows.iterrows():
+                label_val = row.get(label_col)
+                label_str = f"{float(label_val):.1f}{unit}" if pd.notna(label_val) else "na"
+                filename = f"{row.get('food_id', 'dish')}_{label_str}.png"
+                dest = os.path.join(cat_dir, filename)
+                ok = _copy_image(row, dest)
+                meta = _build_metadata(row)
+                meta["saved_image"] = filename if ok else None
+                records.append(meta)
+
+            json_path = os.path.join(cat_dir, "metadata.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json_lib.dump(records, f, ensure_ascii=False, indent=2)
+            print(f"  Salvate {len(records)} immagini + metadata.json → {cat_dir}")
+
+        # --- a) Numero di ingredienti ---
+        print("  Campionamento per numero di ingredienti...")
+        sub_ing = df[["food_id", "food_category", "image_path",
+                      "total_macronutrients", "ingredients",
+                      "num_ingredients", "cal", "mass"]]
+        rows_a = _sample_by_quartiles(sub_ing, "num_ingredients")
+        _save_category("5a_num_ingredienti", rows_a, "num_ingredients", "ingr")
+
+        # --- b) Calorie ---
+        print("  Campionamento per calorie...")
+        sub_cal = sub_ing.dropna(subset=["cal"])
+        rows_b = _sample_by_quartiles(sub_cal, "cal")
+        _save_category("5b_calorie", rows_b, "cal", "kcal")
+
+        # --- c) Massa totale ---
+        print("  Campionamento per massa totale...")
+        sub_mass = sub_ing.dropna(subset=["mass"])
+        rows_c = _sample_by_quartiles(sub_mass, "mass")
+        _save_category("5c_massa", rows_c, "mass", "g")
+
+        # --- d) Piatti estremi: >= 15 ingredienti O >= 1000 kcal ---
+        print("  Campionamento piatti estremi (>=15 ingr. o >=1000 kcal)...")
+        mask_extreme = (sub_ing["num_ingredients"] >= 15) | (sub_ing["cal"] >= 1000)
+        extreme = sub_ing[mask_extreme].dropna(subset=["image_path"])
+        if not extreme.empty:
+            # 2 con molti ingredienti + 2 con molte calorie (evitando duplicati)
+            top_ing = extreme.nlargest(2, "num_ingredients")
+            top_cal = extreme[~extreme["food_id"].isin(top_ing["food_id"])].nlargest(2, "cal")
+            rows_d = pd.concat([top_ing, top_cal]).drop_duplicates(subset=["food_id"])
+        else:
+            rows_d = pd.DataFrame()
+        _save_category("5d_piatti_estremi", rows_d, "num_ingredients", "ingr")
+
+    def run_all_analyses(self, top_n: int, save_dir: str = None, show_plots: bool = True,
+                         imagery_root: str = None):
         # 1. Complessità
         self.plot_dish_complexity(save_dir)
         # 2. Valori nutrizionali
@@ -186,7 +324,11 @@ class AnalyzeNutrition5k:
         self.plot_top_ingredients(top_n=top_n, save_dir=save_dir)
         # 4. Ingredienti invisibili
         self.analyze_invisible_ingredients(save_dir=save_dir)
-        
+        # 5. Immagini singole di esempio (solo se imagery_root è specificata)
+        if imagery_root:
+            print("\nSalvataggio immagini di esempio...")
+            self.save_example_images(imagery_root=imagery_root, save_dir=save_dir)
+
         # Mostra tutti i grafici se richiesto
         if show_plots:
             plt.show()
@@ -202,6 +344,12 @@ if __name__ == "__main__":
     OUTPUT_DIR = os.path.join(base_dir, "eda_plots")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+    # =====================================================================
+    # PERCORSO ALLA DIRECTORY RADICE DEL DATASET SULL'HARD DISK
+    # (contiene la sottocartella "imagery/realsense_overhead/...")
+    IMAGERY_ROOT = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
+    # =====================================================================
+
     print(f"Caricamento file in corso...\n- Train: {TRAIN_PATH}\n- Test: {TEST_PATH}")
     print(f"I grafici verranno salvati in: {OUTPUT_DIR}")
 
@@ -216,9 +364,11 @@ if __name__ == "__main__":
 
         # Esegui l'analisi (se passiamo --save-only non mostreremo l'interfaccia UI)
         show_ui = "--save-only" not in sys.argv
-        analyzer.run_all_analyses(top_n=TOP_N, save_dir=OUTPUT_DIR, show_plots=show_ui)
+        analyzer.run_all_analyses(top_n=TOP_N, save_dir=OUTPUT_DIR, show_plots=show_ui,
+                                  imagery_root=IMAGERY_ROOT)
 
         print(f"\nAnalisi completata con successo! Grafici salvati in {OUTPUT_DIR}")
 
     except FileNotFoundError as e:
         print(f"Errore: {e}")
+
