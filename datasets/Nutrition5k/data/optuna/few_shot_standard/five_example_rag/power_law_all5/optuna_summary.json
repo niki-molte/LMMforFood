@@ -1,0 +1,75 @@
+{
+    "_strategy_info": {
+        "name": "power_law_all5",
+        "description": "Correzione esponenziale: scale * (pred_val ^ power) per ogni nutriente (10 parametri)",
+        "nutrients_optimized": [
+            "mass",
+            "cal",
+            "fat",
+            "carbs",
+            "protein"
+        ],
+        "param_type": "power_scale",
+        "n_trials": 2000
+    },
+    "optuna_train_standard_predictions_gemma4_e2b_q4.json": {
+        "best_combined_mae_perc": 54.63,
+        "optimal_scalars": {
+            "scale_mass": 4.971681938496939,
+            "power_mass": 0.6459959042537868,
+            "scale_cal": 3.4046172820925644,
+            "power_cal": 0.6924318301391872,
+            "scale_fat": 1.0830365300653086,
+            "power_fat": 0.6970260004525063,
+            "scale_carbs": 4.9948898440877265,
+            "power_carbs": 0.3667639886103633,
+            "scale_protein": 1.041996926140591,
+            "power_protein": 0.854843616438666
+        }
+    },
+    "optuna_train_standard_predictions_gemma4_e2b_q8.json": {
+        "best_combined_mae_perc": 55.08,
+        "optimal_scalars": {
+            "scale_mass": 4.999851238120618,
+            "power_mass": 0.7171102714334601,
+            "scale_cal": 3.127330105253183,
+            "power_cal": 0.7601135276933323,
+            "scale_fat": 1.741263287056569,
+            "power_fat": 0.7054200740289466,
+            "scale_carbs": 4.997004991708764,
+            "power_carbs": 0.4170867904614348,
+            "scale_protein": 1.5038047544787114,
+            "power_protein": 0.8484342888296839
+        }
+    },
+    "optuna_train_standard_predictions_gemma4_e4b_q4.json": {
+        "best_combined_mae_perc": 52.24,
+        "optimal_scalars": {
+            "scale_mass": 0.5284715788860214,
+            "power_mass": 1.0576379452433877,
+            "scale_cal": 4.0521006908195245,
+            "power_cal": 0.7024159570604585,
+            "scale_fat": 3.048115532934462,
+            "power_fat": 0.455115287995929,
+            "scale_carbs": 4.3700767610477715,
+            "power_carbs": 0.4380032984269875,
+            "scale_protein": 0.7112695167130098,
+            "power_protein": 0.9391763454550417
+        }
+    },
+    "optuna_train_standard_predictions_gemma4_e4b_q8.json": {
+        "best_combined_mae_perc": 51.08,
+        "optimal_scalars": {
+            "scale_mass": 0.3941697755928468,
+            "power_mass": 1.1446863793390845,
+            "scale_cal": 1.7294245608610335,
+            "power_cal": 0.8502964039472086,
+            "scale_fat": 1.4322529449419734,
+            "power_fat": 0.7017075332751819,
+            "scale_carbs": 4.496482186037492,
+            "power_carbs": 0.4409320981528906,
+            "scale_protein": 0.7077559896095965,
+            "power_protein": 1.0002752706662237
+        }
+    }
+}

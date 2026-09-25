@@ -1,0 +1,75 @@
+{
+    "_strategy_info": {
+        "name": "linear_bias_all5",
+        "description": "Modello lineare con scale e bias (adj_val = pred * scale + bias)",
+        "nutrients_optimized": [
+            "mass",
+            "cal",
+            "fat",
+            "carbs",
+            "protein"
+        ],
+        "param_type": "linear_scale_bias",
+        "n_trials": 2000
+    },
+    "optuna_train_standard_predictions_gemma4_e2b_q4.json": {
+        "best_combined_mae_perc": 58.32,
+        "optimal_scalars": {
+            "scale_mass": 0.5384109834270367,
+            "bias_mass": 74.44110314995265,
+            "scale_cal": 0.5096876783622144,
+            "bias_cal": 53.31195968683616,
+            "scale_fat": 0.454625278295255,
+            "bias_fat": 1.6520725405303143,
+            "scale_carbs": 0.23380162538327837,
+            "bias_carbs": 12.303405169060367,
+            "scale_protein": 0.6669781322049783,
+            "bias_protein": 1.1351074828642065
+        }
+    },
+    "optuna_train_standard_predictions_gemma4_e2b_q8.json.json": {
+        "best_combined_mae_perc": 56.34,
+        "optimal_scalars": {
+            "scale_mass": 0.8496954129357361,
+            "bias_mass": 63.990088198669646,
+            "scale_cal": 0.6997947372603377,
+            "bias_cal": 42.85039370284623,
+            "scale_fat": 0.5327220096292807,
+            "bias_fat": 1.6602997709452525,
+            "scale_carbs": 0.393506475624124,
+            "bias_carbs": 9.592137843589086,
+            "scale_protein": 0.8918629216054715,
+            "bias_protein": 1.0287842666002798
+        }
+    },
+    "optuna_train_standard_predictions_gemma4_e4b_q8.json": {
+        "best_combined_mae_perc": 49.01,
+        "optimal_scalars": {
+            "scale_mass": 1.0638787840255168,
+            "bias_mass": -22.811869537682178,
+            "scale_cal": 0.7366289825844011,
+            "bias_cal": 15.245645228576919,
+            "scale_fat": 0.6144841821679393,
+            "bias_fat": 0.6916439846401641,
+            "scale_carbs": 0.4635827408212812,
+            "bias_carbs": 7.407675309117636,
+            "scale_protein": 0.7540798991239065,
+            "bias_protein": 0.10557764220133636
+        }
+    },
+    "optuna_train_standard_predictions_gemma4_e4b_q4.json": {
+        "best_combined_mae_perc": 52.09,
+        "optimal_scalars": {
+            "scale_mass": 0.8192318219828079,
+            "bias_mass": -6.372353058390246,
+            "scale_cal": 0.5915618541025017,
+            "bias_cal": 39.414960906226696,
+            "scale_fat": 0.44651966923237624,
+            "bias_fat": 3.1518587715840405,
+            "scale_carbs": 0.381413913800519,
+            "bias_carbs": 8.423394487652256,
+            "scale_protein": 0.6518088796238987,
+            "bias_protein": 0.22115708617785468
+        }
+    }
+}
