@@ -1,13 +1,13 @@
 """
 resources.py
 =============
-Contenitore "pigro" (lazy) per vocabolario / modello NLP / embeddings.
+Lazy container for the vocabulary / NLP model / embeddings.
 
-Il modello SentenceTransformer (e il calcolo degli embeddings del vocabolario)
-viene caricato SOLO alla prima richiesta effettiva (cioè solo se serve
-davvero valutare un file di predizioni non ancora in cache). Se tutte le
-cache CSV/JSON sono già presenti, nessuna delle tre proprietà lazy viene
-mai acceduta e il language model non viene caricato.
+The SentenceTransformer model (and the computation of the vocabulary embeddings)
+is loaded ONLY on the first actual request (i.e. only if a predictions file
+that is not yet cached really needs to be evaluated). If all the
+CSV/JSON caches are already present, none of the three lazy properties is
+ever accessed and the language model is not loaded.
 """
 from .data_utils import load_vocabulary
 

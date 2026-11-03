@@ -1,0 +1,7 @@
+sphinx
+furo
+myst-parser
+pydantic
+python-dotenv
+numpy
+pandas

@@ -1,0 +1,8 @@
+Configuration
+=============
+
+settings
+--------
+
+.. automodule:: settings
+

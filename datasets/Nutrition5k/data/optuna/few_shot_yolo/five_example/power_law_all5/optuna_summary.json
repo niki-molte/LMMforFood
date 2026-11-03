@@ -1,7 +1,7 @@
 {
     "_strategy_info": {
         "name": "power_law_all5",
-        "description": "Correzione esponenziale: scale * (pred_val ^ power) per ogni nutriente (10 parametri)",
+        "description": "Power-law correction: scale * (pred_val ^ power) for each nutrient (10 parameters)",
         "nutrients_optimized": [
             "mass",
             "cal",

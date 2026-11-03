@@ -1,10 +1,10 @@
 """
 runners.py
 ==========
-Orchestrazione delle valutazioni: legge le predizioni, calcola le metriche
-(tramite Nutrition5kEvaluator), gestisce la cache su CSV/JSON e richiama i
-grafici in plots.py. Contiene SOLO le pipeline che alimentano grafici
-few-shot (nessuna valutazione "singolo modello a barre").
+Evaluation orchestration: reads the predictions, computes the metrics
+(via Nutrition5kEvaluator), manages the CSV/JSON cache and calls the
+charts in plots.py. Contains ONLY the pipelines that feed few-shot charts
+(no per-model bar chart evaluation).
 """
 import os
 import csv
@@ -15,9 +15,75 @@ from .evaluator import Nutrition5kEvaluator
 from .data_utils import parse_model_name
 from . import plots
 
+import re
+
+import os
+import json
+
+import os
+import json
+
+
+def _load_optuna_scalars_for_model(folder, filename, strategy):
+    """Load per-model Optuna scalars and match them to a prediction file."""
+    is_yolo = "yolo" in filename.lower()
+    technique_dir = "few_shot_yolo" if is_yolo else "few_shot_standard"
+
+    summary_path = os.path.join("data", "optuna", technique_dir, folder,
+                                strategy, "optuna_summary.json")
+
+    if not os.path.exists(summary_path):
+        print(f"[DEBUG] File missing on disk: {summary_path}")
+        return None, summary_path
+
+    try:
+        with open(summary_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except Exception as e:
+        print(f"[DEBUG] JSON read error in {summary_path}: {e}")
+        return None, summary_path
+
+        # Clean extraction (strip everything to get the bare model name)
+    core_model_name = filename.replace('test_predictions_nutrition5k_', '')
+    core_model_name = core_model_name.replace('.json', '')
+    core_model_name = core_model_name.replace('yolo_', '')
+    clean_model_name = core_model_name.replace('_tb', '')
+
+    if is_yolo:
+           # For YOLO, the JSON has the _tb suffix
+        lookup_key = f"optuna_train_predictions_{clean_model_name}_tb.json"
+        fallback_key = f"optuna_train_predictions_{clean_model_name}.json"
+    else:
+        # For Standard, the JSON usually does NOT have the _tb suffix
+        lookup_key = f"optuna_train_standard_predictions_{clean_model_name}.json"
+        fallback_key = f"optuna_train_standard_predictions_{clean_model_name}_tb.json"
+
+    # Primary key lookup
+    if lookup_key in data:
+        entry = data[lookup_key]
+        if isinstance(entry, dict) and 'optimal_scalars' in entry:
+            return entry['optimal_scalars'], summary_path
+        else:
+            print(f"[DEBUG] Found key {lookup_key} but 'optimal_scalars' is missing")
+
+    # Fallback key lookup
+    elif fallback_key in data:
+        entry = data[fallback_key]
+        if isinstance(entry, dict) and 'optimal_scalars' in entry:
+            return entry['optimal_scalars'], summary_path
+        else:
+            print(f"[DEBUG] Found fallback key {fallback_key} but 'optimal_scalars' is missing")
+
+    # No match found
+    else:
+        print(f"[DEBUG] Key not found. Looked for '{lookup_key}' or '{fallback_key}'. "
+              f"Keys available in the JSON: {list(data.keys())}")
+
+    return None, summary_path
+
 
 # ---------------------------------------------------------------------------
-# 1) Few-shot learning (NLP + Macro), 1/5/10 esempi
+# 1) Few-shot learning (NLP + Macro), 1/5/10 examples
 # ---------------------------------------------------------------------------
 def evaluate_few_shot_learning(resources, threshold,
                                 few_shot_variants, base_dir="data/prediction",
@@ -35,8 +101,9 @@ def evaluate_few_shot_learning(resources, threshold,
 
     all_results = {g: {v: None for v in few_shot_variants} for g in st.GROUPS}
 
-    fs_csv_path = os.path.join("data/evaluation", f"few_shot_evaluation{csv_suffix}.csv")
-    fs_yolo_csv_path = os.path.join("data/evaluation", f"few_shot_yolo_evaluation{csv_suffix}_{optuna_strategy}.csv")
+    fs_csv_path = os.path.join(
+        "data/evaluation", f"few_shot_evaluation{csv_suffix}_{optuna_strategy}.csv"
+    )
 
     def load_fs_csv(path):
         if not os.path.exists(path):
@@ -44,7 +111,7 @@ def evaluate_few_shot_learning(resources, threshold,
         with open(path, 'r', encoding='utf-8') as f:
             for row in csv.DictReader(f):
                 g, v = row['Group'], row['Variant']
-                if g in all_results and v in all_results[g]:
+                if g in all_results:
                     all_results[g][v] = {
                         "nlp": {
                             "Non-Standardized": {k: float(row[f"nlp_Non-Standardized_{k}"]) for k in ["P", "R", "F1", "IoU"]},
@@ -59,8 +126,7 @@ def evaluate_few_shot_learning(resources, threshold,
         return True
 
     loaded_fs = load_fs_csv(fs_csv_path)
-    loaded_fs_yolo = load_fs_csv(fs_yolo_csv_path)
-    updated_fs = updated_fs_yolo = False
+    updated_fs = False
 
     for folder in folders:
         folder_path = os.path.join(base_dir, folder)
@@ -68,7 +134,7 @@ def evaluate_few_shot_learning(resources, threshold,
             continue
 
         for filename in os.listdir(folder_path):
-            if not filename.endswith('.json'):
+            if not filename.endswith('.json') or 'optuna' in filename.lower():
                 continue
             pred_path = os.path.join(folder_path, filename)
             g, v_type = parse_model_name(filename)
@@ -88,11 +154,14 @@ def evaluate_few_shot_learning(resources, threshold,
                 var_name = f"{prefix} (Standard)"
 
             is_yolo = "YOLO" in var_name
-            var_name_optuna = f"{prefix} (YOLO Optuna)" if is_yolo else None
+            is_standard = var_name.endswith("(Standard)")
+            optuna_variant = "YOLO Optuna" if is_yolo else "Standard Optuna"
+            var_name_optuna = f"{prefix} ({optuna_variant})"
 
-            needs_base = not (loaded_fs and not is_yolo and all_results[g].get(var_name) is not None) and \
-                         not (loaded_fs_yolo and is_yolo and all_results[g].get(var_name) is not None)
-            needs_optuna = is_yolo and not (loaded_fs_yolo and all_results[g].get(var_name_optuna) is not None)
+            needs_base = not (loaded_fs and all_results[g].get(var_name) is not None)
+            needs_optuna = (is_yolo or is_standard) and not (
+                loaded_fs and all_results[g].get(var_name_optuna) is not None
+            )
 
             if not needs_base and not needs_optuna:
                 continue
@@ -105,36 +174,30 @@ def evaluate_few_shot_learning(resources, threshold,
                         "nlp": evaluator.evaluate_nlp_metrics(),
                         "macro": evaluator.evaluate_macronutrients(),
                     }
-                    updated_fs_yolo = updated_fs_yolo or is_yolo
-                    updated_fs = updated_fs or (not is_yolo)
+                    updated_fs = True
 
                 if needs_optuna:
                     print(f"Evaluating Few-Shot: {var_name_optuna} - {g}")
-                    optuna_summary_path = os.path.join("data", "optuna", "few_shot_yolo", folder,
-                                                         optuna_strategy, "optuna_summary.json")
-                    optuna_scalars = None
-                    if os.path.exists(optuna_summary_path):
-                        with open(optuna_summary_path, 'r', encoding='utf-8') as f:
-                            optuna_data = json.load(f)
-                        model_identifier = filename.replace('test_predictions_nutrition5k_yolo_', '').replace('.json', '')
-                        for key, val in optuna_data.items():
-                            if model_identifier in key:
-                                optuna_scalars = val.get("optimal_scalars")
-                                break
+                    optuna_scalars, optuna_summary_path = _load_optuna_scalars_for_model(
+                        folder, filename, optuna_strategy
+                    )
                     if optuna_scalars:
-                        evaluator_opt = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary, resources.vocab_embeddings,
-                                                               threshold, optuna_scalars=optuna_scalars)
+                        evaluator_opt = Nutrition5kEvaluator(
+                            pred_path, resources.nlp_model, resources.vocabulary,
+                            resources.vocab_embeddings, threshold,
+                            optuna_scalars=optuna_scalars
+                        )
                         all_results[g][var_name_optuna] = {
                             "nlp": evaluator_opt.evaluate_nlp_metrics(),
                             "macro": evaluator_opt.evaluate_macronutrients(),
                         }
-                        updated_fs_yolo = True
+                        updated_fs = True
                     else:
-                        print(f"[!] Could not find optuna scalars for {filename} in {optuna_summary_path}")
+                        print(f"[!] Could not find unambiguous optuna scalars for {filename} in {optuna_summary_path}")
             except Exception as e:
                 print(f"[!] Error in {pred_path}: {e}")
 
-    def save_fs_csv(path, is_yolo):
+    def save_fs_csv(path):
         print(f"Saving {path}...")
         with open(path, 'w', encoding='utf-8', newline='') as f:
             fieldnames = ['Group', 'Variant']
@@ -146,10 +209,7 @@ def evaluate_few_shot_learning(resources, threshold,
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             for grp in st.GROUPS:
-                for var in few_shot_variants:
-                    if ("YOLO" in var) != is_yolo:
-                        continue
-                    res = all_results[grp][var]
+                for var, res in all_results[grp].items():
                     if not res:
                         continue
                     row = {'Group': grp, 'Variant': var}
@@ -163,11 +223,9 @@ def evaluate_few_shot_learning(resources, threshold,
                     writer.writerow(row)
 
     if updated_fs:
-        save_fs_csv(fs_csv_path, False)
-    if updated_fs_yolo:
-        save_fs_csv(fs_yolo_csv_path, True)
+        save_fs_csv(fs_csv_path)
 
-    # --- Grafici (solo stile few-shot) ---
+    # --- Charts (few-shot style only) ---
     nlp_dir = os.path.join(output_dir, "nlp_metrics")
     mae_dir = os.path.join(output_dir, "mae_metrics")
     for std_key, suffix in [("Standardized", "std"), ("Non-Standardized", "non_std")]:
@@ -193,25 +251,46 @@ def evaluate_few_shot_learning(resources, threshold,
 
     from . import tables
     tables.print_few_shot_summary_tables(all_results, few_shot_variants)
+    tables.print_prompting_technique_comparison_table(all_results)
+
+    comparison_dir = os.path.join(output_dir, "prompting_comparison")
+    comparison_specs = [
+        ("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", True, False),
+        ("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", True, False),
+        ("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", False, False),
+        ("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", False, False),
+        ("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", True, True),
+        ("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", True, True),
+        ("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", False, True),
+        ("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", False, True),
+    ]
+    for metric_suffix, file_suffix, ylabel, title_prefix, subset, plot_baseline, log_scale in comparison_specs:
+        plots.plot_yolo_optuna_metrics(
+            all_results, comparison_dir, metric_suffix, file_suffix, ylabel, title_prefix,
+            subset, plot_baseline, log_scale,
+            strategies=['Standard', 'Standard Optuna', 'YOLO', 'YOLO Optuna'],
+            comparison_label="Standard vs Standard Optuna vs YOLO vs YOLO Optuna",
+            file_prefix="prompting_comparison",
+        )
 
     return all_results
 
 
 # ---------------------------------------------------------------------------
-# 2) Confronto strategie Optuna (dot-plot, stile few-shot)
+# 2) Optuna strategy comparison (dot-plot, few-shot style)
 # ---------------------------------------------------------------------------
 def evaluate_optuna_strategy_comparison(resources, threshold,
-                                         rag=False, strategies=None, base_dir="data/prediction"):
+                                         semantic_matching=False, strategies=None, base_dir="data/prediction"):
     strategies = strategies or st.OPTUNA_STRATEGIES
-    run_label = "RAG" if rag else "non-RAG"
-    print(f"\n{'=' * 70}\nOPTUNA STRATEGY COMPARISON ({run_label})\nStrategie: {strategies}\n{'=' * 70}")
+    run_label = "Semantic Matching" if semantic_matching else "non-Semantic Matching"
+    print(f"\n{'=' * 70}\nOPTUNA STRATEGY COMPARISON ({run_label})\nStrategies: {strategies}\n{'=' * 70}")
 
-    if rag:
-        folders = ["one_example_rag", "five_example_rag", "ten_example_rag"]
-        folder_to_prefix = {"one_example_rag": "1 Example", "five_example_rag": "5 Examples",
-                             "ten_example_rag": "10 Examples"}
-        cache_path = "data/evaluation/optuna_strategy_comparison_rag.json"
-        output_dir = "data/evaluation/optuna_strategy_metrics_rag"
+    if semantic_matching:
+        folders = ["one_example_semantic_matching", "five_example_semantic_matching", "ten_example_semantic_matching"]
+        folder_to_prefix = {"one_example_semantic_matching": "1 Example", "five_example_semantic_matching": "5 Examples",
+                             "ten_example_semantic_matching": "10 Examples"}
+        cache_path = "data/evaluation/optuna_strategy_comparison_semantic_matching.json"
+        output_dir = "data/evaluation/optuna_strategy_metrics_semantic_matching"
     else:
         folders = ["one_example", "five_example", "ten_example"]
         folder_to_prefix = {"one_example": "1 Example", "five_example": "5 Examples", "ten_example": "10 Examples"}
@@ -223,9 +302,9 @@ def evaluate_optuna_strategy_comparison(resources, threshold,
         try:
             with open(cache_path, 'r', encoding='utf-8') as f:
                 results = json.load(f)
-            print(f"Cache caricata da {cache_path}")
+            print(f"Cache loaded from {cache_path}")
         except (json.JSONDecodeError, ValueError) as e:
-            print(f"[!] Cache corrotta ({e}), verrà ricreata.")
+            print(f"[!] Corrupted cache ({e}), it will be recreated.")
             results = {g: {} for g in st.GROUPS}
 
     updated = False
@@ -234,80 +313,96 @@ def evaluate_optuna_strategy_comparison(resources, threshold,
         prefix = folder_to_prefix[folder]
         pred_folder = os.path.join(base_dir, folder)
         if not os.path.exists(pred_folder):
-            print(f"[!] Cartella predizioni non trovata: {pred_folder}")
+            print(f"[!] Predictions folder not found: {pred_folder}")
             continue
 
-        # Cache locale dei summary Optuna per questo folder (caricati una volta per strategia)
+        # Local cache of the Optuna summaries for this folder
         _optuna_cache = {}
 
         for filename in sorted(os.listdir(pred_folder)):
-            if not filename.endswith('.json') or 'yolo' not in filename.lower():
+            if not filename.endswith('.json') or 'optuna' in filename.lower():
                 continue
+            is_yolo = 'yolo' in filename.lower()
+            # For Standard, also exclude the hybrid/twostep files
+            if not is_yolo and any(x in filename.lower() for x in ('hybrid', 'twostep')):
+                continue
+
             g, _ = parse_model_name(filename)
             if g not in st.GROUPS:
                 continue
 
             pred_path = os.path.join(pred_folder, filename)
-            model_identifier = filename.replace('test_predictions_nutrition5k_yolo_', '').replace('.json', '')
-
             results.setdefault(g, {})
-            yolo_base_var = f"{prefix} ({st.YOLO_BASE_KEY})"
-            if results[g].get(yolo_base_var) is None:
-                print(f"  Evaluating [YOLO base] {yolo_base_var} - {g}")
-                try:
-                    ev_base = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary,
-                                                   resources.vocab_embeddings, threshold)
-                    results[g][yolo_base_var] = {"macro": ev_base.evaluate_macronutrients()}
-                    updated = True
-                except Exception as e:
-                    print(f"[!] Errore YOLO base su {pred_path}: {e}")
 
-            for strategy in strategies:
-                var_name = f"{prefix} ({strategy})"
-                if results.get(g, {}).get(var_name) is not None:
-                    continue
-
-                optuna_summary_path = os.path.join("data", "optuna", "few_shot_yolo", folder, strategy,
-                                                     "optuna_summary.json")
-                if not os.path.exists(optuna_summary_path):
-                    print(f"[!] Optuna summary non trovato: {optuna_summary_path}")
-                    continue
-
-                if optuna_summary_path not in _optuna_cache:
+            if is_yolo:
+                # --- YOLO base ---
+                yolo_base_var = f"{prefix} ({st.YOLO_BASE_KEY})"
+                if results[g].get(yolo_base_var) is None:
+                    print(f"  Evaluating [YOLO base] {yolo_base_var} - {g}")
                     try:
-                        with open(optuna_summary_path, 'r', encoding='utf-8') as f:
-                            _optuna_cache[optuna_summary_path] = json.load(f)
-                    except (json.JSONDecodeError, ValueError) as e:
-                        print(f"[!] Errore lettura {optuna_summary_path}: {e}")
-                        _optuna_cache[optuna_summary_path] = {}
-                optuna_data = _optuna_cache[optuna_summary_path]
+                        ev = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary,
+                                                  resources.vocab_embeddings, threshold)
+                        results[g][yolo_base_var] = {"macro": ev.evaluate_macronutrients()}
+                        updated = True
+                    except Exception as e:
+                        print(f"[!] YOLO base error on {pred_path}: {e}")
 
-                optuna_scalars = None
-                for key, val in optuna_data.items():
-                    if key.startswith("_"):
+                # --- YOLO Optuna for each strategy ---
+                for strategy in strategies:
+                    var_name = f"{prefix} ({strategy})"
+                    if results.get(g, {}).get(var_name) is not None:
                         continue
-                    if model_identifier in key:
-                        optuna_scalars = val.get("optimal_scalars")
-                        break
-                if not optuna_scalars:
-                    print(f"[!] Scalars non trovati per {filename} in {optuna_summary_path}")
-                    continue
+                    optuna_scalars, summary_path = _load_optuna_scalars_for_model(folder, filename, strategy)
+                    if not optuna_scalars:
+                        print(f"[!] YOLO scalars not found for {filename} / {strategy} in {summary_path}")
+                        continue
+                    print(f"  Evaluating [YOLO {strategy}] {var_name} - {g}")
+                    try:
+                        ev = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary,
+                                                  resources.vocab_embeddings, threshold,
+                                                  optuna_scalars=optuna_scalars)
+                        results[g][var_name] = {"macro": ev.evaluate_macronutrients()}
+                        updated = True
+                    except Exception as e:
+                        print(f"[!] YOLO {strategy} error on {pred_path}: {e}")
 
-                print(f"  Evaluating [{strategy}] {var_name} - {g}")
-                try:
-                    evaluator = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary,
-                                                     resources.vocab_embeddings, threshold,
-                                                     optuna_scalars=optuna_scalars)
-                    results[g][var_name] = {"macro": evaluator.evaluate_macronutrients()}
-                    updated = True
-                except Exception as e:
-                    print(f"[!] Errore su {pred_path} con {strategy}: {e}")
+            else:
+                # --- Standard base ---
+                std_base_var = f"{prefix} ({st.STANDARD_BASE_KEY})"
+                if results[g].get(std_base_var) is None:
+                    print(f"  Evaluating [Standard base] {std_base_var} - {g}")
+                    try:
+                        ev = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary,
+                                                  resources.vocab_embeddings, threshold)
+                        results[g][std_base_var] = {"macro": ev.evaluate_macronutrients()}
+                        updated = True
+                    except Exception as e:
+                        print(f"[!] Standard base error on {pred_path}: {e}")
+
+                # --- Standard Optuna for each strategy ---
+                for strategy in strategies:
+                    var_name = f"{prefix} ({strategy}_std)"
+                    if results.get(g, {}).get(var_name) is not None:
+                        continue
+                    optuna_scalars, summary_path = _load_optuna_scalars_for_model(folder, filename, strategy)
+                    if not optuna_scalars:
+                        print(f"[!] Standard scalars not found for {filename} / {strategy} in {summary_path}")
+                        continue
+                    print(f"  Evaluating [Standard {strategy}] {var_name} - {g}")
+                    try:
+                        ev = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary,
+                                                  resources.vocab_embeddings, threshold,
+                                                  optuna_scalars=optuna_scalars)
+                        results[g][var_name] = {"macro": ev.evaluate_macronutrients()}
+                        updated = True
+                    except Exception as e:
+                        print(f"[!] Standard {strategy} error on {pred_path}: {e}")
 
     if updated:
         os.makedirs(os.path.dirname(cache_path) or ".", exist_ok=True)
         with open(cache_path, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=4)
-        print(f"Cache salvata in {cache_path}")
+        print(f"Cache saved in {cache_path}")
 
     os.makedirs(output_dir, exist_ok=True)
     specs = [
@@ -324,7 +419,7 @@ def evaluate_optuna_strategy_comparison(resources, threshold,
         plots.plot_optuna_strategy_metrics(results, output_dir, metric_suffix, file_suffix, ylabel,
                                             title_prefix, subset, plot_baseline, log_scale)
 
-    print(f"Grafici Optuna Strategy salvati in {output_dir}")
+    print(f"Optuna Strategy charts saved in {output_dir}")
 
     from . import tables
     tables.print_optuna_strategy_tables(results, strategies)
@@ -333,19 +428,19 @@ def evaluate_optuna_strategy_comparison(resources, threshold,
 
 
 # ---------------------------------------------------------------------------
-# 3) Confronto YOLO vs YOLO Optuna (dot-plot, stile few-shot)
+# 3) YOLO vs YOLO Optuna comparison (dot-plot, few-shot style)
 # ---------------------------------------------------------------------------
 def evaluate_yolo_optuna_comparison(resources, threshold,
-                                     base_dir="data/prediction", rag=False, optuna_strategy="linear_all5"):
-    run_label = "RAG" if rag else "Normale"
+                                     base_dir="data/prediction", semantic_matching=False, optuna_strategy="linear_all5"):
+    run_label = "Semantic Matching" if semantic_matching else "Normal"
     print(f"\n{'=' * 70}\nSTARTING YOLO OPTUNA EVALUATION COMPARISON ({run_label}, strategy={optuna_strategy})\n{'=' * 70}")
 
-    if rag:
-        folders = ["one_example_rag", "five_example_rag", "ten_example_rag"]
-        folder_to_prefix = {"one_example_rag": "1 Example", "five_example_rag": "5 Examples",
-                             "ten_example_rag": "10 Examples"}
-        yolo_optuna_json_path = f"data/evaluation/few_shot_yolo_optuna_evaluation_rag_{optuna_strategy}.json"
-        output_dir = f"data/evaluation/yolo_optuna_metrics_rag_{optuna_strategy}"
+    if semantic_matching:
+        folders = ["one_example_semantic_matching", "five_example_semantic_matching", "ten_example_semantic_matching"]
+        folder_to_prefix = {"one_example_semantic_matching": "1 Example", "five_example_semantic_matching": "5 Examples",
+                             "ten_example_semantic_matching": "10 Examples"}
+        yolo_optuna_json_path = f"data/evaluation/few_shot_yolo_optuna_evaluation_semantic_matching_{optuna_strategy}.json"
+        output_dir = f"data/evaluation/yolo_optuna_metrics_semantic_matching_{optuna_strategy}"
     else:
         folders = ["one_example", "five_example", "ten_example"]
         folder_to_prefix = {"one_example": "1 Example", "five_example": "5 Examples", "ten_example": "10 Examples"}
@@ -359,7 +454,7 @@ def evaluate_yolo_optuna_comparison(resources, threshold,
             with open(yolo_optuna_json_path, 'r', encoding='utf-8') as f:
                 results = json.load(f)
         except (json.JSONDecodeError, ValueError) as e:
-            print(f"[!] Cache file corrotto o vuoto ({e}), verrà ricreato da zero.")
+            print(f"[!] Corrupted or empty cache file ({e}), it will be recreated from scratch.")
             os.remove(yolo_optuna_json_path)
             results = {}
 
@@ -370,7 +465,7 @@ def evaluate_yolo_optuna_comparison(resources, threshold,
         optuna_summary_path = os.path.join("data", "optuna", "few_shot_yolo", folder,
                                              optuna_strategy, "optuna_summary.json")
         if not os.path.exists(pred_folder) or not os.path.exists(optuna_summary_path):
-            print(f"[!] Skipping {folder}: pred_folder o optuna_summary non trovati (strategy='{optuna_strategy}')")
+            print(f"[!] Skipping {folder}: pred_folder or optuna_summary not found (strategy='{optuna_strategy}')")
             continue
 
         with open(optuna_summary_path, 'r', encoding='utf-8') as f:
@@ -445,7 +540,7 @@ def evaluate_yolo_optuna_comparison(resources, threshold,
 
 
 # ---------------------------------------------------------------------------
-# 4) Studio soglia (loop di threshold su tutti i modelli one-example)
+# 4) Threshold study (threshold loop over all the one-example models)
 # ---------------------------------------------------------------------------
 def evaluate_threshold_study(resources, pred_json_paths,
                               thresholds, output_dir):
@@ -493,13 +588,13 @@ def evaluate_threshold_study(resources, pred_json_paths,
 
 
 # ---------------------------------------------------------------------------
-# 5) Valutazione per-modello (one_example): alimenta il plot delle metriche
-#    NLP (bar chart) e le tabelle riassuntive. Usa la stessa cache CSV
-#    dell'originale (nlp_evaluation.csv): se un modello è già presente non
-#    viene ricalcolato, quindi eventualmente il modello NLP non viene mai
-#    caricato.
+# 5) Per-model evaluation (one_example): feeds the NLP metrics plot
+#    (bar chart) and the summary tables. Uses the same CSV cache
+#    (nlp_evaluation.csv): if a model is already present it is not
+#    recomputed, so the NLP model may never be
+#    loaded.
 # ---------------------------------------------------------------------------
-def evaluate_single_run_models(resources, threshold, pred_json_paths, eval_csv_path, similarity_dir=None):
+def evaluate_single_run_models(resources, threshold, pred_json_paths, eval_csv_path, similarity_dir=None, optuna_strategy="linear_all5"):
     all_nlp_results = {}
     all_macro_results = {}
 
@@ -523,10 +618,16 @@ def evaluate_single_run_models(resources, threshold, pred_json_paths, eval_csv_p
     for pred_path in pred_json_paths:
         model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
         is_yolo = "yolo" in model_name.lower()
+        is_standard = "optuna" not in model_name.lower() and not any(
+            x in model_name.lower() for x in ("twostep", "hybrid")
+        ) and not is_yolo
+        optuna_label = "YOLO Optuna" if is_yolo else "Standard Optuna"
         model_name_optuna = model_name + "_optuna"
 
         needs_base = model_name not in all_nlp_results or model_name not in all_macro_results
-        needs_optuna = is_yolo and (model_name_optuna not in all_nlp_results or model_name_optuna not in all_macro_results)
+        needs_optuna = (is_yolo or is_standard) and (
+            model_name_optuna not in all_nlp_results or model_name_optuna not in all_macro_results
+        )
 
         if not needs_base and not needs_optuna:
             continue
@@ -550,27 +651,20 @@ def evaluate_single_run_models(resources, threshold, pred_json_paths, eval_csv_p
                 all_macro_results[model_name] = evaluator.evaluate_macronutrients()
 
             if needs_optuna:
-                print(f"--- Evaluating YOLO Optuna variant: {model_name_optuna} ---")
-                optuna_summary_path = os.path.join("data", "optuna", "few_shot_yolo", "one_example",
-                                                     "optuna_summary.json")
-                optuna_scalars = None
-                if os.path.exists(optuna_summary_path):
-                    with open(optuna_summary_path, 'r', encoding='utf-8') as f:
-                        optuna_data = json.load(f)
-                    model_identifier = model_name.replace("yolo_", "")
-                    for key, val in optuna_data.items():
-                        if model_identifier in key:
-                            optuna_scalars = val.get("optimal_scalars")
-                            break
-
+                print(f"--- Evaluating {optuna_label} variant: {model_name_optuna} ---")
+                optuna_scalars, optuna_summary_path = _load_optuna_scalars_for_model(
+                    "one_example", os.path.basename(pred_path), optuna_strategy
+                )
                 if optuna_scalars:
-                    evaluator_opt = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary,
-                                                          resources.vocab_embeddings, threshold,
-                                                          optuna_scalars=optuna_scalars)
+                    evaluator_opt = Nutrition5kEvaluator(
+                        pred_path, resources.nlp_model, resources.vocabulary,
+                        resources.vocab_embeddings, threshold,
+                        optuna_scalars=optuna_scalars
+                    )
                     all_nlp_results[model_name_optuna] = evaluator_opt.evaluate_nlp_metrics()
                     all_macro_results[model_name_optuna] = evaluator_opt.evaluate_macronutrients()
                 else:
-                    print(f"[!] Could not find optuna scalars for {model_name} in {optuna_summary_path}")
+                    print(f"[!] Could not find unambiguous optuna scalars for {model_name} in {optuna_summary_path}")
         except Exception as e:
             print(f"\n[!] Error during the execution of file {pred_path}:\n{e}")
 
@@ -606,7 +700,7 @@ def evaluate_single_run_models(resources, threshold, pred_json_paths, eval_csv_p
 def evaluate_prompting_technique_comparison(few_shot_results: dict, output_dir: str,
                                              comparison_label: str = "Standard vs YOLO vs YOLO Optuna"):
     os.makedirs(output_dir, exist_ok=True)
-    strategies = ['Standard', 'YOLO', 'YOLO Optuna']
+    strategies = ['Standard', 'Standard Optuna', 'YOLO', 'YOLO Optuna']
 
     specs = [
         ("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", True, False),
@@ -628,3 +722,113 @@ def evaluate_prompting_technique_comparison(few_shot_results: dict, output_dir: 
 
     print(f"Prompting technique comparison charts saved in {output_dir}")
     return None
+
+
+def evaluate_all_strategies_combined(resources, threshold, output_dir, optuna_strategy="linear_all5"):
+    """
+    Reads the CSVs produced by evaluate_few_shot_learning (normal and semantic_matching) and generates
+    8 combined charts (same structure as the prompting_comparison charts)
+    combining the 8 strategies:
+      Standard / Standard Optuna / YOLO / YOLO Optuna           (normal files)
+      Standard Matching / Standard Optuna Matching /             (Semantic Matching files)
+      YOLO Matching / YOLO Optuna Matching
+
+    Legend: only the 4 base variants (without Optuna) plus the meaning of the lines
+    (solid = classic, dashed = Optuna). The lighter color indicates
+    Semantic Matching.
+    """
+    import os
+    import csv as _csv
+    import matplotlib
+    matplotlib.use('Agg')
+    from . import style as st
+    from .plots import plot_yolo_optuna_metrics
+
+    base_eval_dir = "data/evaluation"
+    csv_normal = os.path.join(base_eval_dir, f"few_shot_evaluation_{optuna_strategy}.csv")
+    csv_semantic_matching = os.path.join(base_eval_dir, f"few_shot_evaluation_semantic_matching_{optuna_strategy}.csv")
+
+    # Map from the CSV name to the strategy name in the result
+    NORMAL_MAP = {
+        'Standard':        'Standard',
+        'Standard Optuna': 'Standard Optuna',
+        'YOLO':            'YOLO',
+        'YOLO Optuna':     'YOLO Optuna',
+    }
+    SEMANTIC_MATCHING_MAP = {
+        'Standard':        'Standard Matching',
+        'Standard Optuna': 'Standard Optuna Matching',
+        'YOLO':            'YOLO Matching',
+        'YOLO Optuna':     'YOLO Optuna Matching',
+    }
+
+    all_results = {g: {} for g in st.GROUPS}
+
+    def process_csv(csv_path, strategy_map):
+        if not os.path.exists(csv_path):
+            print(f"[WARNING] CSV file not found: {csv_path}")
+            return
+        with open(csv_path, 'r', encoding='utf-8') as f:
+            for row in _csv.DictReader(f):
+                g       = row.get('Group', '')
+                variant = row.get('Variant', '')
+                if g not in st.GROUPS or ' (' not in variant:
+                    continue
+                prefix, rest = variant.split(' (', 1)
+                strat_raw = rest.rstrip(')')
+                if strat_raw not in strategy_map:
+                    continue
+                mapped = strategy_map[strat_raw]
+                key    = f"{prefix} ({mapped})"
+
+                macro = {}
+                for subset in ('overall', 'exact_match'):
+                    macro[subset] = {}
+                    for field in st.MACRO_FIELDS:
+                        for metric in ('MAE', 'MAE_%'):
+                            col = f"macro_{subset}_{field}_{metric}"
+                            if col in row and row[col]:
+                                macro[subset][f"{field}_{metric}"] = float(row[col])
+
+                all_results[g][key] = {"macro": macro}
+
+    process_csv(csv_normal, NORMAL_MAP)
+    process_csv(csv_semantic_matching, SEMANTIC_MATCHING_MAP)
+
+    if not any(v for v in all_results.values()):
+        print("[WARNING] No valid data found to generate the combined charts.")
+        return
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    strategies = [
+        'Standard', 'Standard Optuna',
+        'Standard Matching', 'Standard Optuna Matching',
+        'YOLO', 'YOLO Optuna',
+        'YOLO Matching', 'YOLO Optuna Matching',
+    ]
+    # The legend shows only the 4 base variants (without Optuna): the meaning of
+    # solid/dashed is explained by the line entries, the light color by Matching.
+    legend_strats = ['Standard', 'Standard Matching', 'YOLO', 'YOLO Matching']
+
+    specs = [
+        ("MAE",   "mae_abs",  "MAE (Value)", "Absolute MAE (Overall)",       "overall",     True,  False),
+        ("MAE_%", "mae_perc", "MAE (%)",     "Percentage MAE (Overall)",      "overall",     True,  False),
+        ("MAE",   "mae_abs",  "MAE (Value)", "Absolute MAE (Exact Match)",    "exact_match", False, False),
+        ("MAE_%", "mae_perc", "MAE (%)",     "Percentage MAE (Exact Match)",  "exact_match", False, False),
+        ("MAE",   "mae_abs",  "MAE (Value)", "Absolute MAE (Overall)",        "overall",     True,  True),
+        ("MAE_%", "mae_perc", "MAE (%)",     "Percentage MAE (Overall)",      "overall",     True,  True),
+        ("MAE",   "mae_abs",  "MAE (Value)", "Absolute MAE (Exact Match)",    "exact_match", False, True),
+        ("MAE_%", "mae_perc", "MAE (%)",     "Percentage MAE (Exact Match)",  "exact_match", False, True),
+    ]
+    for ms, fs, yl, tp, sub, pb, ls in specs:
+        plot_yolo_optuna_metrics(
+            all_results, output_dir, ms, fs, yl, tp,
+            subset=sub, plot_baseline=pb, log_scale=ls,
+            strategies=strategies,
+            comparison_label="Strategy Comparison: Standard / YOLO / Semantic Matching",
+            file_prefix="combined_strategies",
+            legend_strategies=legend_strats,
+        )
+
+    print(f"[INFO] 8 combined charts generated in: {output_dir}")

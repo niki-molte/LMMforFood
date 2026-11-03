@@ -1,7 +1,7 @@
 {
     "_strategy_info": {
         "name": "linear_mass_only",
-        "description": "Moltiplicatore lineare ottimizzato solo per la massa totale",
+        "description": "Linear multiplier optimized for total mass only",
         "nutrients_optimized": [
             "mass"
         ],
@@ -14,7 +14,7 @@
             "scale_mass": 0.7929741575835441
         }
     },
-    "optuna_train_standard_predictions_gemma4_e2b_q8.json.json": {
+    "optuna_train_standard_predictions_gemma4_e2b_q8.json": {
         "best_combined_mae_perc": 50.42,
         "optimal_scalars": {
             "scale_mass": 1.1500374858890026

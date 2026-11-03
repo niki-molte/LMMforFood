@@ -1,0 +1,544 @@
+[
+    {
+        "image_path": "imagery/realsense_overhead/dish_1561662216/rgb.png",
+        "food_id": "dish_1561662216",
+        "food_category": "Nutrition5k Plate",
+        "ground_truth_ingredients": [
+            {
+                "name": "soy sauce",
+                "weight_grams": 3.398568,
+                "macronutrients": {
+                    "calories": 1.80124104,
+                    "fat": 0.020391408,
+                    "carbohydrates": 0.166529832,
+                    "protein": 0.275284008
+                }
+            },
+            {
+                "name": "garlic",
+                "weight_grams": 2.124105,
+                "macronutrients": {
+                    "calories": 3.16491645,
+                    "fat": 0.010620525,
+                    "carbohydrates": 0.70095465,
+                    "protein": 0.13594272
+                }
+            },
+            {
+                "name": "white rice",
+                "weight_grams": 8.49642,
+                "macronutrients": {
+                    "calories": 11.045346,
+                    "fat": 0.02548926,
+                    "carbohydrates": 2.3789976,
+                    "protein": 0.22940334
+                }
+            },
+            {
+                "name": "parsley",
+                "weight_grams": 0.213397,
+                "macronutrients": {
+                    "calories": 0.079170287,
+                    "fat": 0.001707176,
+                    "carbohydrates": 0.013657408,
+                    "protein": 0.006188513
+                }
+            },
+            {
+                "name": "onions",
+                "weight_grams": 1.707173,
+                "macronutrients": {
+                    "calories": 0.6828692,
+                    "fat": 0.001707173,
+                    "carbohydrates": 0.15364557,
+                    "protein": 0.018778903
+                }
+            },
+            {
+                "name": "brown rice",
+                "weight_grams": 68.0,
+                "macronutrients": {
+                    "calories": 75.48,
+                    "fat": 0.612,
+                    "carbohydrates": 15.64,
+                    "protein": 1.768
+                }
+            },
+            {
+                "name": "vinegar",
+                "weight_grams": 0.853586,
+                "macronutrients": {
+                    "calories": 0.0,
+                    "fat": 0.0,
+                    "carbohydrates": 0.0,
+                    "protein": 0.0
+                }
+            },
+            {
+                "name": "apple",
+                "weight_grams": 4.267931,
+                "macronutrients": {
+                    "calories": 2.21932412,
+                    "fat": 0.008535862,
+                    "carbohydrates": 0.59751034,
+                    "protein": 0.012803793
+                }
+            },
+            {
+                "name": "mixed greens",
+                "weight_grams": 21.339657,
+                "macronutrients": {
+                    "calories": 5.97510396,
+                    "fat": 0.085358628,
+                    "carbohydrates": 1.131001821,
+                    "protein": 0.469472454
+                }
+            },
+            {
+                "name": "sugar",
+                "weight_grams": 6.372315,
+                "macronutrients": {
+                    "calories": 24.7245822,
+                    "fat": 0.0,
+                    "carbohydrates": 6.372315,
+                    "protein": 0.0
+                }
+            },
+            {
+                "name": "salt",
+                "weight_grams": 0.531519,
+                "macronutrients": {
+                    "calories": 0.0,
+                    "fat": 0.0,
+                    "carbohydrates": 0.0,
+                    "protein": 0.0
+                }
+            },
+            {
+                "name": "lemon juice",
+                "weight_grams": 0.853586,
+                "macronutrients": {
+                    "calories": 0.14510962,
+                    "fat": 0.0,
+                    "carbohydrates": 0.047800816,
+                    "protein": 0.003414344
+                }
+            },
+            {
+                "name": "olive oil",
+                "weight_grams": 3.243628,
+                "macronutrients": {
+                    "calories": 28.67367152,
+                    "fat": 3.243628,
+                    "carbohydrates": 0.0,
+                    "protein": 0.0
+                }
+            },
+            {
+                "name": "pork",
+                "weight_grams": 59.474941,
+                "macronutrients": {
+                    "calories": 141.55035958,
+                    "fat": 8.32649174,
+                    "carbohydrates": 0.0,
+                    "protein": 15.46348466
+                }
+            },
+            {
+                "name": "bok choy",
+                "weight_grams": 8.49642,
+                "macronutrients": {
+                    "calories": 1.1045346,
+                    "fat": 0.01699284,
+                    "carbohydrates": 0.18692124,
+                    "protein": 0.1274463
+                }
+            },
+            {
+                "name": "pepper",
+                "weight_grams": 0.212411,
+                "macronutrients": {
+                    "calories": 0.0849644,
+                    "fat": 0.000424822,
+                    "carbohydrates": 0.019754223,
+                    "protein": 0.00424822
+                }
+            },
+            {
+                "name": "millet",
+                "weight_grams": 3.414345,
+                "macronutrients": {
+                    "calories": 4.06307055,
+                    "fat": 0.03414345,
+                    "carbohydrates": 0.809199765,
+                    "protein": 0.119502075
+                }
+            }
+        ],
+        "predicted_nutrition": {
+            "visible_ingredients": [
+                {
+                    "name": "rice/mixed grains",
+                    "weight_grams": 68.0,
+                    "macronutrients": {
+                        "calories": 35.0,
+                        "fat": 1.09,
+                        "carbohydrates": 72.44,
+                        "protein": 12.0
+                    }
+                },
+                {
+                    "name": "green leafy/veg (chopped & sprinkled)",
+                    "weight_grams": 85.0,
+                    "macronutrients": {
+                        "calories": 30.0,
+                        "fat": 6.74,
+                        "carbohydrates": 21.96,
+                        "protein": 3.0
+                    }
+                },
+                {
+                    "name": "meat slices/segments",
+                    "weight_grams": 45.0,
+                    "macronutrients": {
+                        "calories": 20.0,
+                        "fat": 5.73,
+                        "carbohydrates": 9.18,
+                        "protein": 6.0
+                    }
+                }
+            ],
+            "hidden_ingredients": [
+                {
+                    "name": "olive oil",
+                    "weight_grams": 4.0,
+                    "macronutrients": {
+                        "calories": 0.0,
+                        "fat": 3.27,
+                        "carbohydrates": 0.0,
+                        "protein": 0.0
+                    }
+                },
+                {
+                    "name": "salt",
+                    "weight_grams": 18.0,
+                    "macronutrients": {
+                        "calories": 0.0,
+                        "fat": 0.0,
+                        "carbohydrates": 0.0,
+                        "protein": 4.26
+                    }
+                }
+            ],
+            "allergens": [],
+            "total_macronutrients": {
+                "calories": 73.0,
+                "fat": 15.89,
+                "carbohydrates": 103.4,
+                "protein": 26.74
+            }
+        },
+        "semantic_matching_validated_ingredients": [
+            {
+                "original_prediction": "rice/mixed grains",
+                "weight_grams": 68.0,
+                "similarity_score": 0.7369,
+                "matched_ingredient": "rice",
+                "status": "accepted",
+                "deterministic_macronutrients": {
+                    "calories": 88.4,
+                    "fat": 0.204,
+                    "carbohydrates": 19.04,
+                    "protein": 1.836
+                }
+            },
+            {
+                "original_prediction": "green leafy/veg (chopped & sprinkled)",
+                "weight_grams": 85.0,
+                "similarity_score": 0.6274,
+                "matched_ingredient": "mixed greens",
+                "status": "accepted",
+                "deterministic_macronutrients": {
+                    "calories": 23.8,
+                    "fat": 0.34,
+                    "carbohydrates": 4.505,
+                    "protein": 1.87
+                }
+            },
+            {
+                "original_prediction": "meat slices/segments",
+                "weight_grams": 45.0,
+                "similarity_score": 0.5287,
+                "matched_ingredient": null,
+                "status": "unmatched",
+                "deterministic_macronutrients": {
+                    "calories": 20.0,
+                    "fat": 5.73,
+                    "carbohydrates": 9.18,
+                    "protein": 6.0
+                }
+            },
+            {
+                "original_prediction": "olive oil",
+                "weight_grams": 4.0,
+                "similarity_score": 1.0,
+                "matched_ingredient": "olive oil",
+                "status": "accepted",
+                "deterministic_macronutrients": {
+                    "calories": 35.36,
+                    "fat": 4.0,
+                    "carbohydrates": 0.0,
+                    "protein": 0.0
+                }
+            },
+            {
+                "original_prediction": "salt",
+                "weight_grams": 18.0,
+                "similarity_score": 1.0,
+                "matched_ingredient": "salt",
+                "status": "accepted",
+                "deterministic_macronutrients": {
+                    "calories": 0.0,
+                    "fat": 0.0,
+                    "carbohydrates": 0.0,
+                    "protein": 0.0
+                }
+            }
+        ],
+        "deterministic_total_macronutrients": {
+            "calories": 167.56,
+            "fat": 10.274,
+            "carbohydrates": 32.725,
+            "protein": 9.706
+        }
+    },
+    {
+        "image_path": "imagery/realsense_overhead/dish_1562008979/rgb.png",
+        "food_id": "dish_1562008979",
+        "food_category": "Nutrition5k Plate",
+        "ground_truth_ingredients": [
+            {
+                "name": "jalapenos",
+                "weight_grams": 0.192961,
+                "macronutrients": {
+                    "calories": 0.05595869,
+                    "fat": 0.000771844,
+                    "carbohydrates": 0.012542465,
+                    "protein": 0.001736649
+                }
+            },
+            {
+                "name": "lemon juice",
+                "weight_grams": 1.543689,
+                "macronutrients": {
+                    "calories": 0.26242713,
+                    "fat": 0.0,
+                    "carbohydrates": 0.086446584,
+                    "protein": 0.006174756
+                }
+            },
+            {
+                "name": "pork",
+                "weight_grams": 115.776695,
+                "macronutrients": {
+                    "calories": 275.5485341,
+                    "fat": 16.2087373,
+                    "carbohydrates": 0.0,
+                    "protein": 30.1019407
+                }
+            },
+            {
+                "name": "wheat berry",
+                "weight_grams": 15.436893,
+                "macronutrients": {
+                    "calories": 14.04757263,
+                    "fat": 0.077184465,
+                    "carbohydrates": 2.948446563,
+                    "protein": 0.648349506
+                }
+            },
+            {
+                "name": "cabbage",
+                "weight_grams": 15.436893,
+                "macronutrients": {
+                    "calories": 3.24174753,
+                    "fat": 0.077184465,
+                    "carbohydrates": 0.493980576,
+                    "protein": 0.200679609
+                }
+            },
+            {
+                "name": "pepper",
+                "weight_grams": 0.385922,
+                "macronutrients": {
+                    "calories": 0.1543688,
+                    "fat": 0.000771844,
+                    "carbohydrates": 0.035890746,
+                    "protein": 0.00771844
+                }
+            },
+            {
+                "name": "salt",
+                "weight_grams": 0.192961,
+                "macronutrients": {
+                    "calories": 0.0,
+                    "fat": 0.0,
+                    "carbohydrates": 0.0,
+                    "protein": 0.0
+                }
+            },
+            {
+                "name": "carrot",
+                "weight_grams": 3.859223,
+                "macronutrients": {
+                    "calories": 1.58228143,
+                    "fat": 0.007718446,
+                    "carbohydrates": 0.3859223,
+                    "protein": 0.034733007
+                }
+            },
+            {
+                "name": "garlic",
+                "weight_grams": 1.543689,
+                "macronutrients": {
+                    "calories": 2.30009661,
+                    "fat": 0.007718445,
+                    "carbohydrates": 0.50941737,
+                    "protein": 0.098796096
+                }
+            },
+            {
+                "name": "caesar salad",
+                "weight_grams": 131.0,
+                "macronutrients": {
+                    "calories": 57.64,
+                    "fat": 2.751,
+                    "carbohydrates": 5.633,
+                    "protein": 4.192
+                }
+            },
+            {
+                "name": "olive oil",
+                "weight_grams": 0.771845,
+                "macronutrients": {
+                    "calories": 6.8231098,
+                    "fat": 0.771845,
+                    "carbohydrates": 0.0,
+                    "protein": 0.0
+                }
+            },
+            {
+                "name": "parsley",
+                "weight_grams": 0.771845,
+                "macronutrients": {
+                    "calories": 0.286354495,
+                    "fat": 0.00617476,
+                    "carbohydrates": 0.04939808,
+                    "protein": 0.022383505
+                }
+            },
+            {
+                "name": "mayonnaise",
+                "weight_grams": 3.087379,
+                "macronutrients": {
+                    "calories": 20.9941772,
+                    "fat": 2.31553425,
+                    "carbohydrates": 0.018524274,
+                    "protein": 0.03087379
+                }
+            }
+        ],
+        "predicted_nutrition": {
+            "visible_ingredients": [
+                {
+                    "name": "Dark Brown Legumes / Lentils",
+                    "weight_grams": 75.0,
+                    "macronutrients": {
+                        "calories": 0.0,
+                        "fat": 1.0,
+                        "carbohydrates": 2.5,
+                        "protein": 8.0
+                    }
+                },
+                {
+                    "name": "White Pasta / Rice",
+                    "weight_grams": 347.0,
+                    "macronutrients": {
+                        "calories": 60.0,
+                        "fat": 1.0,
+                        "carbohydrates": 92.5,
+                        "protein": 8.0
+                    }
+                }
+            ],
+            "hidden_ingredients": [
+                {
+                    "name": "Oil",
+                    "weight_grams": 1.5,
+                    "macronutrients": {
+                        "calories": 0.0,
+                        "fat": 2.0,
+                        "carbohydrates": 0.0,
+                        "protein": 0.0
+                    }
+                }
+            ],
+            "allergens": [
+                ""
+            ],
+            "total_macronutrients": {
+                "calories": 135.78649999999996,
+                "fat": 2.0,
+                "carbohydrates": 90.5,
+                "protein": 8.0
+            }
+        },
+        "semantic_matching_validated_ingredients": [
+            {
+                "original_prediction": "Dark Brown Legumes / Lentils",
+                "weight_grams": 75.0,
+                "similarity_score": 0.7194,
+                "matched_ingredient": "lentils",
+                "status": "accepted",
+                "deterministic_macronutrients": {
+                    "calories": 85.5,
+                    "fat": 0.3,
+                    "carbohydrates": 15.0,
+                    "protein": 6.75
+                }
+            },
+            {
+                "original_prediction": "White Pasta / Rice",
+                "weight_grams": 347.0,
+                "similarity_score": 0.857,
+                "matched_ingredient": "white rice",
+                "status": "accepted",
+                "deterministic_macronutrients": {
+                    "calories": 451.1,
+                    "fat": 1.041,
+                    "carbohydrates": 97.16,
+                    "protein": 9.369
+                }
+            },
+            {
+                "original_prediction": "Oil",
+                "weight_grams": 1.5,
+                "similarity_score": 1.0,
+                "matched_ingredient": "oil",
+                "status": "accepted",
+                "deterministic_macronutrients": {
+                    "calories": 13.296,
+                    "fat": 1.5,
+                    "carbohydrates": 0.0,
+                    "protein": 0.0
+                }
+            }
+        ],
+        "deterministic_total_macronutrients": {
+            "calories": 549.896,
+            "fat": 2.841,
+            "carbohydrates": 112.16,
+            "protein": 16.119
+        }
+    }
+]

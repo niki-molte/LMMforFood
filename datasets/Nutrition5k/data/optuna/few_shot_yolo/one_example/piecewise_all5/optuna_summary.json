@@ -1,7 +1,7 @@
 {
     "_strategy_info": {
         "name": "piecewise_all5",
-        "description": "Moltiplicatore a soglia: scale_small se pred < threshold, altrimenti scale_large (15 parametri)",
+        "description": "Threshold multiplier: scale_small if pred < threshold, otherwise scale_large (15 parameters)",
         "nutrients_optimized": [
             "mass",
             "cal",

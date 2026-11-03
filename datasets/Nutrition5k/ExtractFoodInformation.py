@@ -9,8 +9,13 @@ from OllamaClient.miniCPM_client import MiniCPMClient
 from answer_schema.extraction import Macronutrients, IngredientWithNutrition, NutritionExtraction
 
 import os
+import sys
+from settings import get_env, get_path  # centralized config (.env)
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+if SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, SCRIPT_DIR)  # makes prompt_strategies importable also on Kaggle
+from prompt_strategies import select_strategy, SINGLE_STEP_AXES
 
 PROVIDER = "minicpm"
 USE_YOLO = False
@@ -18,37 +23,37 @@ DEBUG = False
 YOLO_WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "yolo_weights", "yolov8s.pt")
 _yolo_model = None
 
-# impostazioni checkpoint
+# checkpoint settings
 SAVE_EVERY_N_ITEMS = 5
 MAX_ITEMS_TO_TEST = 3
 NUM_EXAMPLES = 5
 
-# percorsi
-IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
+# paths
+IMAGES_BASE_DIR = get_path("NUTRITION5K_DATASET_DIR")
 TEST_DATASET_PATH = os.path.join(SCRIPT_DIR, "data", "ground truth", "test_dataset.json")
 OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_gemma4e2b_prova.json")
 
 
 # ==========================================
-# --- LOGICA DI ESECUZIONE ---
+# --- EXECUTION LOGIC ---
 # ==========================================
 def normalize_path(path: str) -> str:
     """
-    Normalizza i caratteri Unicode nel percorso (NFC) per evitare
-    mismatch di encoding tra il filesystem e le stringhe Python.
+    Normalizes Unicode characters in the path (NFC) to avoid
+    encoding mismatches between the filesystem and Python strings.
     """
     return unicodedata.normalize("NFC", path)
 
 
 def save_json_safely(data, filepath):
-    """Funzione atomica per salvare dati JSON in modo sicuro."""
+    """Atomic function to save JSON data safely."""
     temp_filepath = filepath + ".tmp"
     try:
         with open(temp_filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
         os.replace(temp_filepath, filepath)
     except Exception as e:
-        print(f"[ERRORE] Impossibile salvare il file JSON: {e}")
+        print(f"[ERROR] Unable to save the JSON file: {e}")
 
 
 def calculate_iou(boxA, boxB):
@@ -93,7 +98,7 @@ def run_yolo_on_image(full_image_path, output_dir=None):
             conf = float(box.conf[0].item()) if hasattr(box, 'conf') and box.conf is not None else 1.0
             raw_boxes.append({"class_name": class_name, "coords": coords, "conf": conf, "class_id": class_id, "weight": conf, "count": 1})
 
-        print(f"[YOLO ORIGINALE] Ingredienti rilevati per {os.path.basename(full_image_path)}: {[b['class_name'] for b in raw_boxes]}")
+        print(f"[YOLO ORIGINAL] Ingredients detected for {os.path.basename(full_image_path)}: {[b['class_name'] for b in raw_boxes]}")
         
         IOU_THRESHOLD = 0.5
         filtered_boxes = []
@@ -199,24 +204,24 @@ def run_yolo_on_image(full_image_path, output_dir=None):
             cv2.waitKey(0)
             cv2.destroyAllWindows()
     else:
-        print(f"[Avviso] Impossibile leggere l'immagine con cv2: {full_image_path}")
+        print(f"[Warning] Unable to read the image with cv2: {full_image_path}")
 
     return yolo_image_modified, yolo_extracted_data
 
 
 def process_single_image(item, client, system_instruction, few_shot_examples, processed_images):
-    """Processa una singola immagine in modo sequenziale con logging di debug dettagliato."""
+    """Processes a single image sequentially with detailed debug logging."""
     img_path = item["image_path"]
 
     if img_path in processed_images:
         return None
 
-    # Ricostruisce il path assoluto unendo la base dir al path relativo salvato nel JSON.
-    # normalize_path evita mismatch Unicode (es. 'università' → 'universit?' su certi terminali).
+    # Rebuilds the absolute path by joining the base dir with the relative path stored in the JSON.
+    # normalize_path avoids Unicode mismatches (e.g. accented characters rendered as '?' on some terminals).
     full_image_path = normalize_path(os.path.join(IMAGES_BASE_DIR, img_path))
 
     if not os.path.exists(full_image_path):
-        print(f"[Avviso] File non trovato: {full_image_path}")
+        print(f"[Warning] File not found: {full_image_path}")
         return None
 
     yolo_image_modified = None
@@ -226,10 +231,10 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
         "estimated weights, nutritional values and allergens. Output ONLY the JSON."
     )
 
-    print(f"\n[{time.strftime('%H:%M:%S')}] Elaborazione in corso: {img_path}...")
+    print(f"\n[{time.strftime('%H:%M:%S')}] Processing: {img_path}...")
 
     if USE_YOLO:
-        print(f"[YOLO] Esecuzione inferenza su {img_path}...")
+        print(f"[YOLO] Running inference on {img_path}...")
         try:
             yolo_image_modified, yolo_extracted_data = run_yolo_on_image(full_image_path)
             
@@ -246,12 +251,12 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
                 if DEBUG:
                     print(f"\n[DEBUG PROMPT]\n{prompt}\n")
         except Exception as e:
-            print(f"[ERRORE YOLO] {e}")
+            print(f"[YOLO ERROR] {e}")
 
     image_to_pass = yolo_image_modified if yolo_image_modified else full_image_path
 
-    # --- INIZIO CHIAMATA OLLAMA ---
-    print(f"[{time.strftime('%H:%M:%S')}] Avvio inferenza Ollama in corso, attendere...")
+    # --- START OLLAMA CALL ---
+    print(f"[{time.strftime('%H:%M:%S')}] Starting Ollama inference, please wait...")
     start_inference = time.time()
     try:
         result = client.ask(
@@ -262,7 +267,7 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
             examples=few_shot_examples,
         )
     except Exception as e:
-        print(f"[ERRORE CRITICO] Il client Ollama è crashato durante ask(): {e}")
+        print(f"[CRITICAL ERROR] The Ollama client crashed during ask(): {e}")
         return None
     finally:
         if yolo_image_modified and os.path.exists(yolo_image_modified):
@@ -272,32 +277,32 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
                 pass
 
     elapsed = time.time() - start_inference
-    print(f"[{time.strftime('%H:%M:%S')}] Inferenza completata in {elapsed:.2f}s")
-    # --- FINE CHIAMATA OLLAMA ---
+    print(f"[{time.strftime('%H:%M:%S')}] Inference completed in {elapsed:.2f}s")
+    # --- END OLLAMA CALL ---
 
-    # --- CONTROLLO CONTENUTO RISULTATO ---
+    # --- RESULT CONTENT CHECK ---
     if result is None:
-        print(f"[DEBUG] -> Il risultato è esattamente None.")
+        print(f"[DEBUG] -> The result is exactly None.")
         return None
 
     if isinstance(result, str) and result.strip() == "":
-        print(f"[DEBUG] -> Il risultato è una stringa vuota.")
+        print(f"[DEBUG] -> The result is an empty string.")
         return None
 
-    print(f"[DEBUG] -> Lunghezza risultato: {len(str(result))} caratteri.")
-    print(f"[DEBUG] -> Snippet grezzo (primi 300 caratteri):\n{str(result)[:300]}\n...")
+    print(f"[DEBUG] -> Result length: {len(str(result))} characters.")
+    print(f"[DEBUG] -> Raw snippet (first 300 characters):\n{str(result)[:300]}\n...")
 
-    # --- FASE DI PARSING ---
+    # --- PARSING PHASE ---
     try:
-        # 1. RIMOSSA LA PARTE DI THINKING (solo se esiste, come in Gemma)
+        # 1. Strip the thinking part (only if present, as in Gemma)
         if "<channel|>" in result:
-            # Divide la stringa in due parti usando "<channel|>" e prende l'ultima parte (il JSON)
+            # Split the string on "<channel|>" and keep the last part (the JSON)
             result = result.split("<channel|>")[-1]
 
-        # 2. Pulizia standard del markdown (DA ESEGUIRE SEMPRE)
+        # 2. Standard markdown cleanup (always performed)
         cleaned_result = result.replace("```json", "").replace("```", "").strip()
 
-        # 3. Validazione
+        # 3. Validation
         parsed_result = NutritionExtraction.model_validate_json(cleaned_result)
 
         prediction_record = {
@@ -307,17 +312,31 @@ def process_single_image(item, client, system_instruction, few_shot_examples, pr
             "ground_truth_ingredients": item.get("ingredients", []),
             "predicted_nutrition": parsed_result.model_dump()
         }
-        print(f"[SUCCESSO] Parsing completato correttamente!")
+        print(f"[SUCCESS] Parsing completed successfully!")
         return prediction_record
 
     except Exception as e:
-        print(f"[Errore di Parsing] Impossibile analizzare l'output JSON.")
-        print(f"Dettagli errore Pydantic: {e}")
+        print(f"[Parsing Error] Unable to parse the JSON output.")
+        print(f"Pydantic error details: {e}")
         return None
 
 
-def main():
-    print(f"Avvio esecuzione sequenziale con provider: {PROVIDER.upper()}...")
+def main(mode=None):
+    """
+    Args:
+        mode: 'baseline' or 'yolo'. If None it is chosen at startup (CLI --mode, env PROMPT_MODE,
+              interactive menu) falling back to the USE_YOLO constant.
+    """
+    global USE_YOLO
+    choice = select_strategy(
+        SINGLE_STEP_AXES,
+        defaults={"mode": "yolo" if USE_YOLO else "baseline"},
+        overrides={"mode": mode},
+        title="Prompt strategy (single step)",
+    )
+    USE_YOLO = choice["mode"] == "yolo"
+
+    print(f"Starting sequential execution with provider: {PROVIDER.upper()}...")
 
     schema_dict = NutritionExtraction.model_json_schema()
 
@@ -353,34 +372,38 @@ def main():
             f"{json.dumps(schema_dict)}"
         )
 
-    # 2. Configurazione Dinamica del Provider
+    # 2. Dynamic provider configuration
     system_instruction = base_system_instruction
 
     if PROVIDER == "gemma":
-        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e2b") #gemma4:e2b-it-q8_0
+        model = get_env("OLLAMA_GEMMA_4_E2B_Q4")  # alternative: OLLAMA_GEMMA_4_E2B_Q8
         client = GemmaClient(model_name=model)
-        # Solo Gemma 4 richiede il token esplicito per il thinking
+        # Only Gemma 4 requires the explicit thinking token
         system_instruction = "<|think|>\n" + base_system_instruction
         OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_gemma.json")
 
     elif PROVIDER == "qwen":
-        model = os.environ.get("OLLAMA_QWEN_MODEL", "qwen3.5:4b")  # o "qwen3.5:9b"
+        model = get_env("OLLAMA_QWEN_3.5_4B")
         client = QwenClient(model_name=model)
         OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_qwen.json")
 
     elif PROVIDER == "minicpm":
-        model = os.environ.get("OLLAMA_MINICPM_MODEL", "openbmb/minicpm-v4.5:8b")
-        # Attiviamo la modalità Deep Thinking come default per questo task complesso
+        model = get_env("OLLAMA_MINICPM_V4.5_8B")
+        # Deep Thinking mode is enabled by default for this complex task
         client = MiniCPMClient(model_name=model, thinking_mode="deep")
         OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_minicpm.json")
 
     else:
-        raise ValueError(f"Provider '{PROVIDER}' non supportato. Scegli tra 'gemma', 'qwen', 'minicpm'.")
+        raise ValueError(f"Provider '{PROVIDER}' is not supported. Choose among 'gemma', 'qwen', 'minicpm'.")
 
-    print(f"[*] Modello selezionato: {model}")
-    print(f"[*] File di output: {OUTPUT_PREDICTIONS_PATH}")
+    # Keep results of different strategies in different files (checkpoint resume is path based)
+    if USE_YOLO:
+        OUTPUT_PREDICTIONS_PATH = OUTPUT_PREDICTIONS_PATH.replace(".json", "_yolo.json")
 
-    # --- SKELETON ESEMPI FEW-SHOT ---
+    print(f"[*] Selected model: {model}")
+    print(f"[*] Output file: {OUTPUT_PREDICTIONS_PATH}")
+
+    # --- FEW-SHOT EXAMPLES SKELETON ---
     example_output = NutritionExtraction(
         visible_ingredients=[
             IngredientWithNutrition(
@@ -1195,33 +1218,33 @@ def main():
     ]
 
     if USE_YOLO:
-        print("\n[*] Utilizzo degli esempi few-shot pre-annotati per YOLO...")
+        print("\n[*] Using pre-annotated few-shot examples for YOLO...")
         few_shot_examples = yolo_few_shot_examples[:NUM_EXAMPLES]
         
-        # Generazione lazy delle immagini annotate se non esistono ancora fisicamente su disco
+        # Lazily generate the annotated images if they do not exist on disk yet
         few_shot_dir = os.path.join(SCRIPT_DIR, "data", "few_shot_yolo")
         for i, ex in enumerate(few_shot_examples):
             if not os.path.exists(ex["image_path"]):
                 orig_path = base_few_shot_examples[i]["image_path"]
-                print(f"[*] Generazione immagine annotata mancante per l'esempio {i+1}...")
+                print(f"[*] Generating missing annotated image for example {i+1}...")
                 try:
                     run_yolo_on_image(orig_path, output_dir=few_shot_dir)
                 except Exception as e:
-                    print(f"[ERRORE YOLO ESEMPIO] Impossibile processare {orig_path}: {e}")
+                    print(f"[YOLO EXAMPLE ERROR] Unable to process {orig_path}: {e}")
     else:
         few_shot_examples = base_few_shot_examples[:NUM_EXAMPLES]
 
     os.makedirs(os.path.dirname(OUTPUT_PREDICTIONS_PATH), exist_ok=True)
 
-    # --- CARICAMENTO DATI E FILTRAGGIO ---
+    # --- DATA LOADING AND FILTERING ---
     with open(TEST_DATASET_PATH, 'r', encoding='utf-8') as f:
         test_data = json.load(f)
 
     if MAX_ITEMS_TO_TEST:
         test_data = test_data[:MAX_ITEMS_TO_TEST]
-        print(f"[*] MAX_ITEMS_TO_TEST attivo: esecuzione limitata a {MAX_ITEMS_TO_TEST} elementi.")
+        print(f"[*] MAX_ITEMS_TO_TEST active: execution limited to {MAX_ITEMS_TO_TEST} items.")
 
-    # --- RIPRESA DA CHECKPOINT ---
+    # --- RESUME FROM CHECKPOINT ---
     existing_predictions = []
     processed_images = set()
 
@@ -1232,16 +1255,16 @@ def main():
                 if content.strip():
                     existing_predictions = json.loads(content)
                     processed_images = {item["image_path"] for item in existing_predictions}
-            print(f"Ripresa in corso: trovati {len(processed_images)} elementi già processati.")
+            print(f"Resuming: found {len(processed_images)} already processed items.")
         except Exception as e:
-            print(f"Errore nella lettura del checkpoint: {e}")
+            print(f"Error reading the checkpoint: {e}")
 
-    # --- LOOP DI ESECUZIONE SEQUENZIALE ---
+    # --- SEQUENTIAL EXECUTION LOOP ---
     start_time = time.time()
     successful_count = 0
     total_to_process = len([item for item in test_data if item["image_path"] not in processed_images])
 
-    print(f"\nAvvio loop di inferenza. {total_to_process} immagini rimanenti da processare.")
+    print(f"\nStarting inference loop. {total_to_process} images left to process.")
 
     try:
         for idx, item in enumerate(test_data, 1):
@@ -1252,22 +1275,22 @@ def main():
                 existing_predictions.append(record)
                 processed_images.add(record["image_path"])
 
-                # Logica di salvataggio basata sul numero di elementi
+                # Save logic based on the number of items
                 if successful_count % SAVE_EVERY_N_ITEMS == 0:
                     save_json_safely(existing_predictions, OUTPUT_PREDICTIONS_PATH)
-                    print(f"[{successful_count} elementi processati] Checkpoint salvato con successo.")
+                    print(f"[{successful_count} items processed] Checkpoint saved successfully.")
 
     except KeyboardInterrupt:
-        print("\n[!] Esecuzione interrotta dall'utente (Ctrl+C). Salvataggio di emergenza in corso...")
+        print("\n[!] Execution interrupted by the user (Ctrl+C). Emergency save in progress...")
 
     finally:
         if existing_predictions:
             save_json_safely(existing_predictions, OUTPUT_PREDICTIONS_PATH)
-            print(f"Salvataggio finale completato. Predizioni totali salvate: {len(existing_predictions)}")
+            print(f"Final save completed. Total predictions saved: {len(existing_predictions)}")
 
         end_time = time.time()
         print(
-            f"\nBatch completato! Processate {successful_count} nuove immagini in {end_time - start_time:.2f} secondi.")
+            f"\nBatch completed! Processed {successful_count} new images in {end_time - start_time:.2f} seconds.")
 
 
 if __name__ == "__main__":

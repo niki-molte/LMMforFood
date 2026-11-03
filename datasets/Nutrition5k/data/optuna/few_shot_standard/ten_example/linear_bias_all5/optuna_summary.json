@@ -1,7 +1,7 @@
 {
     "_strategy_info": {
         "name": "linear_bias_all5",
-        "description": "Modello lineare con scale e bias (adj_val = pred * scale + bias)",
+        "description": "Linear model with scale and bias (adj_val = pred * scale + bias)",
         "nutrients_optimized": [
             "mass",
             "cal",
@@ -27,7 +27,7 @@
             "bias_protein": 1.1351074828642065
         }
     },
-    "optuna_train_standard_predictions_gemma4_e2b_q8.json.json": {
+    "optuna_train_standard_predictions_gemma4_e2b_q8.json": {
         "best_combined_mae_perc": 56.34,
         "optimal_scalars": {
             "scale_mass": 0.8496954129357361,

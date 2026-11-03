@@ -1,7 +1,7 @@
 {
     "_strategy_info": {
         "name": "linear_mass_only",
-        "description": "Moltiplicatore lineare ottimizzato solo per la massa totale",
+        "description": "Linear multiplier optimized for total mass only",
         "nutrients_optimized": [
             "mass"
         ],

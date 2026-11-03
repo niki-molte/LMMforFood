@@ -2,6 +2,7 @@ import os
 import csv
 
 from datasets.BaseDataset import BaseFoodDatasetLoader
+from settings import get_env, get_path  # centralized configuration (.env)
 
 
 class LoadNutrition5kDataset(BaseFoodDatasetLoader):
@@ -117,7 +118,7 @@ class LoadNutrition5kDataset(BaseFoodDatasetLoader):
 
                     image_full_path = os.path.join(self.dataset_dir, record["image_path"])
                     if not os.path.exists(image_full_path):
-                        print(f"WARNING: immagine non trovata su disco per {dish_id}, record scartato.")
+                        print(f"WARNING: image not found on disk for {dish_id}, record discarded.")
                         continue
 
                     self.dataset_records[split].append(record)
@@ -131,7 +132,7 @@ if __name__ == "__main__":
     os.makedirs(OUTPUT_DIRECTORY, exist_ok=True)
 
     # Nutrition5k Processing
-    NUTRITION_DIR = "/media/niki/Niki My Passport/scuola/università/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
+    NUTRITION_DIR = get_path("NUTRITION5K_DATASET_DIR")
     nutrition_loader = LoadNutrition5kDataset(NUTRITION_DIR, OUTPUT_DIRECTORY)
     nutrition_loader.load_metadata()
 

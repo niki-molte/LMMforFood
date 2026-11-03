@@ -1,0 +1,134 @@
+[
+  {
+    "food_id": "dish_1558629818",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1558629818/rgb.png",
+    "num_ingredients": 1,
+    "total_macronutrients": {
+      "calories": 156.087006,
+      "total_mass_grams": 27.0,
+      "fat": 13.365,
+      "carbohydrates": 6.129,
+      "protein": 6.048
+    },
+    "ingredients": [
+      {
+        "name": "almonds",
+        "weight_grams": 27.0
+      }
+    ],
+    "saved_image": "dish_1558629818_27.0g.png"
+  },
+  {
+    "food_id": "dish_1565208562",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1565208562/rgb.png",
+    "num_ingredients": 1,
+    "total_macronutrients": {
+      "calories": 40.48,
+      "total_mass_grams": 92.0,
+      "fat": 1.932,
+      "carbohydrates": 3.956,
+      "protein": 2.944
+    },
+    "ingredients": [
+      {
+        "name": "caesar salad",
+        "weight_grams": 92.0
+      }
+    ],
+    "saved_image": "dish_1565208562_92.0g.png"
+  },
+  {
+    "food_id": "dish_1561494001",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1561494001/rgb.png",
+    "num_ingredients": 10,
+    "total_macronutrients": {
+      "calories": 162.687851,
+      "total_mass_grams": 216.0,
+      "fat": 13.844637,
+      "carbohydrates": 7.95715,
+      "protein": 3.520412
+    },
+    "ingredients": [
+      {
+        "name": "walnuts",
+        "weight_grams": 2.556142
+      },
+      {
+        "name": "salt",
+        "weight_grams": 0.8861819999999999
+      },
+      {
+        "name": "squash",
+        "weight_grams": 108.508011
+      },
+      {
+        "name": "mustard",
+        "weight_grams": 0.798794
+      },
+      {
+        "name": "olive oil",
+        "weight_grams": 11.309647
+      },
+      {
+        "name": "chard",
+        "weight_grams": 12.780708
+      },
+      {
+        "name": "arugula",
+        "weight_grams": 71.571968
+      },
+      {
+        "name": "vinegar",
+        "weight_grams": 2.396383
+      },
+      {
+        "name": "blueberries",
+        "weight_grams": 5.112283
+      },
+      {
+        "name": "pepper",
+        "weight_grams": 0.07987899999999999
+      }
+    ],
+    "saved_image": "dish_1561494001_216.0g.png"
+  },
+  {
+    "food_id": "dish_1566501382",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1566501382/rgb.png",
+    "num_ingredients": 5,
+    "total_macronutrients": {
+      "calories": 283.529999,
+      "total_mass_grams": 330.0,
+      "fat": 4.0,
+      "carbohydrates": 12.261001,
+      "protein": 47.963997
+    },
+    "ingredients": [
+      {
+        "name": "olives",
+        "weight_grams": 26.0
+      },
+      {
+        "name": "onions",
+        "weight_grams": 30.0
+      },
+      {
+        "name": "cherry tomatoes",
+        "weight_grams": 57.0
+      },
+      {
+        "name": "tuna",
+        "weight_grams": 160.0
+      },
+      {
+        "name": "carrot",
+        "weight_grams": 57.0
+      }
+    ],
+    "saved_image": "dish_1566501382_330.0g.png"
+  }
+]

@@ -1,22 +1,23 @@
 """
 tables.py
 =========
-Tabelle riassuntive stampate a terminale durante la valutazione.
+Summary tables printed to the terminal during the evaluation.
 """
 from . import style as st
 from .data_utils import parse_model_name
 
 
 def print_summary_tables(all_nlp_results: dict, all_macro_results: dict, variants: list):
-    """Tabella per-modello (gruppo hardware x strategia), come nello script originale."""
+    """Per-model table (hardware group x strategy)."""
     print("\n" + "=" * 120)
     print(" " * 45 + "METRICS SUMMARY TABLE")
     print("=" * 120)
 
     models = list(all_macro_results.keys())
     models_sorted = []
+    variant_order = list(variants) + ["Standard Optuna", "YOLO Optuna"]
     for g in st.GROUPS:
-        for v in variants:
+        for v in variant_order:
             for m in models:
                 mg, mv = parse_model_name(m)
                 if mg == g and mv == v:
@@ -76,56 +77,74 @@ def print_summary_tables(all_nlp_results: dict, all_macro_results: dict, variant
 
 
 def print_optuna_strategy_tables(results: dict, strategies: list):
-    """Una tabella per ogni strategia Optuna: righe = Group x Examples, colonne = metriche macro.
+    """One table for each Optuna strategy with 4 columns:
+    Standard | Standard Optuna | YOLO | YOLO Optuna.
 
     Args:
-        results: dict con struttura results[group][variant_name]["macro"]["overall"/"exact_match"]
-                 I variant_name hanno formato "{prefix} ({strategy})" oppure "{prefix} ({YOLO_BASE_KEY})".
-        strategies: lista di strategie Optuna (es. ["linear_all5", "linear_mass_only", ...]).
-                    Viene aggiunto automaticamente il YOLO base (st.YOLO_BASE_KEY) come prima colonna.
+        results: dict with structure results[group][variant_name]["macro"]["overall"/"exact_match"].
+                 Expected keys:
+                   - "{prefix} ({st.STANDARD_BASE_KEY})"  → Standard base
+                   - "{prefix} ({strategy}_std)"           → Standard + Optuna
+                   - "{prefix} ({st.YOLO_BASE_KEY})"       → YOLO base
+                   - "{prefix} ({strategy})"               → YOLO + Optuna
+        strategies: list of Optuna strategies (e.g. ["linear_all5", "linear_mass_only", ...]).
     """
-    all_strategy_keys = [st.YOLO_BASE_KEY] + list(strategies)
-    examples = st.EXAMPLES  # ['1 Example', '5 Examples', '10 Examples']
+    for strategy in strategies:
+        label = st.OPTUNA_STRATEGY_LABELS.get(strategy, strategy)
+        print(f"\n{'=' * 150}")
+        print(f"{' ' * 40}OPTUNA STRATEGY: {label.upper()}")
+        print("=" * 150)
 
-    for strategy_key in all_strategy_keys:
-        label = st.OPTUNA_STRATEGY_LABELS.get(strategy_key, strategy_key)
-        print(f"\n{'=' * 120}")
-        print(f"{' ' * 35}OPTUNA STRATEGY: {label.upper()}")
-        print("=" * 120)
-
-        for subset, subset_title in [("overall", "OVERALL MAE"), ("exact_match", "EXACT MATCH MAE")]:
+        for subset, subset_title in [("overall", "OVERALL MAE & MAE %"),
+                                     ("exact_match", "EXACT MATCH MAE & MAE %")]:
             print(f"\n--- {subset_title} ---")
-            header = (f"{'Group':<12} | {'Examples':<12} | {'Calories':<18} | {'Mass':<18} | "
-                      f"{'Fat':<18} | {'Carbs':<18} | {'Protein':<18}")
-            print("-" * len(header))
+            header = (
+                f"{'Group':<12} | {'Variant':<25} | "
+                f"{'Calories':<18} | {'Mass':<18} | "
+                f"{'Fat':<18} | {'Carbs':<18} | {'Protein':<18}"
+            )
+            sep = "-" * len(header)
+            print(sep)
             print(header)
-            print("-" * len(header))
+            print(sep)
 
-            found_any = False
+            def _fmt(entry):
+                if entry is None or "macro" not in entry or subset not in entry["macro"]:
+                    return "N/A", "N/A", "N/A", "N/A", "N/A"
+                m = entry["macro"][subset]
+                return (
+                    f"{m.get('calories_MAE', 0.0):.1f} ({m.get('calories_MAE_%', 0.0):.1f}%)",
+                    f"{m.get('mass_MAE', 0.0):.1f} ({m.get('mass_MAE_%', 0.0):.1f}%)",
+                    f"{m.get('fat_MAE', 0.0):.1f} ({m.get('fat_MAE_%', 0.0):.1f}%)",
+                    f"{m.get('carbohydrates_MAE', 0.0):.1f} ({m.get('carbohydrates_MAE_%', 0.0):.1f}%)",
+                    f"{m.get('protein_MAE', 0.0):.1f} ({m.get('protein_MAE_%', 0.0):.1f}%)",
+                )
+
+            col_specs = [
+                ("Standard",         lambda g, p, s=strategy: results.get(g, {}).get(f"{p} ({st.STANDARD_BASE_KEY})")),
+                ("Standard Optuna",  lambda g, p, s=strategy: results.get(g, {}).get(f"{p} ({s}_std)")),
+                ("YOLO",             lambda g, p, s=strategy: results.get(g, {}).get(f"{p} ({st.YOLO_BASE_KEY})")),
+                ("YOLO Optuna",      lambda g, p, s=strategy: results.get(g, {}).get(f"{p} ({s})")),
+            ]
+
             for g in st.GROUPS:
-                for prefix in examples:
-                    var_name = f"{prefix} ({strategy_key})"
-                    grp_data = results.get(g, {})
-                    entry = grp_data.get(var_name)
-                    if entry is None or "macro" not in entry or subset not in entry["macro"]:
-                        continue
-                    m = entry["macro"][subset]
-                    cal   = f"{m.get('calories_MAE', 0.0):.1f} ({m.get('calories_MAE_%', 0.0):.1f}%)"
-                    mass  = f"{m.get('mass_MAE', 0.0):.1f} ({m.get('mass_MAE_%', 0.0):.1f}%)"
-                    fat   = f"{m.get('fat_MAE', 0.0):.1f} ({m.get('fat_MAE_%', 0.0):.1f}%)"
-                    carbs = f"{m.get('carbohydrates_MAE', 0.0):.1f} ({m.get('carbohydrates_MAE_%', 0.0):.1f}%)"
-                    prot  = f"{m.get('protein_MAE', 0.0):.1f} ({m.get('protein_MAE_%', 0.0):.1f}%)"
-                    print(f"{g:<12} | {prefix:<12} | {cal:<18} | {mass:<18} | "
-                          f"{fat:<18} | {carbs:<18} | {prot:<18}")
-                    found_any = True
+                for prefix in st.EXAMPLES:
+                    for col_label, getter in col_specs:
+                        variant_label = f"{prefix} ({col_label})"
+                        cal, mass, fat, carbs, prot = _fmt(getter(g, prefix))
+                        print(
+                            f"{g:<12} | {variant_label:<25} | "
+                            f"{cal:<18} | {mass:<18} | "
+                            f"{fat:<18} | {carbs:<18} | {prot:<18}"
+                        )
 
-            if not found_any:
-                print(f"  (nessun dato disponibile per la strategia '{strategy_key}')")
-            print("-" * len(header))
+            print(sep)
+
+
 
 
 def print_few_shot_summary_tables(all_few_shot_results: dict, few_shot_variants: list):
-    """Tabella few-shot (NLP + Macro overall/exact_match), come nello script originale."""
+    """Few-shot table (NLP + Macro overall/exact_match)."""
     print("\n" + "=" * 120)
     print(" " * 45 + "FEW-SHOT SUMMARY TABLE")
     print("=" * 120)
@@ -171,3 +190,51 @@ def print_few_shot_summary_tables(all_few_shot_results: dict, few_shot_variants:
                 else:
                     print(f"{g:<12} | {v:<25} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18} | {'N/A':<18}")
         print("-" * len(header_macro))
+
+
+def print_prompting_technique_comparison_table(results: dict):
+    """Single table for Standard, Standard Optuna, YOLO and YOLO Optuna.
+
+    The format follows print_few_shot_summary_tables: one row for each
+    (Group, Examples, Variant) combination with separate columns for
+    Calories, Mass, Fat, Carbs, Protein.
+    """
+    strategies = ["Standard", "Standard Optuna", "YOLO", "YOLO Optuna"]
+    print("\n" + "=" * 150)
+    print(" " * 48 + "PROMPTING + OPTUNA SUMMARY TABLE")
+    print("=" * 150)
+
+    for subset, title in [("overall", "OVERALL MAE & MAE %"),
+                          ("exact_match", "EXACT MATCH MAE & MAE %")]:
+        print(f"\n--- {title} ---")
+        header = (
+            f"{'Group':<12} | {'Variant':<25} | "
+            f"{'Calories':<18} | {'Mass':<18} | "
+            f"{'Fat':<18} | {'Carbs':<18} | {'Protein':<18}"
+        )
+        sep = "-" * len(header)
+        print(sep)
+        print(header)
+        print(sep)
+
+        for g in st.GROUPS:
+            for prefix in st.EXAMPLES:
+                for strategy in strategies:
+                    variant_label = f"{prefix} ({strategy})"
+                    entry = results.get(g, {}).get(variant_label)
+                    if entry and "macro" in entry and subset in entry["macro"]:
+                        m = entry["macro"][subset]
+                        cal   = f"{m.get('calories_MAE', 0.0):.1f} ({m.get('calories_MAE_%', 0.0):.1f}%)"
+                        mass  = f"{m.get('mass_MAE', 0.0):.1f} ({m.get('mass_MAE_%', 0.0):.1f}%)"
+                        fat   = f"{m.get('fat_MAE', 0.0):.1f} ({m.get('fat_MAE_%', 0.0):.1f}%)"
+                        carbs = f"{m.get('carbohydrates_MAE', 0.0):.1f} ({m.get('carbohydrates_MAE_%', 0.0):.1f}%)"
+                        prot  = f"{m.get('protein_MAE', 0.0):.1f} ({m.get('protein_MAE_%', 0.0):.1f}%)"
+                    else:
+                        cal = mass = fat = carbs = prot = "N/A"
+                    print(
+                        f"{g:<12} | {variant_label:<25} | "
+                        f"{cal:<18} | {mass:<18} | "
+                        f"{fat:<18} | {carbs:<18} | {prot:<18}"
+                    )
+
+        print(sep)

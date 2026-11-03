@@ -1,7 +1,7 @@
 """
 data_utils.py
 =============
-Caricamento vocabolario ingredienti e parsing dei nomi file/modello.
+Ingredient vocabulary loading and parsing of file/model names.
 """
 import os
 import csv
@@ -24,7 +24,7 @@ def load_vocabulary(path: str) -> list:
 
 
 def parse_model_name(name: str):
-    """Estrae (gruppo hardware, variante/strategia) dal nome file."""
+    """Extract (hardware group, variant/strategy) from the file name."""
     name_lower = name.lower()
     group = "Unknown"
     if "e2b" in name_lower and "q4" in name_lower:
@@ -38,6 +38,8 @@ def parse_model_name(name: str):
 
     if "optuna" in name_lower and "yolo" in name_lower:
         variant = "YOLO Optuna"
+    elif "optuna" in name_lower:
+        variant = "Standard Optuna"
     elif "v2hybrid" in name_lower:
         variant = "Hybrid v2"
     elif "hybrid" in name_lower:
@@ -53,8 +55,8 @@ def parse_model_name(name: str):
 
 
 def get_dynamic_variants_and_colors(base_dirs=("data/prediction/one_example",
-                                                 "data/prediction/one_example_rag")):
-    """Scopre dinamicamente le varianti presenti sul disco e assegna un colore."""
+                                                 "data/prediction/one_example_semantic_matching")):
+    """Dynamically discover the variants present on disk and assign a color to each."""
     files = []
     for d in base_dirs:
         files = glob.glob(os.path.join(d, "*.json"))
@@ -75,7 +77,7 @@ def get_dynamic_variants_and_colors(base_dirs=("data/prediction/one_example",
 
 
 def build_few_shot_variants(variants):
-    """Costruisce l'elenco 'N Example (Strategia)' a partire dalle varianti base."""
+    """Build the list of 'N Example (Strategy)' names from the base variants."""
     color_map = {
         'Standard': ['#99c2ff', '#3385ff', '#0047b3'],
         'Two-Step': ['#ffb3b3', '#ff4d4d', '#b30000'],

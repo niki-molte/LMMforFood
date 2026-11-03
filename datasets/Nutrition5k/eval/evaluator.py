@@ -1,8 +1,8 @@
 """
 evaluator.py
 ============
-Classe di valutazione (NLP + macronutrienti) di una singola run di predizioni.
-Logica invariata rispetto allo script originale.
+Evaluation class (NLP + macronutrients) for a single run of predictions.
+Evaluation logic for a single predictions file.
 """
 import json
 import os
@@ -136,7 +136,9 @@ class Nutrition5kEvaluator:
             gt_list = self._clean_ingredients(gt_raw)
             gt_set = set(gt_list)
 
-            if "rag_validated_ingredients" in item:
+            if "semantic_matching_validated_ingredients" in item:
+                predicted_ingredients = item.get("semantic_matching_validated_ingredients", [])
+            elif "rag_validated_ingredients" in item:
                 predicted_ingredients = item.get("rag_validated_ingredients", [])
             else:
                 if "predicted_nutrition_step2" in item:

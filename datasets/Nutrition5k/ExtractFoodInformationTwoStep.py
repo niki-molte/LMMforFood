@@ -10,8 +10,12 @@ from OllamaClient.miniCPM_client import MiniCPMClient
 from answer_schema.extraction import Macronutrients, IngredientWithNutrition, NutritionExtraction
 
 import os
+import sys
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+if SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, SCRIPT_DIR)  # makes prompt_strategies importable also on Kaggle
+from prompt_strategies import select_strategy, TWO_STEP_AXES, TWO_STEP_STEP1, TWO_STEP_STEP2
 
 PROVIDER = "minicpm"
 USE_YOLO = True
@@ -19,24 +23,19 @@ DEBUG = False
 YOLO_WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "yolo_weights", "yolov8s.pt")
 _yolo_model = None
 
-# impostazioni checkpoint
+# checkpoint settings
 SAVE_EVERY_N_ITEMS = 5
 MAX_ITEMS_TO_TEST = 3
 
-# percorsi
+# paths
 IMAGES_BASE_DIR = "/media/niki/Niki My Passport/scuola/universit/magistrale/tesi/dataset/Nutrition5k/nutrition5k_dataset"
-<<<<<<< Updated upstream
-TEST_DATASET_PATH = "datasets/Nutrition5k/data/ground truth/test_dataset.json"
-OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_custom.json"
-=======
 TEST_DATASET_PATH = os.path.join(SCRIPT_DIR, "data", "ground truth", "test_dataset.json")
 OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_twostep.json")
->>>>>>> Stashed changes
 
 
 # ==========================================
-# --- SCHEMI PYDANTIC PER STEP 1 ---
-# (Step 2 userà il tuo NutritionExtraction importato)
+# --- PYDANTIC SCHEMAS FOR STEP 1 ---
+# (Step 2 uses the imported NutritionExtraction)
 # ==========================================
 class BaseIngredient(BaseModel):
     name: str = Field(description="Name of the ingredient")
@@ -52,7 +51,7 @@ class FoodAnalysisStep1(BaseModel):
 
 
 # ==========================================
-# --- LOGICA DI ESECUZIONE ---
+# --- EXECUTION LOGIC ---
 # ==========================================
 def normalize_path(path: str) -> str:
     return unicodedata.normalize("NFC", path)
@@ -65,7 +64,7 @@ def save_json_safely(data, filepath):
             json.dump(data, f, ensure_ascii=False, indent=4)
         os.replace(temp_filepath, filepath)
     except Exception as e:
-        print(f"[ERRORE] Impossibile salvare il file JSON: {e}")
+        print(f"[ERROR] Unable to save the JSON file: {e}")
 
 
 def calculate_iou(boxA, boxB):
@@ -92,12 +91,12 @@ def parse_llm_json(result_str, schema_model):
         parsed_result = schema_model.model_validate_json(cleaned_result)
         return parsed_result
     except Exception as e:
-        print(f"[Errore di Parsing] Dettagli errore Pydantic: {e}")
+        print(f"[Parsing Error] Pydantic error details: {e}")
         return None
 
 
 def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examples_step1, examples_step2,
-                         processed_images):
+                         processed_images, step1_cfg, step2_cfg):
     img_path = item["image_path"]
 
     if img_path in processed_images:
@@ -106,13 +105,13 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
     full_image_path = normalize_path(os.path.join(IMAGES_BASE_DIR, img_path))
 
     if not os.path.exists(full_image_path):
-        print(f"[Avviso] File non trovato: {full_image_path}")
+        print(f"[Warning] File not found: {full_image_path}")
         return None
 
-    print(f"\n[{time.strftime('%H:%M:%S')}] Elaborazione in corso: {img_path}...")
+    print(f"\n[{time.strftime('%H:%M:%S')}] Processing: {img_path}...")
 
     if USE_YOLO:
-        print(f"[YOLO] Esecuzione inferenza su {img_path}...")
+        print(f"[YOLO] Running inference on {img_path}...")
         try:
             import cv2
             from ultralytics import YOLO
@@ -135,10 +134,10 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
                     conf = float(box.conf[0].item()) if hasattr(box, 'conf') and box.conf is not None else 1.0
                     raw_boxes.append({"class_name": class_name, "coords": coords, "conf": conf, "class_id": class_id, "weight": conf, "count": 1})
                 
-                print(f"[YOLO ORIGINALE] Ingredienti rilevati: {[b['class_name'] for b in raw_boxes]}")
-                print(f"[YOLO ORIGINALE] Confidenze: {[round(b['conf'], 2) for b in raw_boxes]}")
+                print(f"[YOLO ORIGINAL] Detected ingredients: {[b['class_name'] for b in raw_boxes]}")
+                print(f"[YOLO ORIGINAL] Confidences: {[round(b['conf'], 2) for b in raw_boxes]}")
                 
-                # Raggruppa i box che si sovrappongono e calcola la media pesata (WBF a gruppi)
+                # Group overlapping boxes and compute the weighted average (grouped WBF)
                 IOU_THRESHOLD = 0.5
                 filtered_boxes = []
                 
@@ -192,18 +191,18 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
                             "count": len(group)
                         })
                 
-                # Ordiniamo i box filtrati per confidenza decrescente
+                # Sort the filtered boxes by descending confidence
                 filtered_boxes.sort(key=lambda x: x["conf"], reverse=True)
                 
                 detected_ingredients = [b["class_name"] for b in filtered_boxes]
                 bounding_boxes = [b["coords"] for b in filtered_boxes]
                 detected_confidences = [round(b["conf"], 2) for b in filtered_boxes]
                     
-                print(f"[YOLO FILTRATO] Ingredienti rilevati ({len(detected_ingredients)}): {detected_ingredients}")
-                print(f"[YOLO FILTRATO] Coordinate Bounding Box: {bounding_boxes}")
-                print(f"[YOLO FILTRATO] Confidenze Bounding Box: {detected_confidences}")
+                print(f"[YOLO FILTERED] Detected ingredients ({len(detected_ingredients)}): {detected_ingredients}")
+                print(f"[YOLO FILTERED] Bounding box coordinates: {bounding_boxes}")
+                print(f"[YOLO FILTERED] Bounding box confidences: {detected_confidences}")
                 
-                # --- VISUALIZZAZIONE DELLE NUOVE BOUNDING BOX ---
+                # --- VISUALIZATION OF THE NEW BOUNDING BOXES ---
                 if DEBUG:
                     from ultralytics.utils.plotting import colors, Annotator
                     annotator = Annotator(img_resized.copy(), line_width=2, example=str(_yolo_model.names))
@@ -211,28 +210,28 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
                         coords = box["coords"]
                         class_id = box["class_id"]
                         
-                        # Creiamo la label solo con ID incrementale, senza confidenza
+                        # Build the label with only an incremental ID, without confidence
                         label = f"{idx}"
-                        # Usiamo la funzione box_label che si occupa anche di assegnare i colori YOLO
+                        # box_label also takes care of assigning the YOLO colors
                         annotator.box_label(coords, label, color=colors(class_id, True))
                     
                     drawn_img = annotator.result()
                     cv2.imshow("Modified Bounding Boxes", drawn_img)
-                    cv2.waitKey()  # Mostra l'immagine (premi un tasto per continuare)
+                    cv2.waitKey()  # Show the image (press any key to continue)
                     cv2.destroyAllWindows()
                 # --------------------------------------------------
             else:
-                print(f"[Avviso] Impossibile leggere l'immagine con cv2: {full_image_path}")
+                print(f"[Warning] Unable to read the image with cv2: {full_image_path}")
         except Exception as e:
-            print(f"[ERRORE YOLO] {e}")
-        return None  # Salta il passaggio al LLM per il momento
+            print(f"[YOLO ERROR] {e}")
+        return None  # Skip the LLM step
 
     # ==========================
-    # STEP 1: Analisi Visiva (Solo pesi e ingredienti)
+    # STEP 1: Visual Analysis (weights and ingredients only)
     # ==========================
-    prompt1 = "Analyze this dish. Provide the full breakdown of visible/hidden ingredients, estimated weights, and allergens. Output ONLY the JSON."
+    prompt1 = step1_cfg["prompt"]
 
-    print(f"[{time.strftime('%H:%M:%S')}] Esecuzione Step 1 (Visual Analysis)...")
+    print(f"[{time.strftime('%H:%M:%S')}] Running Step 1 (Visual Analysis)...")
     start_step1 = time.time()
     try:
         result_step1 = client.ask(
@@ -243,45 +242,40 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
             examples=examples_step1,
         )
     except Exception as e:
-        print(f"[ERRORE CRITICO] Crash durante Step 1: {e}")
+        print(f"[CRITICAL ERROR] Crash during Step 1: {e}")
         return None
 
-    print(f"[{time.strftime('%H:%M:%S')}] Step 1 completato in {time.time() - start_step1:.2f}s")
+    print(f"[{time.strftime('%H:%M:%S')}] Step 1 completed in {time.time() - start_step1:.2f}s")
 
     parsed_step1 = parse_llm_json(result_step1, FoodAnalysisStep1)
     if not parsed_step1:
-        print(f"[ERRORE] Fallito il parsing dello Step 1.")
+        print(f"[ERROR] Failed to parse Step 1.")
         return None
 
     # ==========================
-    # STEP 2: Analisi Nutrizionale (Aggiunta Macronutrienti)
+    # STEP 2: Nutrition Analysis (adds macronutrients)
     # ==========================
-    prompt2 = (
-        "Analyze this dish with the following extracted details. Calculate exact macronutrients based on the estimated weights.\n\n"
-        "Extracted Food Details:\n"
-        f"{parsed_step1.model_dump_json()}\n\n"
-        "Output ONLY the final JSON."
-    )
+    prompt2 = step2_cfg["prompt"].replace("{step1_json}", parsed_step1.model_dump_json())
 
-    print(f"[{time.strftime('%H:%M:%S')}] Esecuzione Step 2 (Nutrition Analysis)...")
+    print(f"[{time.strftime('%H:%M:%S')}] Running Step 2 (Nutrition Analysis)...")
     start_step2 = time.time()
     try:
         result_step2 = client.ask(
-            image_path=full_image_path,  # Passiamo l'immagine per robustezza, come suggerito nel paper
+            image_path=full_image_path,  # The image is passed for robustness, as suggested in the paper
             prompt=prompt2,
             system_instruction=step2_sys_prompt,
             response_schema=NutritionExtraction,
             examples=examples_step2,
         )
     except Exception as e:
-        print(f"[ERRORE CRITICO] Crash durante Step 2: {e}")
+        print(f"[CRITICAL ERROR] Crash during Step 2: {e}")
         return None
 
-    print(f"[{time.strftime('%H:%M:%S')}] Step 2 completato in {time.time() - start_step2:.2f}s")
+    print(f"[{time.strftime('%H:%M:%S')}] Step 2 completed in {time.time() - start_step2:.2f}s")
 
     parsed_step2 = parse_llm_json(result_step2, NutritionExtraction)
     if not parsed_step2:
-        print(f"[ERRORE] Fallito il parsing dello Step 2.")
+        print(f"[ERROR] Failed to parse Step 2.")
         return None
 
     prediction_record = {
@@ -292,35 +286,22 @@ def process_single_image(item, client, step1_sys_prompt, step2_sys_prompt, examp
         "predicted_food_analysis_step1": parsed_step1.model_dump(),
         "predicted_nutrition_step2": parsed_step2.model_dump()
     }
-    print(f"[SUCCESSO] Processo a due step completato correttamente!")
+    print(f"[SUCCESS] Two-step process completed successfully!")
     return prediction_record
 
 
-def main():
-    print(f"Avvio esecuzione sequenziale con provider: {PROVIDER.upper()} (TWO-STEP CUSTOM PROMPTING)...")
+def main(step1=None, step2=None):
+    print(f"Starting sequential execution with provider: {PROVIDER.upper()} (TWO-STEP CUSTOM PROMPTING)...")
 
-    # --- 1. SYSTEM INSTRUCTIONS ---
-    base_step1_instruction = (
-        "You are an expert food vision analyst.\n"
-        "Your task is to analyze top-down RGB images of dishes to identify ingredients and portions.\n\n"
-        "CORE DIRECTIVES FOR STEP 1:\n"
-        "1. Identify all visible ingredients.\n"
-        "2. Deduce logically necessary hidden ingredients (e.g., cooking oils, butter, salt, sauces).\n"
-        "3. Extract all possible allergens based on visible and hidden ingredients.\n"
-        "4. Estimate realistic portion sizes (weight in grams) for each item.\n"
-        "5. DO NOT calculate macronutrients. Focus ONLY on identification and weight estimation.\n"
-        "You MUST respond ONLY with a valid JSON."
-    )
+    # --- 1. SYSTEM INSTRUCTIONS (chosen at startup, see prompt_strategies.py) ---
+    choice = select_strategy(TWO_STEP_AXES, overrides={"step1": step1, "step2": step2},
+                             title="Prompt strategy (two step)")
+    step1_cfg = TWO_STEP_STEP1[choice["step1"]]
+    step2_cfg = TWO_STEP_STEP2[choice["step2"]]
+    base_step1_instruction = step1_cfg["system"]
+    base_step2_instruction = step2_cfg["system"]
 
-    base_step2_instruction = (
-        "You are an expert nutritionist.\n"
-        "Your task is to perform a precise nutritional breakdown based on the provided ingredient list and weights.\n\n"
-        "CORE DIRECTIVES FOR STEP 2:\n"
-        "1. Calculate exact macronutrients (calories, fat, carbohydrates, protein) for each provided ingredient.\n"
-        "You MUST respond ONLY with a valid JSON."
-    )
-
-    # --- 2. CONFIGURAZIONE PROVIDER ---
+    # --- 2. PROVIDER CONFIGURATION ---
     step1_sys_prompt = base_step1_instruction
     step2_sys_prompt = base_step2_instruction
 
@@ -331,40 +312,32 @@ def main():
         client = GemmaClient(model_name=model)
         step1_sys_prompt = "<|think|>\n" + base_step1_instruction
         step2_sys_prompt = "<|think|>\n" + base_step2_instruction
-<<<<<<< Updated upstream
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_custom_gemma.json"
-=======
         OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_twostep_gemma.json")
->>>>>>> Stashed changes
 
     elif PROVIDER == "qwen":
         model = os.environ.get("OLLAMA_QWEN_MODEL", "qwen3.5:4b")
         client = QwenClient(model_name=model)
-<<<<<<< Updated upstream
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_custom_qwen.json"
-=======
         OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_twostep_qwen.json")
->>>>>>> Stashed changes
 
     elif PROVIDER == "minicpm":
         model = os.environ.get("OLLAMA_MINICPM_MODEL", "openbmb/minicpm-v4.5:8b")
         client = MiniCPMClient(model_name=model, thinking_mode="deep")
-<<<<<<< Updated upstream
-        OUTPUT_PREDICTIONS_PATH = "data/prediction/test_predictions_nutrition5k_twostep_custom_minicpm.json"
-=======
         OUTPUT_PREDICTIONS_PATH = os.path.join(SCRIPT_DIR, "data", "prediction", "test_predictions_nutrition5k_twostep_minicpm.json")
->>>>>>> Stashed changes
 
     else:
-        raise ValueError(f"Provider '{PROVIDER}' non supportato.")
+        raise ValueError(f"Provider '{PROVIDER}' is not supported.")
 
-    print(f"[*] Modello selezionato: {model}")
-    print(f"[*] File di output: {OUTPUT_PREDICTIONS_PATH}")
+    # Keep results of different strategies in different files (checkpoint resume is path based)
+    if (choice["step1"], choice["step2"]) != ("weights_only", "nutrition"):
+        OUTPUT_PREDICTIONS_PATH = OUTPUT_PREDICTIONS_PATH.replace(".json", f"_{choice['step1']}_{choice['step2']}.json")
+
+    print(f"[*] Selected model: {model}")
+    print(f"[*] Output file: {OUTPUT_PREDICTIONS_PATH}")
 
     os.makedirs(os.path.dirname(OUTPUT_PREDICTIONS_PATH), exist_ok=True)
 
-    # --- 3. FEW-SHOT EXAMPLES DIVISI PER STEP ---
-    # Esempio Output Step 1 (Solo Pesi)
+    # --- 3. FEW-SHOT EXAMPLES SPLIT BY STEP ---
+    # Example Step 1 output (weights only)
     example_step1_output = FoodAnalysisStep1(
         visible_ingredients=[
             BaseIngredient(name="arugula", weight_grams=21.13),
@@ -383,7 +356,7 @@ def main():
         allergens=["None"]
     ).model_dump_json()
 
-    # Esempio Output Step 2 (Macronutrienti completi)
+    # Example Step 2 output (full macronutrients)
     example_step2_output = NutritionExtraction(
         visible_ingredients=[
             IngredientWithNutrition(name="arugula", weight_grams=21.13,
@@ -428,14 +401,14 @@ def main():
     examples_step1 = [{"image_path": example_path, "output": example_step1_output}]
     examples_step2 = [{"image_path": example_path, "output": example_step2_output}]
 
-    # --- CARICAMENTO DATI ---
+    # --- DATA LOADING ---
     with open(TEST_DATASET_PATH, 'r', encoding='utf-8') as f:
         test_data = json.load(f)
 
     if MAX_ITEMS_TO_TEST:
         test_data = test_data[:MAX_ITEMS_TO_TEST]
 
-    # --- RIPRESA CHECKPOINT ---
+    # --- CHECKPOINT RESUME ---
     existing_predictions = []
     processed_images = set()
 
@@ -446,21 +419,22 @@ def main():
                 if content.strip():
                     existing_predictions = json.loads(content)
                     processed_images = {item["image_path"] for item in existing_predictions}
-            print(f"Ripresa in corso: trovati {len(processed_images)} elementi già processati.")
+            print(f"Resuming: found {len(processed_images)} already processed items.")
         except Exception as e:
-            print(f"Errore nella lettura del checkpoint: {e}")
+            print(f"Error reading the checkpoint: {e}")
 
-    # --- INFERENZA SEQUENZIALE ---
+    # --- SEQUENTIAL INFERENCE ---
     start_time = time.time()
     successful_count = 0
     total_to_process = len([item for item in test_data if item["image_path"] not in processed_images])
 
-    print(f"\nAvvio loop di inferenza. {total_to_process} immagini rimanenti da processare.")
+    print(f"\nStarting inference loop. {total_to_process} images left to process.")
 
     try:
         for idx, item in enumerate(test_data, 1):
             record = process_single_image(
-                item, client, step1_sys_prompt, step2_sys_prompt, examples_step1, examples_step2, processed_images
+                item, client, step1_sys_prompt, step2_sys_prompt, examples_step1, examples_step2, processed_images,
+                step1_cfg, step2_cfg
             )
 
             if record:
@@ -470,19 +444,19 @@ def main():
 
                 if successful_count % SAVE_EVERY_N_ITEMS == 0:
                     save_json_safely(existing_predictions, OUTPUT_PREDICTIONS_PATH)
-                    print(f"[{successful_count} elementi processati] Checkpoint salvato.")
+                    print(f"[{successful_count} items processed] Checkpoint saved.")
 
     except KeyboardInterrupt:
-        print("\n[!] Esecuzione interrotta. Salvataggio di emergenza...")
+        print("\n[!] Execution interrupted. Emergency save...")
 
     finally:
         if existing_predictions:
             save_json_safely(existing_predictions, OUTPUT_PREDICTIONS_PATH)
-            print(f"Salvataggio finale completato. Predizioni salvate: {len(existing_predictions)}")
+            print(f"Final save completed. Predictions saved: {len(existing_predictions)}")
 
         end_time = time.time()
         print(
-            f"\nBatch completato! Processate {successful_count} nuove immagini in {end_time - start_time:.2f} secondi.")
+            f"\nBatch completed! Processed {successful_count} new images in {end_time - start_time:.2f} seconds.")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,28 @@
+# Dipendenze del progetto LLMforFood (Python 3.12).
+# Versioni rilevate nel virtualenv di sviluppo (.venv).
+# Installazione:  pip install -r requirements.txt
+
+# --- Configurazione e schemi ---
+python-dotenv==1.2.2
+pydantic==2.13.4
+
+# --- Client LLM ---
+ollama==0.6.2
+
+# --- Dati, analisi e grafici ---
+numpy==2.4.4
+pandas==3.0.3
+scipy==1.17.1
+scikit-learn==1.8.0
+matplotlib==3.10.9
+seaborn==0.13.2
+tabulate==0.10.0
+pillow==12.2.0
+opencv-python==5.0.0.93
+
+# --- Valutazione semantica / ottimizzazione / visione ---
+sentence-transformers==5.5.0
+optuna==4.9.0
+ultralytics==8.4.115
+torch==2.12.1
+transformers==5.8.1

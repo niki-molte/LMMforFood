@@ -5,12 +5,12 @@ from OllamaClient.ollama_client import BaseVisionClient
 
 class GemmaClient(BaseVisionClient):
     """
-    Client concreto per interagire con i modelli della famiglia Ollama/Gemma4.
-    Eredita da BaseVisionClient e ne implementa i metodi astratti.
+    Concrete client for interacting with models of the Ollama/Gemma4 family.
+    Inherits from BaseVisionClient and implements its abstract methods.
     """
 
     def _define_model_configuration(self, response_schema: any = None) -> dict:
-        """Costruisce i kwargs di configurazione specifici per Ollama."""
+        """Builds the Ollama-specific configuration kwargs."""
         config_kwargs = {}
 
         if response_schema:
@@ -23,16 +23,16 @@ class GemmaClient(BaseVisionClient):
             "top_p": 0.95,
             "top_k": 64,
             "num_predict": 32768,
-            "num_ctx": 32768,  # Finestra di contesto allocata localmente
+            "num_ctx": 32768,  # Locally allocated context window
         }
 
         return config_kwargs
 
     def _prepare_contents(self, image_path: str, prompt: str, system_instruction: str = None,
                           examples: list[dict] = None) -> list[dict]:
-        """Costruisce l'array di messaggi specifico per il formato chat di Ollama."""
+        """Builds the message array in the Ollama chat format."""
         if not os.path.exists(image_path):
-            raise FileNotFoundError(f"Immagine target non trovata: {image_path}")
+            raise FileNotFoundError(f"Target image not found: {image_path}")
 
         messages = []
 
@@ -45,7 +45,7 @@ class GemmaClient(BaseVisionClient):
                 ex_output = ex.get("output")
 
                 if ex_img_path and not os.path.exists(ex_img_path):
-                    raise FileNotFoundError(f"Immagine dell'esempio non trovata: {ex_img_path}")
+                    raise FileNotFoundError(f"Example image not found: {ex_img_path}")
 
                 user_content = f"--- EXAMPLE {idx} INPUT ---"
 
@@ -74,7 +74,7 @@ class GemmaClient(BaseVisionClient):
         return messages
 
     def _execute(self, model_kwargs: dict, messages: list[dict]) -> str | None:
-        """Esegue la chiamata API locale a Ollama."""
+        """Executes the local Ollama API call."""
         try:
             response = ollama.chat(
                 model=self.model_name,
@@ -82,8 +82,8 @@ class GemmaClient(BaseVisionClient):
                 **model_kwargs
             )
 
-            # --- DEEP DEBUG ---
-            print(f"[OllamaClient DEBUG] Tipo risposta: {type(response)}")
+            # Debug output
+            print(f"[OllamaClient DEBUG] Response type: {type(response)}")
             print(f"[OllamaClient DEBUG] repr(response): {repr(response)[:500]}")
 
             if hasattr(response, "message"):
@@ -92,15 +92,15 @@ class GemmaClient(BaseVisionClient):
             elif isinstance(response, dict):
                 content = response.get("message", {}).get("content")
             else:
-                print("[OllamaClient ERRORE] Formato di risposta non riconosciuto.")
+                print("[OllamaClient ERROR] Unrecognized response format.")
                 return None
 
             if not content or not content.strip():
-                print("[OllamaClient AVVISO] Il modello ha restituito una risposta vuota.")
+                print("[OllamaClient WARNING] The model returned an empty response.")
                 return None
 
             return content
 
         except Exception as e:
-            print(f"[OllamaClient ERRORE] Esecuzione fallita: {e}")
+            print(f"[OllamaClient ERROR] Execution failed: {e}")
             return None

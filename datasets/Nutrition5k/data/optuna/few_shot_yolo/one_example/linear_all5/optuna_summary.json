@@ -1,7 +1,7 @@
 {
     "_strategy_info": {
         "name": "linear_all5",
-        "description": "Moltiplicatore lineare indipendente per ciascuno dei 5 macronutrienti",
+        "description": "Independent linear multiplier for each of the 5 macronutrients",
         "nutrients_optimized": [
             "mass",
             "cal",

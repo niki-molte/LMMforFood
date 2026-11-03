@@ -1,7 +1,7 @@
 {
     "_strategy_info": {
         "name": "power_law_all5",
-        "description": "Correzione esponenziale: scale * (pred_val ^ power) per ogni nutriente (10 parametri)",
+        "description": "Power-law correction: scale * (pred_val ^ power) for each nutrient (10 parameters)",
         "nutrients_optimized": [
             "mass",
             "cal",
@@ -27,7 +27,7 @@
             "power_protein": 0.7779311565808507
         }
     },
-    "optuna_train_standard_predictions_gemma4_e2b_q8.json.json": {
+    "optuna_train_standard_predictions_gemma4_e2b_q8.json": {
         "best_combined_mae_perc": 55.8,
         "optimal_scalars": {
             "scale_mass": 4.998629215958729,

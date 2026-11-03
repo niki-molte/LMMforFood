@@ -1,0 +1,198 @@
+[
+  {
+    "food_id": "dish_1562702044",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1562702044/rgb.png",
+    "num_ingredients": 5,
+    "total_macronutrients": {
+      "calories": 44.034069,
+      "total_mass_grams": 177.0,
+      "fat": 1.102068,
+      "carbohydrates": 7.411408,
+      "protein": 2.278431
+    },
+    "ingredients": [
+      {
+        "name": "olive oil",
+        "weight_grams": 0.611591
+      },
+      {
+        "name": "squash",
+        "weight_grams": 61.159061
+      },
+      {
+        "name": "salt",
+        "weight_grams": 0.229346
+      },
+      {
+        "name": "cherry tomatoes",
+        "weight_grams": 38.0
+      },
+      {
+        "name": "cauliflower",
+        "weight_grams": 77.0
+      }
+    ],
+    "saved_image": "dish_1562702044_44.0kcal.png"
+  },
+  {
+    "food_id": "dish_1561662358",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1561662358/rgb.png",
+    "num_ingredients": 1,
+    "total_macronutrients": {
+      "calories": 96.551003,
+      "total_mass_grams": 91.0,
+      "fat": 2.184,
+      "carbohydrates": 20.02,
+      "protein": 2.821
+    },
+    "ingredients": [
+      {
+        "name": "corn on the cob",
+        "weight_grams": 91.0
+      }
+    ],
+    "saved_image": "dish_1561662358_96.6kcal.png"
+  },
+  {
+    "food_id": "dish_1566851677",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1566851677/rgb.png",
+    "num_ingredients": 12,
+    "total_macronutrients": {
+      "calories": 354.773834,
+      "total_mass_grams": 296.0,
+      "fat": 12.628245,
+      "carbohydrates": 45.332054,
+      "protein": 16.523363
+    },
+    "ingredients": [
+      {
+        "name": "quinoa",
+        "weight_grams": 40.894569
+      },
+      {
+        "name": "broccoli",
+        "weight_grams": 25.365854
+      },
+      {
+        "name": "salt",
+        "weight_grams": 0.460064
+      },
+      {
+        "name": "arugula",
+        "weight_grams": 4.089457
+      },
+      {
+        "name": "parsley",
+        "weight_grams": 0.8178909999999999
+      },
+      {
+        "name": "lemon juice",
+        "weight_grams": 0.102236
+      },
+      {
+        "name": "garlic",
+        "weight_grams": 1.022364
+      },
+      {
+        "name": "olive oil",
+        "weight_grams": 0.838619
+      },
+      {
+        "name": "caesar salad",
+        "weight_grams": 137.0
+      },
+      {
+        "name": "thyme",
+        "weight_grams": 0.204473
+      },
+      {
+        "name": "shallots",
+        "weight_grams": 0.204473
+      },
+      {
+        "name": "cheese pizza",
+        "weight_grams": 85.0
+      }
+    ],
+    "saved_image": "dish_1566851677_354.8kcal.png"
+  },
+  {
+    "food_id": "dish_1562963084",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1562963084/rgb.png",
+    "num_ingredients": 15,
+    "total_macronutrients": {
+      "calories": 375.127289,
+      "total_mass_grams": 424.0,
+      "fat": 33.556896,
+      "carbohydrates": 26.34886,
+      "protein": 34.572639
+    },
+    "ingredients": [
+      {
+        "name": "quinoa",
+        "weight_grams": 32.715229
+      },
+      {
+        "name": "arugula",
+        "weight_grams": 8.178807
+      },
+      {
+        "name": "jalapenos",
+        "weight_grams": 0.40894
+      },
+      {
+        "name": "lemon juice",
+        "weight_grams": 3.271523
+      },
+      {
+        "name": "garlic",
+        "weight_grams": 0.817881
+      },
+      {
+        "name": "roasted potatoes",
+        "weight_grams": 69.0
+      },
+      {
+        "name": "fish",
+        "weight_grams": 163.576157
+      },
+      {
+        "name": "cherry tomatoes",
+        "weight_grams": 73.0
+      },
+      {
+        "name": "pepper",
+        "weight_grams": 6.543046
+      },
+      {
+        "name": "olive oil",
+        "weight_grams": 6.543046
+      },
+      {
+        "name": "onions",
+        "weight_grams": 6.543046
+      },
+      {
+        "name": "radishes",
+        "weight_grams": 35.0
+      },
+      {
+        "name": "cilantro",
+        "weight_grams": 1.635762
+      },
+      {
+        "name": "salt",
+        "weight_grams": 0.40894
+      },
+      {
+        "name": "tomatillo",
+        "weight_grams": 16.357615
+      }
+    ],
+    "saved_image": "dish_1562963084_375.1kcal.png"
+  }
+]

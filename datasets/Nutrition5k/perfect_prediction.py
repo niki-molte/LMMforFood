@@ -32,7 +32,7 @@ def create_perfect_predictions(input_file="data/ground truth/test_dataset.json",
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(perfect_predictions, f, indent=4)
 
-    print(f"File '{output_file}' creato con successo! Contiene {len(perfect_predictions)} predizioni perfette.")
+    print(f"File '{output_file}' created successfully! It contains {len(perfect_predictions)} perfect predictions.")
 
 
 

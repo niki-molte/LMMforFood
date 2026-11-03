@@ -1,0 +1,418 @@
+[
+  {
+    "food_id": "dish_1561578461",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1561578461/rgb.png",
+    "num_ingredients": 34,
+    "total_macronutrients": {
+      "calories": 522.154663,
+      "total_mass_grams": 392.0,
+      "fat": 23.320644,
+      "carbohydrates": 36.607651,
+      "protein": 40.893784
+    },
+    "ingredients": [
+      {
+        "name": "beef",
+        "weight_grams": 40.470886
+      },
+      {
+        "name": "salt",
+        "weight_grams": 0.696817
+      },
+      {
+        "name": "bell peppers",
+        "weight_grams": 1.829787
+      },
+      {
+        "name": "olive oil",
+        "weight_grams": 0.9160349999999999
+      },
+      {
+        "name": "cucumbers",
+        "weight_grams": 9.148936
+      },
+      {
+        "name": "lettuce",
+        "weight_grams": 18.297873
+      },
+      {
+        "name": "roasted potatoes",
+        "weight_grams": 69.0
+      },
+      {
+        "name": "basil",
+        "weight_grams": 0.323114
+      },
+      {
+        "name": "thyme",
+        "weight_grams": 0.201946
+      },
+      {
+        "name": "garlic",
+        "weight_grams": 0.6462289999999999
+      },
+      {
+        "name": "rosemary",
+        "weight_grams": 0.201946
+      },
+      {
+        "name": "mushroom",
+        "weight_grams": 3.231143
+      },
+      {
+        "name": "arugula",
+        "weight_grams": 1.615572
+      },
+      {
+        "name": "pepper",
+        "weight_grams": 0.323114
+      },
+      {
+        "name": "cauliflower",
+        "weight_grams": 55.0
+      },
+      {
+        "name": "olives",
+        "weight_grams": 1.829787
+      },
+      {
+        "name": "bok choy",
+        "weight_grams": 1.34903
+      },
+      {
+        "name": "cheese pizza",
+        "weight_grams": 43.0
+      },
+      {
+        "name": "white wine",
+        "weight_grams": 0.161557
+      },
+      {
+        "name": "caesar salad",
+        "weight_grams": 46.0
+      },
+      {
+        "name": "spinach (cooked)",
+        "weight_grams": 1.34903
+      },
+      {
+        "name": "butter",
+        "weight_grams": 0.6462289999999999
+      },
+      {
+        "name": "lemon juice",
+        "weight_grams": 0.161557
+      },
+      {
+        "name": "oregano",
+        "weight_grams": 0.201946
+      },
+      {
+        "name": "millet",
+        "weight_grams": 5.3961179999999995
+      },
+      {
+        "name": "vinaigrette",
+        "weight_grams": 3.659574
+      },
+      {
+        "name": "cherry tomatoes",
+        "weight_grams": 4.5744679999999995
+      },
+      {
+        "name": "shallots",
+        "weight_grams": 3.021173
+      },
+      {
+        "name": "onions",
+        "weight_grams": 3.178817
+      },
+      {
+        "name": "cream",
+        "weight_grams": 2.584915
+      },
+      {
+        "name": "feta cheese",
+        "weight_grams": 1.829787
+      },
+      {
+        "name": "vinegar",
+        "weight_grams": 0.067451
+      },
+      {
+        "name": "wheat berry",
+        "weight_grams": 6.462287
+      },
+      {
+        "name": "chicken",
+        "weight_grams": 64.622871
+      }
+    ],
+    "saved_image": "dish_1561578461_34.0ingr.png"
+  },
+  {
+    "food_id": "dish_1561579933",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1561579933/rgb.png",
+    "num_ingredients": 34,
+    "total_macronutrients": {
+      "calories": 447.449249,
+      "total_mass_grams": 306.0,
+      "fat": 27.486643,
+      "carbohydrates": 11.074479,
+      "protein": 38.745918
+    },
+    "ingredients": [
+      {
+        "name": "salt",
+        "weight_grams": 0.803582
+      },
+      {
+        "name": "cucumbers",
+        "weight_grams": 12.553192
+      },
+      {
+        "name": "olive oil",
+        "weight_grams": 3.925666
+      },
+      {
+        "name": "basil",
+        "weight_grams": 0.291971
+      },
+      {
+        "name": "onions",
+        "weight_grams": 4.750536
+      },
+      {
+        "name": "bell peppers",
+        "weight_grams": 2.510638
+      },
+      {
+        "name": "feta cheese",
+        "weight_grams": 2.510638
+      },
+      {
+        "name": "blueberries",
+        "weight_grams": 1.446873
+      },
+      {
+        "name": "chicken",
+        "weight_grams": 58.394161
+      },
+      {
+        "name": "shallots",
+        "weight_grams": 4.771767
+      },
+      {
+        "name": "spinach (cooked)",
+        "weight_grams": 2.239898
+      },
+      {
+        "name": "lemon juice",
+        "weight_grams": 0.145985
+      },
+      {
+        "name": "vinegar",
+        "weight_grams": 0.7902159999999999
+      },
+      {
+        "name": "chard",
+        "weight_grams": 3.617182
+      },
+      {
+        "name": "beef",
+        "weight_grams": 67.196945
+      },
+      {
+        "name": "white wine",
+        "weight_grams": 0.145985
+      },
+      {
+        "name": "walnuts",
+        "weight_grams": 0.723436
+      },
+      {
+        "name": "mustard",
+        "weight_grams": 0.226074
+      },
+      {
+        "name": "cream",
+        "weight_grams": 2.335766
+      },
+      {
+        "name": "wheat berry",
+        "weight_grams": 5.839416
+      },
+      {
+        "name": "oregano",
+        "weight_grams": 0.182482
+      },
+      {
+        "name": "cherry tomatoes",
+        "weight_grams": 6.276596
+      },
+      {
+        "name": "millet",
+        "weight_grams": 8.959593
+      },
+      {
+        "name": "bok choy",
+        "weight_grams": 2.239898
+      },
+      {
+        "name": "olives",
+        "weight_grams": 56.510639
+      },
+      {
+        "name": "lettuce",
+        "weight_grams": 25.106384
+      },
+      {
+        "name": "garlic",
+        "weight_grams": 0.583942
+      },
+      {
+        "name": "thyme",
+        "weight_grams": 0.182482
+      },
+      {
+        "name": "butter",
+        "weight_grams": 0.583942
+      },
+      {
+        "name": "arugula",
+        "weight_grams": 21.716072
+      },
+      {
+        "name": "mushroom",
+        "weight_grams": 2.919708
+      },
+      {
+        "name": "rosemary",
+        "weight_grams": 0.182482
+      },
+      {
+        "name": "vinaigrette",
+        "weight_grams": 5.021276
+      },
+      {
+        "name": "pepper",
+        "weight_grams": 0.31457799999999997
+      }
+    ],
+    "saved_image": "dish_1561579933_34.0ingr.png"
+  },
+  {
+    "food_id": "dish_1560974769",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1560974769/rgb.png",
+    "num_ingredients": 14,
+    "total_macronutrients": {
+      "calories": 3943.325195,
+      "total_mass_grams": 3051.0,
+      "fat": 10.976549,
+      "carbohydrates": 844.568604,
+      "protein": 83.749603
+    },
+    "ingredients": [
+      {
+        "name": "spinach (raw)",
+        "weight_grams": 25.945946
+      },
+      {
+        "name": "tortilla chips",
+        "weight_grams": 2.075676
+      },
+      {
+        "name": "corn",
+        "weight_grams": 5.189189
+      },
+      {
+        "name": "cheese",
+        "weight_grams": 3.113513
+      },
+      {
+        "name": "white rice",
+        "weight_grams": 2991.0
+      },
+      {
+        "name": "cherry tomatoes",
+        "weight_grams": 3.113513
+      },
+      {
+        "name": "lime",
+        "weight_grams": 1.037838
+      },
+      {
+        "name": "tomatoes",
+        "weight_grams": 2.075676
+      },
+      {
+        "name": "chili",
+        "weight_grams": 0.259459
+      },
+      {
+        "name": "garlic",
+        "weight_grams": 0.518919
+      },
+      {
+        "name": "salt",
+        "weight_grams": 0.06486499999999999
+      },
+      {
+        "name": "sour cream",
+        "weight_grams": 2.075676
+      },
+      {
+        "name": "onions",
+        "weight_grams": 4.151351
+      },
+      {
+        "name": "black beans",
+        "weight_grams": 10.378379
+      }
+    ],
+    "saved_image": "dish_1560974769_14.0ingr.png"
+  },
+  {
+    "food_id": "dish_1565033265",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1565033265/rgb.png",
+    "num_ingredients": 6,
+    "total_macronutrients": {
+      "calories": 1324.084961,
+      "total_mass_grams": 625.0,
+      "fat": 106.343002,
+      "carbohydrates": 19.202002,
+      "protein": 76.664001
+    },
+    "ingredients": [
+      {
+        "name": "olives",
+        "weight_grams": 127.0
+      },
+      {
+        "name": "mixed greens",
+        "weight_grams": 55.0
+      },
+      {
+        "name": "broccoli",
+        "weight_grams": 92.0
+      },
+      {
+        "name": "chicken",
+        "weight_grams": 233.0
+      },
+      {
+        "name": "vinaigrette",
+        "weight_grams": 71.0
+      },
+      {
+        "name": "olive oil",
+        "weight_grams": 47.0
+      }
+    ],
+    "saved_image": "dish_1565033265_6.0ingr.png"
+  }
+]

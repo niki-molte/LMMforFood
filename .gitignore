@@ -23,5 +23,8 @@ datasets/Nutrition5k/count_entries.py
 datasets/Nutrition5k/find_best_matches.py
 datasets/Nutrition5k/generate_few_shot.py
 datasets/Nutrition5k/generated_few_shot.py
-datasets/Nutrition5k/sample_optuna_subset.py
 datasets/Nutrition5k/update_extract.py
+# Backup/varianti del file .env (contengono segreti); il template resta versionato
+.env.*
+!.env.example
+docs/_build/

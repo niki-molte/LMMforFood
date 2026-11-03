@@ -3,7 +3,7 @@ import os
 import sys
 import random
 
-# Aggiungo la root del progetto al sys.path per importare answer_schema
+# Add the project root to sys.path to import answer_schema
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if PROJECT_ROOT not in sys.path:
     sys.path.append(PROJECT_ROOT)
@@ -41,7 +41,7 @@ def jsonl_finetuning_gemma(json_input_path, jsonl_output_path, jsonl_val_output_
     all_samples = []
 
     for entry in data:
-        # Mantiene il path relativo esatto (es. imagery/realsense_overhead/dish_.../rgb.png)
+        # Keep the exact relative path (e.g. imagery/realsense_overhead/dish_.../rgb.png)
         img_path = entry["image_path"]
 
         if any(dish_id in img_path for dish_id in few_shot_dishes):
@@ -59,8 +59,6 @@ def jsonl_finetuning_gemma(json_input_path, jsonl_output_path, jsonl_val_output_
         total_protein = 0.0
 
         for ing in ingredients:
-            # Rimosso il filtro: if ing["weight_grams"] < 1.0: continue
-            
             m = ing["macronutrients"]
             
             macronutrients_obj = Macronutrients(
@@ -104,7 +102,7 @@ def jsonl_finetuning_gemma(json_input_path, jsonl_output_path, jsonl_val_output_
         )
 
         sample = {
-            "images": [img_path.replace("\\", "/")],  # Path relativo pulito
+            "images": [img_path.replace("\\", "/")],  # Clean relative path
             "messages": [
                 {"role": "user", "content": [
                 {"type": "image"},
@@ -131,10 +129,10 @@ def jsonl_finetuning_gemma(json_input_path, jsonl_output_path, jsonl_val_output_
         for s in val_samples:
             val_file.write(json.dumps(s) + "\n")
 
-    print(f"Creati {len(train_samples)} esempi di train in {jsonl_output_path}")
-    print(f"Creati {len(val_samples)} esempi di validation in {jsonl_val_output_path}")
+    print(f"Created {len(train_samples)} train examples in {jsonl_output_path}")
+    print(f"Created {len(val_samples)} validation examples in {jsonl_val_output_path}")
 
-# Esecuzione in locale:
+# Local execution:
 jsonl_finetuning_gemma(
     json_input_path="datasets/Nutrition5k/data/ground truth/train_dataset.json",
     jsonl_output_path="datasets/Nutrition5k/data/ground truth/finetuning_train_data.jsonl",

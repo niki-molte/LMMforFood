@@ -1,7 +1,7 @@
 {
     "_strategy_info": {
         "name": "linear_bias_all5",
-        "description": "Modello lineare con scale e bias (adj_val = pred * scale + bias)",
+        "description": "Linear model with scale and bias (adj_val = pred * scale + bias)",
         "nutrients_optimized": [
             "mass",
             "cal",

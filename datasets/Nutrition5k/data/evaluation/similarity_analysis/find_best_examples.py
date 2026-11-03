@@ -2,7 +2,7 @@ import json
 import os
 import glob
 
-folder = "/home/niki/PycharmProjects/LLMforFood/datasets/Nutrition5k/data/evaluation/similarity_analysis"
+folder = os.path.dirname(os.path.abspath(__file__))
 files = glob.glob(os.path.join(folder, "*.json"))
 
 for file in sorted(files):

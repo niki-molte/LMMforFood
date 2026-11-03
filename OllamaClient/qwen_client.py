@@ -4,13 +4,13 @@ from OllamaClient.ollama_client import BaseVisionClient
 
 class QwenClient(BaseVisionClient):
     """
-    Client concreto per interagire con i modelli della famiglia Qwen (es. qwen3.5:4b, qwen3.5:9b).
-    Eredita da BaseVisionClient e ne implementa i metodi astratti,
-    utilizzando i parametri ottimali definiti nel Modelfile ufficiale.
+    Concrete client for interacting with models of the Qwen family (e.g. qwen3.5:4b, qwen3.5:9b).
+    Inherits from BaseVisionClient and implements its abstract methods,
+    using the optimal parameters defined in the official Modelfile.
     """
 
     def _define_model_configuration(self, response_schema: any = None) -> dict:
-        """Costruisce i kwargs di configurazione specifici per Qwen su Ollama."""
+        """Builds the Qwen-specific configuration kwargs for Ollama."""
         config_kwargs = {}
 
         if response_schema:
@@ -18,23 +18,23 @@ class QwenClient(BaseVisionClient):
         else:
             config_kwargs["format"] = "json"
 
-        # Parametri estratti ufficialmente dalla documentazione/Modelfile di Ollama per Qwen 3.5
+        # Parameters taken from the official Ollama documentation/Modelfile for Qwen 3.5
         config_kwargs["options"] = {
             "temperature": 1.0,
             "top_p": 0.95,
             "top_k": 20,
             "presence_penalty": 1.5,
             "num_predict": 32768,
-            "num_ctx": 65536,  # Finestra di contesto bloccata a 32k
+            "num_ctx": 65536,  # Fixed context window
         }
 
         return config_kwargs
 
     def _prepare_contents(self, image_path: str, prompt: str, system_instruction: str = None,
                           examples: list[dict] = None) -> list[dict]:
-        """Costruisce l'array di messaggi specifico per il formato chat di Ollama/Qwen."""
+        """Builds the message array in the Ollama/Qwen chat format."""
         if not os.path.exists(image_path):
-            raise FileNotFoundError(f"Immagine target non trovata: {image_path}")
+            raise FileNotFoundError(f"Target image not found: {image_path}")
 
         messages = []
 
@@ -47,7 +47,7 @@ class QwenClient(BaseVisionClient):
                 ex_output = ex.get("output")
 
                 if ex_img_path and not os.path.exists(ex_img_path):
-                    raise FileNotFoundError(f"Immagine dell'esempio non trovata: {ex_img_path}")
+                    raise FileNotFoundError(f"Example image not found: {ex_img_path}")
 
                 user_msg = {"role": "user", "content": f"--- EXAMPLE {idx} INPUT ---"}
                 if ex_img_path:
@@ -70,7 +70,7 @@ class QwenClient(BaseVisionClient):
         return messages
 
     def _execute(self, model_kwargs: dict, messages: list[dict]) -> str | None:
-        """Esegue la chiamata API locale a Ollama."""
+        """Executes the local Ollama API call."""
         try:
             response = ollama.chat(
                 model=self.model_name,
@@ -78,8 +78,8 @@ class QwenClient(BaseVisionClient):
                 **model_kwargs
             )
 
-            # --- DEEP DEBUG ---
-            print(f"[{self.__class__.__name__} DEBUG] Tipo risposta: {type(response)}")
+            # Debug output
+            print(f"[{self.__class__.__name__} DEBUG] Response type: {type(response)}")
             print(f"[{self.__class__.__name__} DEBUG] repr(response): {repr(response)[:500]}")
 
             if hasattr(response, "message"):
@@ -88,15 +88,15 @@ class QwenClient(BaseVisionClient):
             elif isinstance(response, dict):
                 content = response.get("message", {}).get("content")
             else:
-                print(f"[{self.__class__.__name__} ERRORE] Formato di risposta non riconosciuto.")
+                print(f"[{self.__class__.__name__} ERROR] Unrecognized response format.")
                 return None
 
             if not content or not content.strip():
-                print(f"[{self.__class__.__name__} AVVISO] Il modello ha restituito una risposta vuota.")
+                print(f"[{self.__class__.__name__} WARNING] The model returned an empty response.")
                 return None
 
             return content
 
         except Exception as e:
-            print(f"[{self.__class__.__name__} ERRORE] Esecuzione fallita: {e}")
+            print(f"[{self.__class__.__name__} ERROR] Execution failed: {e}")
             return None

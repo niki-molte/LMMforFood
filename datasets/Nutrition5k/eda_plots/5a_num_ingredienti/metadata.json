@@ -1,0 +1,186 @@
+[
+  {
+    "food_id": "dish_1563294987",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1563294987/rgb.png",
+    "num_ingredients": 1,
+    "total_macronutrients": {
+      "calories": 97.379997,
+      "total_mass_grams": 18.0,
+      "fat": 7.5600000000000005,
+      "carbohydrates": 0.252,
+      "protein": 6.66
+    },
+    "ingredients": [
+      {
+        "name": "bacon",
+        "weight_grams": 18.0
+      }
+    ],
+    "saved_image": "dish_1563294987_1.0ingr.png"
+  },
+  {
+    "food_id": "dish_1558635933",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1558635933/rgb.png",
+    "num_ingredients": 1,
+    "total_macronutrients": {
+      "calories": 33.32,
+      "total_mass_grams": 98.0,
+      "fat": 0.196,
+      "carbohydrates": 7.84,
+      "protein": 0.784
+    },
+    "ingredients": [
+      {
+        "name": "cantaloupe",
+        "weight_grams": 98.0
+      }
+    ],
+    "saved_image": "dish_1558635933_1.0ingr.png"
+  },
+  {
+    "food_id": "dish_1566501447",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1566501447/rgb.png",
+    "num_ingredients": 6,
+    "total_macronutrients": {
+      "calories": 286.76001,
+      "total_mass_grams": 349.0,
+      "fat": 4.0,
+      "carbohydrates": 13.325001,
+      "protein": 48.039997
+    },
+    "ingredients": [
+      {
+        "name": "onions",
+        "weight_grams": 30.0
+      },
+      {
+        "name": "cherry tomatoes",
+        "weight_grams": 57.0
+      },
+      {
+        "name": "olives",
+        "weight_grams": 26.0
+      },
+      {
+        "name": "tuna",
+        "weight_grams": 160.0
+      },
+      {
+        "name": "carrot",
+        "weight_grams": 57.0
+      },
+      {
+        "name": "lemon juice",
+        "weight_grams": 19.0
+      }
+    ],
+    "saved_image": "dish_1566501447_6.0ingr.png"
+  },
+  {
+    "food_id": "dish_1568315001",
+    "food_category": "Nutrition5k Plate",
+    "image_path": "imagery/realsense_overhead/dish_1568315001/rgb.png",
+    "num_ingredients": 22,
+    "total_macronutrients": {
+      "calories": 504.709412,
+      "total_mass_grams": 364.0,
+      "fat": 30.381466,
+      "carbohydrates": 19.98134,
+      "protein": 39.580326
+    },
+    "ingredients": [
+      {
+        "name": "salmon",
+        "weight_grams": 86.310066
+      },
+      {
+        "name": "millet",
+        "weight_grams": 7.330576
+      },
+      {
+        "name": "beef",
+        "weight_grams": 54.979321
+      },
+      {
+        "name": "jalapenos",
+        "weight_grams": 0.863101
+      },
+      {
+        "name": "mushroom",
+        "weight_grams": 39.0
+      },
+      {
+        "name": "onions",
+        "weight_grams": 3.558845
+      },
+      {
+        "name": "lime",
+        "weight_grams": 0.107888
+      },
+      {
+        "name": "spinach (cooked)",
+        "weight_grams": 1.832644
+      },
+      {
+        "name": "shallots",
+        "weight_grams": 6.25459
+      },
+      {
+        "name": "salt",
+        "weight_grams": 0.284499
+      },
+      {
+        "name": "bok choy",
+        "weight_grams": 1.832644
+      },
+      {
+        "name": "avocado",
+        "weight_grams": 90.0
+      },
+      {
+        "name": "vinegar",
+        "weight_grams": 0.09163199999999999
+      },
+      {
+        "name": "brown rice",
+        "weight_grams": 17.262012
+      },
+      {
+        "name": "spinach (raw)",
+        "weight_grams": 4.315503
+      },
+      {
+        "name": "ginger",
+        "weight_grams": 0.43155000000000004
+      },
+      {
+        "name": "lemon juice",
+        "weight_grams": 0.863101
+      },
+      {
+        "name": "tomatoes",
+        "weight_grams": 44.0
+      },
+      {
+        "name": "olive oil",
+        "weight_grams": 1.013854
+      },
+      {
+        "name": "garlic",
+        "weight_grams": 2.589302
+      },
+      {
+        "name": "cilantro",
+        "weight_grams": 0.863101
+      },
+      {
+        "name": "chili",
+        "weight_grams": 0.215775
+      }
+    ],
+    "saved_image": "dish_1568315001_22.0ingr.png"
+  }
+]
