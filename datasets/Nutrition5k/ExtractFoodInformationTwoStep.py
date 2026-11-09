@@ -17,7 +17,7 @@ if SCRIPT_DIR not in sys.path:
     sys.path.insert(0, SCRIPT_DIR)  # makes prompt_strategies importable also on Kaggle
 from prompt_strategies import select_strategy, TWO_STEP_AXES, TWO_STEP_STEP1, TWO_STEP_STEP2
 
-PROVIDER = "minicpm"
+PROVIDER = "gemma"
 USE_YOLO = False
 DEBUG = False
 YOLO_WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "yolo_weights", "yolov8s.pt")
