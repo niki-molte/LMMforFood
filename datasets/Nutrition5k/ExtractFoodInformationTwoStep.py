@@ -18,7 +18,7 @@ if SCRIPT_DIR not in sys.path:
 from prompt_strategies import select_strategy, TWO_STEP_AXES, TWO_STEP_STEP1, TWO_STEP_STEP2
 
 PROVIDER = "minicpm"
-USE_YOLO = True
+USE_YOLO = False
 DEBUG = False
 YOLO_WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "yolo_weights", "yolov8s.pt")
 _yolo_model = None
@@ -308,7 +308,7 @@ def main(step1=None, step2=None):
     global OUTPUT_PREDICTIONS_PATH
 
     if PROVIDER == "gemma":
-        model = os.environ.get("OLLAMA_GEMMA_MODEL", "gemma4:e4b-it-q8_0")
+        model = os.environ.get("OLLAMA_GEMMA_4_E4B_Q4", "gemma4:e4b-it-q8_0")
         client = GemmaClient(model_name=model)
         step1_sys_prompt = "<|think|>\n" + base_step1_instruction
         step2_sys_prompt = "<|think|>\n" + base_step2_instruction
