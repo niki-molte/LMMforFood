@@ -4,7 +4,7 @@ Master's thesis project: **estimating ingredients, weights and nutritional value
 Vision-Language Models (VLMs), evaluated on the
 [Nutrition5k](https://github.com/google-research-datasets/Nutrition5k) dataset.
 
-Models run locally with **Ollama** (Gemma 4, Qwen 3.5, MiniCPM-V 4.5). Responses are constrained to
+Models run locally with **Ollama** (Gemma 4, Qwen 3.5, MiniCPM-V 4.5) only Gemma 4 was tested. Responses are constrained to
 **Pydantic** JSON schemas and compared against the ground truth (MAE on macronutrients, matching/semantic
 similarity on ingredients).
 
