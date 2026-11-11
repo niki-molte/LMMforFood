@@ -28,3 +28,5 @@ datasets/Nutrition5k/update_extract.py
 .env.*
 !.env.example
 docs/_build/
+
+docs/report_codebase_audit.md
