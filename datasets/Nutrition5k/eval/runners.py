@@ -24,13 +24,40 @@ import os
 import json
 
 
+def _is_twostep_file(filename):
+    """Pure Two-Step file (hybrid variants are NOT included: they have no Optuna scalars)."""
+    low = filename.lower()
+    return "twostep" in low and "hybrid" not in low
+
+
+def _norm_key(text):
+    return text.lower().replace("_", "").replace("-", "")
+
+
 def _load_optuna_scalars_for_model(folder, filename, strategy):
     """Load per-model Optuna scalars and match them to a prediction file."""
     is_yolo = "yolo" in filename.lower()
-    technique_dir = "few_shot_yolo" if is_yolo else "few_shot_standard"
+    is_twostep = _is_twostep_file(filename)
+    if is_yolo:
+        technique_dir = "few_shot_yolo"
+    elif is_twostep:
+        technique_dir = "few_shot_twostep"
+    else:
+        technique_dir = "few_shot_standard"
 
-    summary_path = os.path.join("data", "optuna", technique_dir, folder,
+    # Folder candidates: the Two-Step optuna folders use the "_semantic" suffix
+    # instead of "_semantic_matching".
+    folder_candidates = [folder]
+    if folder.endswith("_semantic_matching"):
+        folder_candidates.append(folder[:-len("_matching")])
+
+    summary_path = os.path.join("data", "optuna", technique_dir, folder_candidates[0],
                                 strategy, "optuna_summary.json")
+    for cand in folder_candidates:
+        cand_path = os.path.join("data", "optuna", technique_dir, cand, strategy, "optuna_summary.json")
+        if os.path.exists(cand_path):
+            summary_path = cand_path
+            break
 
     if not os.path.exists(summary_path):
         print(f"[DEBUG] File missing on disk: {summary_path}")
@@ -43,14 +70,29 @@ def _load_optuna_scalars_for_model(folder, filename, strategy):
         print(f"[DEBUG] JSON read error in {summary_path}: {e}")
         return None, summary_path
 
-        # Clean extraction (strip everything to get the bare model name)
+    # Clean extraction (strip everything to get the bare model name)
     core_model_name = filename.replace('test_predictions_nutrition5k_', '')
     core_model_name = core_model_name.replace('.json', '')
     core_model_name = core_model_name.replace('yolo_', '')
     clean_model_name = core_model_name.replace('_tb', '')
 
+    if is_twostep:
+        # Tolerant match (ignores "_" and "-", e.g. "gemma_4e2b_q4" == "gemma4_e2b_q4")
+        target = _norm_key(clean_model_name.replace('twostep_', ''))
+        for key, entry in data.items():
+            if key.startswith("_"):
+                continue
+            k = key.replace('optuna_train_twostep_prediction_', '').replace('.json', '').replace('_tb', '')
+            if _norm_key(k) == target:
+                if isinstance(entry, dict) and 'optimal_scalars' in entry:
+                    return entry['optimal_scalars'], summary_path
+                print(f"[DEBUG] Found key {key} but 'optimal_scalars' is missing")
+                return None, summary_path
+        print(f"[DEBUG] Two-Step key not found for '{clean_model_name}'. Keys available: {list(data.keys())}")
+        return None, summary_path
+
     if is_yolo:
-           # For YOLO, the JSON has the _tb suffix
+        # For YOLO, the JSON has the _tb suffix
         lookup_key = f"optuna_train_predictions_{clean_model_name}_tb.json"
         fallback_key = f"optuna_train_predictions_{clean_model_name}.json"
     else:
@@ -58,27 +100,16 @@ def _load_optuna_scalars_for_model(folder, filename, strategy):
         lookup_key = f"optuna_train_standard_predictions_{clean_model_name}.json"
         fallback_key = f"optuna_train_standard_predictions_{clean_model_name}_tb.json"
 
-    # Primary key lookup
-    if lookup_key in data:
-        entry = data[lookup_key]
-        if isinstance(entry, dict) and 'optimal_scalars' in entry:
-            return entry['optimal_scalars'], summary_path
-        else:
-            print(f"[DEBUG] Found key {lookup_key} but 'optimal_scalars' is missing")
+    for key in (lookup_key, fallback_key):
+        if key in data:
+            entry = data[key]
+            if isinstance(entry, dict) and 'optimal_scalars' in entry:
+                return entry['optimal_scalars'], summary_path
+            print(f"[DEBUG] Found key {key} but 'optimal_scalars' is missing")
+            return None, summary_path
 
-    # Fallback key lookup
-    elif fallback_key in data:
-        entry = data[fallback_key]
-        if isinstance(entry, dict) and 'optimal_scalars' in entry:
-            return entry['optimal_scalars'], summary_path
-        else:
-            print(f"[DEBUG] Found fallback key {fallback_key} but 'optimal_scalars' is missing")
-
-    # No match found
-    else:
-        print(f"[DEBUG] Key not found. Looked for '{lookup_key}' or '{fallback_key}'. "
-              f"Keys available in the JSON: {list(data.keys())}")
-
+    print(f"[DEBUG] Key not found. Looked for '{lookup_key}' or '{fallback_key}'. "
+          f"Keys available in the JSON: {list(data.keys())}")
     return None, summary_path
 
 
@@ -155,11 +186,12 @@ def evaluate_few_shot_learning(resources, threshold,
 
             is_yolo = "YOLO" in var_name
             is_standard = var_name.endswith("(Standard)")
-            optuna_variant = "YOLO Optuna" if is_yolo else "Standard Optuna"
+            is_twostep = var_name.endswith("(Two-Step)")
+            optuna_variant = "YOLO Optuna" if is_yolo else ("Two-Step Optuna" if is_twostep else "Standard Optuna")
             var_name_optuna = f"{prefix} ({optuna_variant})"
 
             needs_base = not (loaded_fs and all_results[g].get(var_name) is not None)
-            needs_optuna = (is_yolo or is_standard) and not (
+            needs_optuna = (is_yolo or is_standard or is_twostep) and not (
                 loaded_fs and all_results[g].get(var_name_optuna) is not None
             )
 
@@ -268,8 +300,8 @@ def evaluate_few_shot_learning(resources, threshold,
         plots.plot_yolo_optuna_metrics(
             all_results, comparison_dir, metric_suffix, file_suffix, ylabel, title_prefix,
             subset, plot_baseline, log_scale,
-            strategies=['Standard', 'Standard Optuna', 'YOLO', 'YOLO Optuna'],
-            comparison_label="Standard vs Standard Optuna vs YOLO vs YOLO Optuna",
+            strategies=['Standard', 'Standard Optuna', 'Two-Step', 'Two-Step Optuna', 'YOLO', 'YOLO Optuna'],
+            comparison_label="Standard vs Two-Step vs YOLO (with/without Optuna)",
             file_prefix="prompting_comparison",
         )
 
@@ -323,8 +355,11 @@ def evaluate_optuna_strategy_comparison(resources, threshold,
             if not filename.endswith('.json') or 'optuna' in filename.lower():
                 continue
             is_yolo = 'yolo' in filename.lower()
-            # For Standard, also exclude the hybrid/twostep files
-            if not is_yolo and any(x in filename.lower() for x in ('hybrid', 'twostep')):
+            is_twostep = _is_twostep_file(filename)
+            # Hybrid files are excluded (no Optuna scalars); pure Two-Step is handled separately
+            if not is_yolo and not is_twostep and any(x in filename.lower() for x in ('hybrid', 'twostep')):
+                continue
+            if not is_yolo and is_twostep is False and 'hybrid' in filename.lower():
                 continue
 
             g, _ = parse_model_name(filename)
@@ -365,6 +400,38 @@ def evaluate_optuna_strategy_comparison(resources, threshold,
                         updated = True
                     except Exception as e:
                         print(f"[!] YOLO {strategy} error on {pred_path}: {e}")
+
+            elif is_twostep:
+                # --- Two-Step base ---
+                ts_base_var = f"{prefix} ({st.TWOSTEP_BASE_KEY})"
+                if results[g].get(ts_base_var) is None:
+                    print(f"  Evaluating [Two-Step base] {ts_base_var} - {g}")
+                    try:
+                        ev = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary,
+                                                  resources.vocab_embeddings, threshold)
+                        results[g][ts_base_var] = {"macro": ev.evaluate_macronutrients()}
+                        updated = True
+                    except Exception as e:
+                        print(f"[!] Two-Step base error on {pred_path}: {e}")
+
+                # --- Two-Step Optuna for each strategy ---
+                for strategy in strategies:
+                    var_name = f"{prefix} ({strategy}_ts)"
+                    if results.get(g, {}).get(var_name) is not None:
+                        continue
+                    optuna_scalars, summary_path = _load_optuna_scalars_for_model(folder, filename, strategy)
+                    if not optuna_scalars:
+                        print(f"[!] Two-Step scalars not found for {filename} / {strategy} in {summary_path}")
+                        continue
+                    print(f"  Evaluating [Two-Step {strategy}] {var_name} - {g}")
+                    try:
+                        ev = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary,
+                                                  resources.vocab_embeddings, threshold,
+                                                  optuna_scalars=optuna_scalars)
+                        results[g][var_name] = {"macro": ev.evaluate_macronutrients()}
+                        updated = True
+                    except Exception as e:
+                        print(f"[!] Two-Step {strategy} error on {pred_path}: {e}")
 
             else:
                 # --- Standard base ---
@@ -700,7 +767,7 @@ def evaluate_single_run_models(resources, threshold, pred_json_paths, eval_csv_p
 def evaluate_prompting_technique_comparison(few_shot_results: dict, output_dir: str,
                                              comparison_label: str = "Standard vs YOLO vs YOLO Optuna"):
     os.makedirs(output_dir, exist_ok=True)
-    strategies = ['Standard', 'Standard Optuna', 'YOLO', 'YOLO Optuna']
+    strategies = ['Standard', 'Standard Optuna', 'Two-Step', 'Two-Step Optuna', 'YOLO', 'YOLO Optuna']
 
     specs = [
         ("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", True, False),
@@ -729,7 +796,7 @@ def evaluate_all_strategies_combined(resources, threshold, output_dir, optuna_st
     Reads the CSVs produced by evaluate_few_shot_learning (normal and semantic_matching) and generates
     8 combined charts (same structure as the prompting_comparison charts)
     combining the 8 strategies:
-      Standard / Standard Optuna / YOLO / YOLO Optuna           (normal files)
+      Standard / Two-Step / YOLO, each with and without Optuna (normal files)
       Standard Matching / Standard Optuna Matching /             (Semantic Matching files)
       YOLO Matching / YOLO Optuna Matching
 
@@ -752,12 +819,16 @@ def evaluate_all_strategies_combined(resources, threshold, output_dir, optuna_st
     NORMAL_MAP = {
         'Standard':        'Standard',
         'Standard Optuna': 'Standard Optuna',
+        'Two-Step':        'Two-Step',
+        'Two-Step Optuna': 'Two-Step Optuna',
         'YOLO':            'YOLO',
         'YOLO Optuna':     'YOLO Optuna',
     }
     SEMANTIC_MATCHING_MAP = {
         'Standard':        'Standard Matching',
         'Standard Optuna': 'Standard Optuna Matching',
+        'Two-Step':        'Two-Step Matching',
+        'Two-Step Optuna': 'Two-Step Optuna Matching',
         'YOLO':            'YOLO Matching',
         'YOLO Optuna':     'YOLO Optuna Matching',
     }
@@ -804,12 +875,14 @@ def evaluate_all_strategies_combined(resources, threshold, output_dir, optuna_st
     strategies = [
         'Standard', 'Standard Optuna',
         'Standard Matching', 'Standard Optuna Matching',
+        'Two-Step', 'Two-Step Optuna',
+        'Two-Step Matching', 'Two-Step Optuna Matching',
         'YOLO', 'YOLO Optuna',
         'YOLO Matching', 'YOLO Optuna Matching',
     ]
     # The legend shows only the 4 base variants (without Optuna): the meaning of
     # solid/dashed is explained by the line entries, the light color by Matching.
-    legend_strats = ['Standard', 'Standard Matching', 'YOLO', 'YOLO Matching']
+    legend_strats = ['Standard', 'Standard Matching', 'Two-Step', 'Two-Step Matching', 'YOLO', 'YOLO Matching']
 
     specs = [
         ("MAE",   "mae_abs",  "MAE (Value)", "Absolute MAE (Overall)",       "overall",     True,  False),
@@ -826,7 +899,7 @@ def evaluate_all_strategies_combined(resources, threshold, output_dir, optuna_st
             all_results, output_dir, ms, fs, yl, tp,
             subset=sub, plot_baseline=pb, log_scale=ls,
             strategies=strategies,
-            comparison_label="Strategy Comparison: Standard / YOLO / Semantic Matching",
+            comparison_label="Strategy Comparison: Standard / Two-Step / YOLO / Semantic Matching",
             file_prefix="combined_strategies",
             legend_strategies=legend_strats,
         )

@@ -29,6 +29,9 @@ STRATEGY_COLORS = {
     'Hybrid v1': '#47d147',
     'Hybrid v2': '#9933ff',
     'YOLO': '#ff9933',
+    'Two-Step Optuna': '#ff4d4d',        # same color as Two-Step, dashed line
+    'Two-Step Matching': '#ff9999',
+    'Two-Step Optuna Matching': '#ff9999',
     'YOLO Optuna': '#ff9933',            # same color as YOLO, distinguished by a dashed line
     'Standard Optuna': '#3385ff',         # same color as Standard, distinguished by a dashed line
     # Semantic Matching variants: same symbol/scheme but a lighter color
@@ -43,6 +46,9 @@ STRATEGY_MARKERS = {
     'Hybrid v1': '^',
     'Hybrid v2': 'D',
     'YOLO': 'P',
+    'Two-Step Optuna': 's',
+    'Two-Step Matching': 's',
+    'Two-Step Optuna Matching': 's',
     'YOLO Optuna': 'P',              # same symbol as YOLO, distinguished by a dashed line
     'Standard Optuna': 'o',          # same symbol as Standard, distinguished by a dashed line
     'Standard Matching': 'o',
@@ -60,6 +66,9 @@ STRATEGY_LINESTYLES = {
     'Hybrid v2': '-',
     'YOLO': '-',
     'YOLO Optuna': '--',
+    'Two-Step Optuna': '--',
+    'Two-Step Matching': '-',
+    'Two-Step Optuna Matching': '--',
     'Standard Optuna': '--',
     'Standard Matching': '-',
     'Standard Optuna Matching': '--',
@@ -103,6 +112,7 @@ OPTUNA_STRATEGY_MARKERS[YOLO_BASE_KEY] = "P"
 OPTUNA_STRATEGY_LABELS[YOLO_BASE_KEY] = "YOLO (no Optuna)"
 
 STANDARD_BASE_KEY = "__standard_base__"
+TWOSTEP_BASE_KEY = "__twostep_base__"
 
 # X-axis offset to visually group 1/5/10 examples
 EXAMPLES = ['1 Example', '5 Examples', '10 Examples']

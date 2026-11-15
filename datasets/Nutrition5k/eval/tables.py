@@ -15,7 +15,7 @@ def print_summary_tables(all_nlp_results: dict, all_macro_results: dict, variant
 
     models = list(all_macro_results.keys())
     models_sorted = []
-    variant_order = list(variants) + ["Standard Optuna", "YOLO Optuna"]
+    variant_order = list(variants) + ["Standard Optuna", "Two-Step Optuna", "YOLO Optuna"]
     for g in st.GROUPS:
         for v in variant_order:
             for m in models:
@@ -123,6 +123,8 @@ def print_optuna_strategy_tables(results: dict, strategies: list):
             col_specs = [
                 ("Standard",         lambda g, p, s=strategy: results.get(g, {}).get(f"{p} ({st.STANDARD_BASE_KEY})")),
                 ("Standard Optuna",  lambda g, p, s=strategy: results.get(g, {}).get(f"{p} ({s}_std)")),
+                ("Two-Step",         lambda g, p, s=strategy: results.get(g, {}).get(f"{p} ({st.TWOSTEP_BASE_KEY})")),
+                ("Two-Step Optuna",  lambda g, p, s=strategy: results.get(g, {}).get(f"{p} ({s}_ts)")),
                 ("YOLO",             lambda g, p, s=strategy: results.get(g, {}).get(f"{p} ({st.YOLO_BASE_KEY})")),
                 ("YOLO Optuna",      lambda g, p, s=strategy: results.get(g, {}).get(f"{p} ({s})")),
             ]
@@ -199,7 +201,7 @@ def print_prompting_technique_comparison_table(results: dict):
     (Group, Examples, Variant) combination with separate columns for
     Calories, Mass, Fat, Carbs, Protein.
     """
-    strategies = ["Standard", "Standard Optuna", "YOLO", "YOLO Optuna"]
+    strategies = ["Standard", "Standard Optuna", "Two-Step", "Two-Step Optuna", "YOLO", "YOLO Optuna"]
     print("\n" + "=" * 150)
     print(" " * 48 + "PROMPTING + OPTUNA SUMMARY TABLE")
     print("=" * 150)

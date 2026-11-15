@@ -1,0 +1,60 @@
+{
+    "_strategy_info": {
+        "name": "linear_bias_all5",
+        "description": "Linear model with scale and bias (adj_val = pred * scale + bias)",
+        "nutrients_optimized": [
+            "mass",
+            "cal",
+            "fat",
+            "carbs",
+            "protein"
+        ],
+        "param_type": "linear_scale_bias",
+        "n_trials": 5000
+    },
+    "optuna_train_twostep_prediction_gemma4_e2b_q8.json": {
+        "best_combined_mae_perc": 63.49,
+        "optimal_scalars": {
+            "scale_mass": 0.5093862560995592,
+            "bias_mass": 5.322537673993458,
+            "scale_cal": 0.22780656810779784,
+            "bias_cal": 70.84520706105266,
+            "scale_fat": 0.08014122868766632,
+            "bias_fat": 6.394912711944044,
+            "scale_carbs": 0.009324635982777624,
+            "bias_carbs": 15.301181624858478,
+            "scale_protein": 0.12762828825542355,
+            "bias_protein": 6.6597984564639185
+        }
+    },
+    "optuna_train_twostep_prediction_gemma4_e4b_q4.json": {
+        "best_combined_mae_perc": 55.7,
+        "optimal_scalars": {
+            "scale_mass": 0.6077606670812269,
+            "bias_mass": 4.10742732391891,
+            "scale_cal": 0.41228600372900825,
+            "bias_cal": 32.74774619880844,
+            "scale_fat": 0.40644305999602204,
+            "bias_fat": 1.9189295270553652,
+            "scale_carbs": 0.18322229438667054,
+            "bias_carbs": 9.72205200920623,
+            "scale_protein": 0.3983020147838355,
+            "bias_protein": 0.4814984415865661
+        }
+    },
+    "optuna_train_twostep_prediction_gemma4_e4b_q8.json": {
+        "best_combined_mae_perc": 59.6,
+        "optimal_scalars": {
+            "scale_mass": 0.40668576577241383,
+            "bias_mass": 11.093437386608882,
+            "scale_cal": 0.25215466113792556,
+            "bias_cal": 36.66686275680767,
+            "scale_fat": 0.17818620390370585,
+            "bias_fat": 4.078227248891968,
+            "scale_carbs": 0.12753499793144848,
+            "bias_carbs": 7.505125190514644,
+            "scale_protein": 0.29316562965003073,
+            "bias_protein": 0.1168779274913283
+        }
+    }
+}

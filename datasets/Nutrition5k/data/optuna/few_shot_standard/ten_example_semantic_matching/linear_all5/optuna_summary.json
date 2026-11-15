@@ -51,5 +51,15 @@
             "scale_carbs": 0.695592463324749,
             "scale_protein": 0.7579676111938324
         }
+    },
+    "optuna_train_standard_predictions_gemma4_e2b_q8.json.json": {
+        "best_combined_mae_perc": 59.85,
+        "optimal_scalars": {
+            "scale_mass": 1.1498875653726193,
+            "scale_cal": 0.8358400170240047,
+            "scale_fat": 0.6378081395136115,
+            "scale_carbs": 0.7911529081479693,
+            "scale_protein": 0.9488643922351858
+        }
     }
 }

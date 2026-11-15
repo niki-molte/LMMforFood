@@ -3527,6 +3527,370 @@
                     "protein_MAE_%": 61.56117317428056
                 }
             }
+        },
+        "1 Example (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 764.2023924418115,
+                    "calories_MAE_%": 299.13931869673854,
+                    "mass_MAE": 491.15483212426034,
+                    "mass_MAE_%": 247.41718453101973,
+                    "fat_MAE": 34.57765004451282,
+                    "fat_MAE_%": 269.4923388571678,
+                    "carbohydrates_MAE": 69.98302595278501,
+                    "carbohydrates_MAE_%": 355.5398550834492,
+                    "protein_MAE": 44.46741685434438,
+                    "protein_MAE_%": 254.40983372598345
+                },
+                "exact_match": {
+                    "calories_MAE": 94.32446272658974,
+                    "calories_MAE_%": 158.3038854817585,
+                    "mass_MAE": 84.54187090532544,
+                    "mass_MAE_%": 214.6658284727062,
+                    "fat_MAE": 5.372686881532545,
+                    "fat_MAE_%": 136.25901865816198,
+                    "carbohydrates_MAE": 6.423583897418146,
+                    "carbohydrates_MAE_%": 200.73999168589802,
+                    "protein_MAE": 5.99221440938856,
+                    "protein_MAE_%": 174.78786952401504
+                }
+            }
+        },
+        "1 Example (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 204.79043832476123,
+                    "calories_MAE_%": 80.16315154462187,
+                    "mass_MAE": 196.23732981312207,
+                    "mass_MAE_%": 98.85373097574292,
+                    "fat_MAE": 9.046128140388417,
+                    "fat_MAE_%": 70.50398818359793,
+                    "carbohydrates_MAE": 14.948964905489621,
+                    "carbohydrates_MAE_%": 75.94631332076371,
+                    "protein_MAE": 14.499038420473669,
+                    "protein_MAE_%": 82.95282736620159
+                },
+                "exact_match": {
+                    "calories_MAE": 30.859130107094735,
+                    "calories_MAE_%": 51.790596599529984,
+                    "mass_MAE": 35.981263369986955,
+                    "mass_MAE_%": 91.36239390139096,
+                    "fat_MAE": 2.163437678866283,
+                    "fat_MAE_%": 54.86787180240885,
+                    "carbohydrates_MAE": 1.9773334416719008,
+                    "carbohydrates_MAE_%": 61.79259195182381,
+                    "protein_MAE": 1.7684513949883653,
+                    "protein_MAE_%": 51.58424424908545
+                }
+            }
+        },
+        "1 Example (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 325.26003497791453,
+                    "calories_MAE_%": 127.31976008564936,
+                    "mass_MAE": 196.25058787227422,
+                    "mass_MAE_%": 98.86040966737582,
+                    "fat_MAE": 15.574129742205303,
+                    "fat_MAE_%": 121.38212528870024,
+                    "carbohydrates_MAE": 32.867960735429925,
+                    "carbohydrates_MAE_%": 166.9814906924328,
+                    "protein_MAE": 19.293951119798013,
+                    "protein_MAE_%": 110.38578904601938
+                },
+                "exact_match": {
+                    "calories_MAE": 39.27025044849467,
+                    "calories_MAE_%": 65.90690315255863,
+                    "mass_MAE": 35.98343847737077,
+                    "mass_MAE_%": 91.36791685970219,
+                    "fat_MAE": 2.4007555516741848,
+                    "fat_MAE_%": 60.886592262370456,
+                    "carbohydrates_MAE": 3.017562988535389,
+                    "carbohydrates_MAE_%": 94.30025028142578,
+                    "protein_MAE": 2.3128840795379224,
+                    "protein_MAE_%": 67.46488912096467
+                }
+            }
+        },
+        "1 Example (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 4828.6543173731225,
+                    "calories_MAE_%": 1890.1280302273387,
+                    "mass_MAE": 168.0293689449016,
+                    "mass_MAE_%": 84.64408912168373,
+                    "fat_MAE": 78.05710831746472,
+                    "fat_MAE_%": 608.3638609859509,
+                    "carbohydrates_MAE": 418.9523463200297,
+                    "carbohydrates_MAE_%": 2128.4340662546997,
+                    "protein_MAE": 75.0885797438068,
+                    "protein_MAE_%": 429.6015923280641
+                },
+                "exact_match": {
+                    "calories_MAE": 698.3387521982311,
+                    "calories_MAE_%": 1172.0155584230995,
+                    "mass_MAE": 31.27962449882763,
+                    "mass_MAE_%": 79.4241532089518,
+                    "fat_MAE": 13.715165068908965,
+                    "fat_MAE_%": 347.8361896443076,
+                    "carbohydrates_MAE": 44.372347108182296,
+                    "carbohydrates_MAE_%": 1386.656535016292,
+                    "protein_MAE": 10.795167537949895,
+                    "protein_MAE_%": 314.8859847465977
+                }
+            }
+        },
+        "1 Example (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 200.69461966142418,
+                    "calories_MAE_%": 78.55988463971052,
+                    "mass_MAE": 191.76053302137032,
+                    "mass_MAE_%": 96.59856338807577,
+                    "fat_MAE": 8.970263105474181,
+                    "fat_MAE_%": 69.91270897086373,
+                    "carbohydrates_MAE": 17.530041922219713,
+                    "carbohydrates_MAE_%": 89.05914655416176,
+                    "protein_MAE": 14.895103217343,
+                    "protein_MAE_%": 85.21881865250221
+                },
+                "exact_match": {
+                    "calories_MAE": 30.849489598277955,
+                    "calories_MAE_%": 51.7744170215117,
+                    "mass_MAE": 37.114062287185966,
+                    "mass_MAE_%": 94.23875818632415,
+                    "fat_MAE": 2.3831441474157242,
+                    "fat_MAE_%": 60.43994187786759,
+                    "carbohydrates_MAE": 1.9572848867559816,
+                    "carbohydrates_MAE_%": 61.166065263388475,
+                    "protein_MAE": 1.8000648263061287,
+                    "protein_MAE_%": 52.506381531042194
+                }
+            }
+        },
+        "1 Example (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 161.88232791570647,
+                    "calories_MAE_%": 63.36720450065025,
+                    "mass_MAE": 191.4732435052367,
+                    "mass_MAE_%": 96.45384250053073,
+                    "fat_MAE": 9.15334216008626,
+                    "fat_MAE_%": 71.33959606584136,
+                    "carbohydrates_MAE": 17.584274745884915,
+                    "carbohydrates_MAE_%": 89.33466951139572,
+                    "protein_MAE": 13.9636760314877,
+                    "protein_MAE_%": 79.88987777299268
+                },
+                "exact_match": {
+                    "calories_MAE": 30.311394946136755,
+                    "calories_MAE_%": 50.87133767466381,
+                    "mass_MAE": 35.19435799648405,
+                    "mass_MAE_%": 89.36431067796913,
+                    "fat_MAE": 2.6286535731803604,
+                    "fat_MAE_%": 66.6664118292443,
+                    "carbohydrates_MAE": 2.9411665555208315,
+                    "carbohydrates_MAE_%": 91.91282613112574,
+                    "protein_MAE": 1.7262526373073281,
+                    "protein_MAE_%": 50.35334187348416
+                }
+            }
+        },
+        "5 Examples (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 278.74148434636766,
+                    "calories_MAE_%": 109.11054263185784,
+                    "mass_MAE": 163.71372785601577,
+                    "mass_MAE_%": 82.47010304271063,
+                    "fat_MAE": 20.32841478495069,
+                    "fat_MAE_%": 158.43621641732588,
+                    "carbohydrates_MAE": 20.189653310193293,
+                    "carbohydrates_MAE_%": 102.57096366387603,
+                    "protein_MAE": 15.550461861237475,
+                    "protein_MAE_%": 88.96829850581172
+                },
+                "exact_match": {
+                    "calories_MAE": 100.7857459189428,
+                    "calories_MAE_%": 118.56864958791957,
+                    "mass_MAE": 63.87559416370809,
+                    "mass_MAE_%": 129.12053138157327,
+                    "fat_MAE": 7.5590905134063116,
+                    "fat_MAE_%": 127.1207150483264,
+                    "carbohydrates_MAE": 5.186025522331361,
+                    "carbohydrates_MAE_%": 113.71518947602293,
+                    "protein_MAE": 4.744743421169625,
+                    "protein_MAE_%": 115.37678667719119
+                }
+            }
+        },
+        "5 Examples (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 141.70468834934522,
+                    "calories_MAE_%": 55.46887100616404,
+                    "mass_MAE": 94.64293643283095,
+                    "mass_MAE_%": 47.67598186234493,
+                    "fat_MAE": 9.461069467142869,
+                    "fat_MAE_%": 73.73797049562897,
+                    "carbohydrates_MAE": 13.89568582377068,
+                    "carbohydrates_MAE_%": 70.59526301994603,
+                    "protein_MAE": 10.230899179053047,
+                    "protein_MAE_%": 58.533675736909686
+                },
+                "exact_match": {
+                    "calories_MAE": 52.354858915708846,
+                    "calories_MAE_%": 61.59248874334039,
+                    "mass_MAE": 34.33047976443885,
+                    "mass_MAE_%": 69.39692456570901,
+                    "fat_MAE": 4.234184608208586,
+                    "fat_MAE_%": 71.20599681767051,
+                    "carbohydrates_MAE": 2.8705178262247655,
+                    "carbohydrates_MAE_%": 62.94251293169667,
+                    "protein_MAE": 2.4198831588073846,
+                    "protein_MAE_%": 58.84371781870179
+                }
+            }
+        },
+        "5 Examples (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 145.94805364121117,
+                    "calories_MAE_%": 57.12989355064243,
+                    "mass_MAE": 94.64422586890579,
+                    "mass_MAE_%": 47.676631410353835,
+                    "fat_MAE": 10.985853836821033,
+                    "fat_MAE_%": 85.62188121565863,
+                    "carbohydrates_MAE": 13.231261847151515,
+                    "carbohydrates_MAE_%": 67.21974158249745,
+                    "protein_MAE": 9.75007645942208,
+                    "protein_MAE_%": 55.78276199362491
+                },
+                "exact_match": {
+                    "calories_MAE": 56.88630621929823,
+                    "calories_MAE_%": 66.92347659848339,
+                    "mass_MAE": 34.33331798511007,
+                    "mass_MAE_%": 69.40266185185162,
+                    "fat_MAE": 4.445347334544799,
+                    "fat_MAE_%": 74.75710613641809,
+                    "carbohydrates_MAE": 3.0652886222988753,
+                    "carbohydrates_MAE_%": 67.21329754017782,
+                    "protein_MAE": 2.5520174830663582,
+                    "protein_MAE_%": 62.05679645952834
+                }
+            }
+        },
+        "5 Examples (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 1937.0676481420144,
+                    "calories_MAE_%": 758.245593399941,
+                    "mass_MAE": 96.33511213249092,
+                    "mass_MAE_%": 48.528408266317996,
+                    "fat_MAE": 58.18207959979346,
+                    "fat_MAE_%": 453.4612586667228,
+                    "carbohydrates_MAE": 117.8453890338622,
+                    "carbohydrates_MAE_%": 598.6984982275503,
+                    "protein_MAE": 32.22825639439051,
+                    "protein_MAE_%": 184.3863649069647
+                },
+                "exact_match": {
+                    "calories_MAE": 639.4348336633898,
+                    "calories_MAE_%": 752.2584075323515,
+                    "mass_MAE": 31.912640254992898,
+                    "mass_MAE_%": 64.50941273364842,
+                    "fat_MAE": 20.77994369868718,
+                    "fat_MAE_%": 349.4549108727005,
+                    "carbohydrates_MAE": 33.341043930057374,
+                    "carbohydrates_MAE_%": 731.0768355282746,
+                    "protein_MAE": 9.9971966612702,
+                    "protein_MAE_%": 243.0994311327723
+                }
+            }
+        },
+        "5 Examples (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 128.14754254055896,
+                    "calories_MAE_%": 50.162063018093704,
+                    "mass_MAE": 93.80168606824445,
+                    "mass_MAE_%": 47.25220552323925,
+                    "fat_MAE": 8.78030663792648,
+                    "fat_MAE_%": 68.4322204861178,
+                    "carbohydrates_MAE": 12.584289397985886,
+                    "carbohydrates_MAE_%": 63.93288040883911,
+                    "protein_MAE": 9.814646889431424,
+                    "protein_MAE_%": 56.15218647393824
+                },
+                "exact_match": {
+                    "calories_MAE": 55.0038251431245,
+                    "calories_MAE_%": 64.70884558055906,
+                    "mass_MAE": 34.39448377433728,
+                    "mass_MAE_%": 69.52630468149246,
+                    "fat_MAE": 4.395915763117895,
+                    "fat_MAE_%": 73.92581873555868,
+                    "carbohydrates_MAE": 2.8476906198588767,
+                    "carbohydrates_MAE_%": 62.441975461156346,
+                    "protein_MAE": 2.3926898463498003,
+                    "protein_MAE_%": 58.182464568111584
+                }
+            }
+        },
+        "5 Examples (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 151.92514815609948,
+                    "calories_MAE_%": 59.46956691290011,
+                    "mass_MAE": 94.97082438466134,
+                    "mass_MAE_%": 47.841154041416544,
+                    "fat_MAE": 10.874770910346456,
+                    "fat_MAE_%": 84.75611973030047,
+                    "carbohydrates_MAE": 16.772609945528558,
+                    "carbohydrates_MAE_%": 85.21110981150892,
+                    "protein_MAE": 10.467171493224027,
+                    "protein_MAE_%": 59.885452035478735
+                },
+                "exact_match": {
+                    "calories_MAE": 54.07510886554234,
+                    "calories_MAE_%": 63.61626414576173,
+                    "mass_MAE": 34.90454456891908,
+                    "mass_MAE_%": 70.55736077882624,
+                    "fat_MAE": 5.075234000354706,
+                    "fat_MAE_%": 85.34986768824123,
+                    "carbohydrates_MAE": 3.6966010448849884,
+                    "carbohydrates_MAE_%": 81.05623206562807,
+                    "protein_MAE": 2.4441266810800677,
+                    "protein_MAE_%": 59.43324172953732
+                }
+            }
+        },
+        "10 Examples (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 227.8363907900371,
+                    "calories_MAE_%": 89.18425719328674,
+                    "mass_MAE": 119.81512828994083,
+                    "mass_MAE_%": 60.356367822968274,
+                    "fat_MAE": 16.7496019617357,
+                    "fat_MAE_%": 130.54355636614684,
+                    "carbohydrates_MAE": 15.634126931467456,
+                    "carbohydrates_MAE_%": 79.4271917781941,
+                    "protein_MAE": 13.981554502959764,
+                    "protein_MAE_%": 79.99216522920766
+                },
+                "exact_match": {
+                    "calories_MAE": 79.44282912443786,
+                    "calories_MAE_%": 91.46608185157166,
+                    "mass_MAE": 42.679317921104534,
+                    "mass_MAE_%": 81.34643396763667,
+                    "fat_MAE": 5.874406608076923,
+                    "fat_MAE_%": 99.89757748471948,
+                    "carbohydrates_MAE": 3.4237109824161736,
+                    "carbohydrates_MAE_%": 68.88378055739842,
+                    "protein_MAE": 4.1861382645779095,
+                    "protein_MAE_%": 99.3067161791511
+                }
+            }
         }
     },
     "E2B - Q8": {
@@ -7055,6 +7419,510 @@
                     "carbohydrates_MAE_%": 76.77482189608406,
                     "protein_MAE": 3.4409982005072397,
                     "protein_MAE_%": 65.0765250510546
+                }
+            }
+        },
+        "1 Example (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 301.50326399634713,
+                    "calories_MAE_%": 118.02041169817144,
+                    "mass_MAE": 205.86457578895462,
+                    "mass_MAE_%": 103.7034157153312,
+                    "fat_MAE": 14.878969201570019,
+                    "fat_MAE_%": 115.9641619587502,
+                    "carbohydrates_MAE": 31.183532439360945,
+                    "carbohydrates_MAE_%": 158.42396714826842,
+                    "protein_MAE": 18.901180756588165,
+                    "protein_MAE_%": 108.13864608460067
+                },
+                "exact_match": {
+                    "calories_MAE": 57.277055244643,
+                    "calories_MAE_%": 90.06522635054127,
+                    "mass_MAE": 58.15434520512821,
+                    "mass_MAE_%": 137.70587033739199,
+                    "fat_MAE": 3.2750031419309664,
+                    "fat_MAE_%": 75.01403170553527,
+                    "carbohydrates_MAE": 4.308937872345168,
+                    "carbohydrates_MAE_%": 119.75823051352371,
+                    "protein_MAE": 3.5547418043037475,
+                    "protein_MAE_%": 111.82921434020872
+                }
+            }
+        },
+        "1 Example (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 138.37966457404448,
+                    "calories_MAE_%": 54.16732398585731,
+                    "mass_MAE": 103.6993297874823,
+                    "mass_MAE_%": 52.238101990782106,
+                    "fat_MAE": 8.749708433583255,
+                    "fat_MAE_%": 68.19374327200204,
+                    "carbohydrates_MAE": 14.533648002925473,
+                    "carbohydrates_MAE_%": 73.83634866374834,
+                    "protein_MAE": 10.307197757114105,
+                    "protein_MAE_%": 58.97020004911844
+                },
+                "exact_match": {
+                    "calories_MAE": 35.449836104719445,
+                    "calories_MAE_%": 55.743045783761076,
+                    "mass_MAE": 28.146852723966795,
+                    "mass_MAE_%": 66.64999559259837,
+                    "fat_MAE": 2.874714777872874,
+                    "fat_MAE_%": 65.84541636945768,
+                    "carbohydrates_MAE": 2.4628125158761764,
+                    "carbohydrates_MAE_%": 68.44890265901334,
+                    "protein_MAE": 1.6278702241865932,
+                    "protein_MAE_%": 51.21144044785617
+                }
+            }
+        },
+        "1 Example (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 147.33397422372622,
+                    "calories_MAE_%": 57.67239818412917,
+                    "mass_MAE": 103.70754567988496,
+                    "mass_MAE_%": 52.242240712084886,
+                    "fat_MAE": 8.542701575951636,
+                    "fat_MAE_%": 66.58036693928996,
+                    "carbohydrates_MAE": 16.99070524297616,
+                    "carbohydrates_MAE_%": 86.31911520843497,
+                    "protein_MAE": 10.461121528422987,
+                    "protein_MAE_%": 59.85083858932057
+                },
+                "exact_match": {
+                    "calories_MAE": 31.75346320921749,
+                    "calories_MAE_%": 49.93068933339126,
+                    "mass_MAE": 28.15124025390118,
+                    "mass_MAE_%": 66.66038499043468,
+                    "fat_MAE": 2.1967000919723128,
+                    "fat_MAE_%": 50.31547244550301,
+                    "carbohydrates_MAE": 2.3858060032513837,
+                    "carbohydrates_MAE_%": 66.30866207927546,
+                    "protein_MAE": 1.661469339864269,
+                    "protein_MAE_%": 52.26844062272435
+                }
+            }
+        },
+        "1 Example (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 2353.718333136527,
+                    "calories_MAE_%": 921.3393016590105,
+                    "mass_MAE": 100.2470046306876,
+                    "mass_MAE_%": 50.499007687901155,
+                    "fat_MAE": 42.85660328596748,
+                    "fat_MAE_%": 334.0170960184141,
+                    "carbohydrates_MAE": 199.20105399556462,
+                    "carbohydrates_MAE_%": 1012.0155981514101,
+                    "protein_MAE": 38.85266587628353,
+                    "protein_MAE_%": 222.2863607700385
+                },
+                "exact_match": {
+                    "calories_MAE": 481.0289343524337,
+                    "calories_MAE_%": 756.3932829396567,
+                    "mass_MAE": 25.401871600129677,
+                    "mass_MAE_%": 60.1500511192425,
+                    "fat_MAE": 10.58434685575412,
+                    "fat_MAE_%": 242.43473859746857,
+                    "carbohydrates_MAE": 32.708493701671344,
+                    "carbohydrates_MAE_%": 909.0665599091087,
+                    "protein_MAE": 7.5162267888751035,
+                    "protein_MAE_%": 236.4542301173867
+                }
+            }
+        },
+        "1 Example (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 131.06509618352854,
+                    "calories_MAE_%": 51.304109964885434,
+                    "mass_MAE": 102.7207489252436,
+                    "mass_MAE_%": 51.74514599007686,
+                    "fat_MAE": 8.432405010095934,
+                    "fat_MAE_%": 65.72073421520078,
+                    "carbohydrates_MAE": 13.323543096371292,
+                    "carbohydrates_MAE_%": 67.68856472250648,
+                    "protein_MAE": 10.849526278982045,
+                    "protein_MAE_%": 62.07300472799651
+                },
+                "exact_match": {
+                    "calories_MAE": 32.451160913296654,
+                    "calories_MAE_%": 51.02778312380605,
+                    "mass_MAE": 28.132553334693224,
+                    "mass_MAE_%": 66.61613552868975,
+                    "fat_MAE": 2.862370724411014,
+                    "fat_MAE_%": 65.56267550551553,
+                    "carbohydrates_MAE": 2.159344847467105,
+                    "carbohydrates_MAE_%": 60.01463136910138,
+                    "protein_MAE": 1.722803713839179,
+                    "protein_MAE_%": 54.19796890670787
+                }
+            }
+        },
+        "1 Example (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 149.3343022143992,
+                    "calories_MAE_%": 58.45540640056248,
+                    "mass_MAE": 105.03845192020225,
+                    "mass_MAE_%": 52.91267914273187,
+                    "fat_MAE": 10.168560475384755,
+                    "fat_MAE_%": 79.2520353984224,
+                    "carbohydrates_MAE": 16.67311078249325,
+                    "carbohydrates_MAE_%": 84.70561697914175,
+                    "protein_MAE": 10.455241024892091,
+                    "protein_MAE_%": 59.81719467583621
+                },
+                "exact_match": {
+                    "calories_MAE": 39.016819456787566,
+                    "calories_MAE_%": 61.35194382540184,
+                    "mass_MAE": 28.791056491239026,
+                    "mass_MAE_%": 68.17543002288797,
+                    "fat_MAE": 3.4909132180427935,
+                    "fat_MAE_%": 79.95945758547738,
+                    "carbohydrates_MAE": 2.997163744380787,
+                    "carbohydrates_MAE_%": 83.30011646024903,
+                    "protein_MAE": 1.6575392680070453,
+                    "protein_MAE_%": 52.14480383775116
+                }
+            }
+        },
+        "5 Examples (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 204.14989616945246,
+                    "calories_MAE_%": 79.91241777850088,
+                    "mass_MAE": 126.00775160355029,
+                    "mass_MAE_%": 63.47587581699077,
+                    "fat_MAE": 14.299365963226824,
+                    "fat_MAE_%": 111.44683264026797,
+                    "carbohydrates_MAE": 16.586375836477316,
+                    "carbohydrates_MAE_%": 84.26497112656058,
+                    "protein_MAE": 13.18635286933136,
+                    "protein_MAE_%": 75.44260670520566
+                },
+                "exact_match": {
+                    "calories_MAE": 70.28291055917555,
+                    "calories_MAE_%": 85.22161185860674,
+                    "mass_MAE": 52.99455352662722,
+                    "mass_MAE_%": 101.91925648033995,
+                    "fat_MAE": 4.9220516523293885,
+                    "fat_MAE_%": 86.92678707550824,
+                    "carbohydrates_MAE": 4.155656392889546,
+                    "carbohydrates_MAE_%": 96.75272095894968,
+                    "protein_MAE": 3.7571714068915187,
+                    "protein_MAE_%": 85.51616361473381
+                }
+            }
+        },
+        "5 Examples (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 152.13258920195025,
+                    "calories_MAE_%": 59.55076761802649,
+                    "mass_MAE": 102.37447944782969,
+                    "mass_MAE_%": 51.5707141946688,
+                    "fat_MAE": 9.220504161296976,
+                    "fat_MAE_%": 71.863045310232,
+                    "carbohydrates_MAE": 16.83263189071721,
+                    "carbohydrates_MAE_%": 85.5160436637347,
+                    "protein_MAE": 11.617557733769948,
+                    "protein_MAE_%": 66.46711548439467
+                },
+                "exact_match": {
+                    "calories_MAE": 45.616877734471075,
+                    "calories_MAE_%": 55.312789660517105,
+                    "mass_MAE": 29.787441164487976,
+                    "mass_MAE_%": 57.287280558200855,
+                    "fat_MAE": 3.649982184953224,
+                    "fat_MAE_%": 64.46117323264419,
+                    "carbohydrates_MAE": 3.437860376731376,
+                    "carbohydrates_MAE_%": 80.0408682235729,
+                    "protein_MAE": 2.467720027813985,
+                    "protein_MAE_%": 56.16724040506074
+                }
+            }
+        },
+        "5 Examples (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 137.69653345881528,
+                    "calories_MAE_%": 53.89991920093213,
+                    "mass_MAE": 102.37330248492974,
+                    "mass_MAE_%": 51.57012130454952,
+                    "fat_MAE": 9.005882225868753,
+                    "fat_MAE_%": 70.19031835295914,
+                    "carbohydrates_MAE": 12.62890980679663,
+                    "carbohydrates_MAE_%": 64.15956871598718,
+                    "protein_MAE": 9.599400329257936,
+                    "protein_MAE_%": 54.92070406597199
+                },
+                "exact_match": {
+                    "calories_MAE": 41.00462946457235,
+                    "calories_MAE_%": 49.72020351509994,
+                    "mass_MAE": 29.787790276787156,
+                    "mass_MAE_%": 57.28795197183853,
+                    "fat_MAE": 3.0532160572692004,
+                    "fat_MAE_%": 53.92187665892486,
+                    "carbohydrates_MAE": 2.592781250043137,
+                    "carbohydrates_MAE_%": 60.36558778590238,
+                    "protein_MAE": 2.019127685820367,
+                    "protein_MAE_%": 45.95692739036082
+                }
+            }
+        },
+        "5 Examples (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 1652.0557587200901,
+                    "calories_MAE_%": 646.6805639452125,
+                    "mass_MAE": 99.8258687019587,
+                    "mass_MAE_%": 50.28686223197576,
+                    "fat_MAE": 36.52022963935789,
+                    "fat_MAE_%": 284.6324746893333,
+                    "carbohydrates_MAE": 111.85024960096564,
+                    "carbohydrates_MAE_%": 568.24095547118,
+                    "protein_MAE": 37.707347437157274,
+                    "protein_MAE_%": 215.73369155122944
+                },
+                "exact_match": {
+                    "calories_MAE": 575.3277236969617,
+                    "calories_MAE_%": 697.6141934121597,
+                    "mass_MAE": 36.44565270319219,
+                    "mass_MAE_%": 70.09236946554658,
+                    "fat_MAE": 13.952463270057377,
+                    "fat_MAE_%": 246.41001141894608,
+                    "carbohydrates_MAE": 30.988794957512546,
+                    "carbohydrates_MAE_%": 721.4865590207157,
+                    "protein_MAE": 12.81985375427361,
+                    "protein_MAE_%": 291.78991119663743
+                }
+            }
+        },
+        "5 Examples (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 145.75652562274306,
+                    "calories_MAE_%": 57.054921839584544,
+                    "mass_MAE": 101.30872763702969,
+                    "mass_MAE_%": 51.03384619461977,
+                    "fat_MAE": 8.621731736807787,
+                    "fat_MAE_%": 67.19631460669838,
+                    "carbohydrates_MAE": 13.992996705013406,
+                    "carbohydrates_MAE_%": 71.08963856521645,
+                    "protein_MAE": 9.683993180030201,
+                    "protein_MAE_%": 55.40468210251666
+                },
+                "exact_match": {
+                    "calories_MAE": 45.07199037455147,
+                    "calories_MAE_%": 54.65208595994068,
+                    "mass_MAE": 30.090771048144326,
+                    "mass_MAE_%": 57.87064534105519,
+                    "fat_MAE": 3.187343714871272,
+                    "fat_MAE_%": 56.29066251426918,
+                    "carbohydrates_MAE": 2.6045844427167735,
+                    "carbohydrates_MAE_%": 60.64039178777585,
+                    "protein_MAE": 2.0663398773261608,
+                    "protein_MAE_%": 47.031513842821866
+                }
+            }
+        },
+        "5 Examples (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 178.05420429483362,
+                    "calories_MAE_%": 69.69752239803675,
+                    "mass_MAE": 103.65885487997672,
+                    "mass_MAE_%": 52.21771292606321,
+                    "fat_MAE": 10.571573520309133,
+                    "fat_MAE_%": 82.39305070532741,
+                    "carbohydrates_MAE": 19.457390438276164,
+                    "carbohydrates_MAE_%": 98.85079535420542,
+                    "protein_MAE": 12.723350651003717,
+                    "protein_MAE_%": 72.79364875549311
+                },
+                "exact_match": {
+                    "calories_MAE": 54.61917449468974,
+                    "calories_MAE_%": 66.22853339155402,
+                    "mass_MAE": 29.465164252888457,
+                    "mass_MAE_%": 56.66747680432076,
+                    "fat_MAE": 4.514382720348752,
+                    "fat_MAE_%": 79.72707586751844,
+                    "carbohydrates_MAE": 4.233140414949093,
+                    "carbohydrates_MAE_%": 98.55671754970047,
+                    "protein_MAE": 2.787902517083556,
+                    "protein_MAE_%": 63.454844608778124
+                }
+            }
+        },
+        "10 Examples (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 183.99668638037318,
+                    "calories_MAE_%": 72.02364707393042,
+                    "mass_MAE": 103.2303354575937,
+                    "mass_MAE_%": 52.001848066209725,
+                    "fat_MAE": 12.980487809952663,
+                    "fat_MAE_%": 101.16772004192993,
+                    "carbohydrates_MAE": 15.565179676556214,
+                    "carbohydrates_MAE_%": 79.07691402604199,
+                    "protein_MAE": 11.108669681186193,
+                    "protein_MAE_%": 63.555632560458555
+                },
+                "exact_match": {
+                    "calories_MAE": 57.094043682493094,
+                    "calories_MAE_%": 73.73362255856,
+                    "mass_MAE": 39.41618647731755,
+                    "mass_MAE_%": 82.012239973156,
+                    "fat_MAE": 4.11742735809073,
+                    "fat_MAE_%": 76.27936371080305,
+                    "carbohydrates_MAE": 3.1454941315838263,
+                    "carbohydrates_MAE_%": 74.02069962872437,
+                    "protein_MAE": 2.8012224661084812,
+                    "protein_MAE_%": 77.11839125943864
+                }
+            }
+        },
+        "10 Examples (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 160.99482453178484,
+                    "calories_MAE_%": 63.01980025246533,
+                    "mass_MAE": 103.36666852409147,
+                    "mass_MAE_%": 52.07052527605305,
+                    "fat_MAE": 10.02095204364003,
+                    "fat_MAE_%": 78.10160032100343,
+                    "carbohydrates_MAE": 16.913455705534574,
+                    "carbohydrates_MAE_%": 85.92665876670046,
+                    "protein_MAE": 12.487135396179175,
+                    "protein_MAE_%": 71.44219890851193
+                },
+                "exact_match": {
+                    "calories_MAE": 47.02950799350565,
+                    "calories_MAE_%": 60.73586258475545,
+                    "mass_MAE": 26.001528131154878,
+                    "mass_MAE_%": 54.10070723072555,
+                    "fat_MAE": 4.001130876307868,
+                    "fat_MAE_%": 74.12485778739673,
+                    "carbohydrates_MAE": 3.410676210451912,
+                    "carbohydrates_MAE_%": 80.26104285801905,
+                    "protein_MAE": 2.280515668603173,
+                    "protein_MAE_%": 62.783196169685795
+                }
+            }
+        },
+        "10 Examples (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 138.07145948573734,
+                    "calories_MAE_%": 54.04668021262797,
+                    "mass_MAE": 103.36282977764311,
+                    "mass_MAE_%": 52.06859152364696,
+                    "fat_MAE": 8.831970640904755,
+                    "fat_MAE_%": 68.83488096129224,
+                    "carbohydrates_MAE": 13.262642093294954,
+                    "carbohydrates_MAE_%": 67.37916492857921,
+                    "protein_MAE": 9.830379090787696,
+                    "protein_MAE_%": 56.242194552084605
+                },
+                "exact_match": {
+                    "calories_MAE": 38.437978072749615,
+                    "calories_MAE_%": 49.64040352250222,
+                    "mass_MAE": 26.0014016348239,
+                    "mass_MAE_%": 54.10044403308065,
+                    "fat_MAE": 2.8256841622310107,
+                    "fat_MAE_%": 52.34855923302133,
+                    "carbohydrates_MAE": 2.31453093947207,
+                    "carbohydrates_MAE_%": 54.466227653009895,
+                    "protein_MAE": 1.802800191070851,
+                    "protein_MAE_%": 49.63156342621184
+                }
+            }
+        },
+        "10 Examples (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 1508.7573335423472,
+                    "calories_MAE_%": 590.5878407321671,
+                    "mass_MAE": 98.15963332722279,
+                    "mass_MAE_%": 49.44750315777073,
+                    "fat_MAE": 37.02724858409395,
+                    "fat_MAE_%": 288.5840943362993,
+                    "carbohydrates_MAE": 97.04884237970818,
+                    "carbohydrates_MAE_%": 493.0442901822655,
+                    "protein_MAE": 39.25972648704419,
+                    "protein_MAE_%": 224.61526201112554
+                },
+                "exact_match": {
+                    "calories_MAE": 493.4427903904615,
+                    "calories_MAE_%": 637.2525418452581,
+                    "mass_MAE": 26.098075025846732,
+                    "mass_MAE_%": 54.30158985798549,
+                    "fat_MAE": 13.12461296085342,
+                    "fat_MAE_%": 243.1462752189731,
+                    "carbohydrates_MAE": 26.058981177560543,
+                    "carbohydrates_MAE_%": 613.2276639802681,
+                    "protein_MAE": 11.77585467883152,
+                    "protein_MAE_%": 324.19237655123516
+                }
+            }
+        },
+        "10 Examples (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 148.24438518281076,
+                    "calories_MAE_%": 58.02876937156344,
+                    "mass_MAE": 103.73008209305173,
+                    "mass_MAE_%": 52.25359333559678,
+                    "fat_MAE": 8.603922130439303,
+                    "fat_MAE_%": 67.0575095558002,
+                    "carbohydrates_MAE": 15.208975604062903,
+                    "carbohydrates_MAE_%": 77.26726457761931,
+                    "protein_MAE": 11.17114718845224,
+                    "protein_MAE_%": 63.91308287710802
+                },
+                "exact_match": {
+                    "calories_MAE": 41.29702380949507,
+                    "calories_MAE_%": 53.332694094933515,
+                    "mass_MAE": 26.01440144729128,
+                    "mass_MAE_%": 54.12749240673024,
+                    "fat_MAE": 3.083350132716826,
+                    "fat_MAE_%": 57.12207302433651,
+                    "carbohydrates_MAE": 2.89668327329273,
+                    "carbohydrates_MAE_%": 68.16560881135354,
+                    "protein_MAE": 2.0433466798253472,
+                    "protein_MAE_%": 56.25387152929664
+                }
+            }
+        },
+        "10 Examples (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 182.65461439427327,
+                    "calories_MAE_%": 71.49830653124889,
+                    "mass_MAE": 104.7501148817195,
+                    "mass_MAE_%": 52.767430570201554,
+                    "fat_MAE": 11.487179065593779,
+                    "fat_MAE_%": 89.52912500626181,
+                    "carbohydrates_MAE": 19.46965313894672,
+                    "carbohydrates_MAE_%": 98.91309444402017,
+                    "protein_MAE": 14.986438897563314,
+                    "protein_MAE_%": 85.74137419680588
+                },
+                "exact_match": {
+                    "calories_MAE": 53.72710218448562,
+                    "calories_MAE_%": 69.38541427659942,
+                    "mass_MAE": 26.056364019196206,
+                    "mass_MAE_%": 54.21480284501778,
+                    "fat_MAE": 4.798778132052678,
+                    "fat_MAE_%": 88.90205234174,
+                    "carbohydrates_MAE": 4.192831421132294,
+                    "carbohydrates_MAE_%": 98.66695095731743,
+                    "protein_MAE": 2.898072951677565,
+                    "protein_MAE_%": 79.78471060042239
                 }
             }
         }
@@ -10587,6 +11455,510 @@
                     "protein_MAE_%": 44.77142942449612
                 }
             }
+        },
+        "1 Example (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 432.62738743397716,
+                    "calories_MAE_%": 169.3476272863199,
+                    "mass_MAE": 271.1019328303748,
+                    "mass_MAE_%": 136.56646042085393,
+                    "fat_MAE": 15.096289404962524,
+                    "fat_MAE_%": 117.65791875881521,
+                    "carbohydrates_MAE": 43.0619653157002,
+                    "carbohydrates_MAE_%": 218.77083334867268,
+                    "protein_MAE": 37.69513792329507,
+                    "protein_MAE_%": 215.66383769842452
+                },
+                "exact_match": {
+                    "calories_MAE": 57.250044825061146,
+                    "calories_MAE_%": 109.16265198847461,
+                    "mass_MAE": 51.70813807692308,
+                    "mass_MAE_%": 147.42970535915862,
+                    "fat_MAE": 3.047760499522682,
+                    "fat_MAE_%": 85.1164620785361,
+                    "carbohydrates_MAE": 4.412945609792899,
+                    "carbohydrates_MAE_%": 150.01975996017333,
+                    "protein_MAE": 3.8238900113806706,
+                    "protein_MAE_%": 135.35411568072357
+                }
+            }
+        },
+        "1 Example (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 168.85333634372915,
+                    "calories_MAE_%": 66.09593543948557,
+                    "mass_MAE": 146.10463984982678,
+                    "mass_MAE_%": 73.59959889271182,
+                    "fat_MAE": 9.595902138421845,
+                    "fat_MAE_%": 74.78883346319773,
+                    "carbohydrates_MAE": 15.518729839709055,
+                    "carbohydrates_MAE_%": 78.84093154262621,
+                    "protein_MAE": 13.377749786061191,
+                    "protein_MAE_%": 76.53763900538176
+                },
+                "exact_match": {
+                    "calories_MAE": 30.993739623098307,
+                    "calories_MAE_%": 59.09792424855211,
+                    "mass_MAE": 30.352752472795117,
+                    "mass_MAE_%": 86.54145208722508,
+                    "fat_MAE": 1.8586219560635069,
+                    "fat_MAE_%": 51.90674440015549,
+                    "carbohydrates_MAE": 1.9550313288576284,
+                    "carbohydrates_MAE_%": 66.46203162327315,
+                    "protein_MAE": 1.7429744067252435,
+                    "protein_MAE_%": 61.69601080948645
+                }
+            }
+        },
+        "1 Example (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 236.8533414781444,
+                    "calories_MAE_%": 92.7138515942463,
+                    "mass_MAE": 146.09579192123124,
+                    "mass_MAE_%": 73.59514178583053,
+                    "fat_MAE": 10.257030685390985,
+                    "fat_MAE_%": 79.94155720754102,
+                    "carbohydrates_MAE": 25.702781512961952,
+                    "carbohydrates_MAE_%": 130.57970972168835,
+                    "protein_MAE": 21.550672599895815,
+                    "protein_MAE_%": 123.29708853521932
+                },
+                "exact_match": {
+                    "calories_MAE": 35.506386715979325,
+                    "calories_MAE_%": 67.70250308604031,
+                    "mass_MAE": 30.351110891928293,
+                    "mass_MAE_%": 86.53677162893514,
+                    "fat_MAE": 1.9740143691294063,
+                    "fat_MAE_%": 55.12937096560005,
+                    "carbohydrates_MAE": 2.6853275951671765,
+                    "carbohydrates_MAE_%": 91.28873021852523,
+                    "protein_MAE": 2.260133909894511,
+                    "protein_MAE_%": 80.0018896420432
+                }
+            }
+        },
+        "1 Example (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 1836.1829716433224,
+                    "calories_MAE_%": 718.7553043178408,
+                    "mass_MAE": 104.29207165863679,
+                    "mass_MAE_%": 52.53669321970356,
+                    "fat_MAE": 23.825967456933466,
+                    "fat_MAE_%": 185.69554863439052,
+                    "carbohydrates_MAE": 262.12910159369943,
+                    "carbohydrates_MAE_%": 1331.7135337453894,
+                    "protein_MAE": 26.489011577321907,
+                    "protein_MAE_%": 151.55062982467183
+                },
+                "exact_match": {
+                    "calories_MAE": 268.44758615727676,
+                    "calories_MAE_%": 511.8677289140717,
+                    "mass_MAE": 20.367783012701437,
+                    "mass_MAE_%": 58.072411037402674,
+                    "fat_MAE": 5.439799246392102,
+                    "fat_MAE_%": 151.92022678386206,
+                    "carbohydrates_MAE": 31.595751074933762,
+                    "carbohydrates_MAE_%": 1074.1095429556858,
+                    "protein_MAE": 2.7227471123045675,
+                    "protein_MAE_%": 96.37699476485821
+                }
+            }
+        },
+        "1 Example (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 170.0028029792209,
+                    "calories_MAE_%": 66.54588256030908,
+                    "mass_MAE": 145.19877458627295,
+                    "mass_MAE_%": 73.14327306954199,
+                    "fat_MAE": 9.10329542539296,
+                    "fat_MAE_%": 70.94954030533425,
+                    "carbohydrates_MAE": 12.516898504853422,
+                    "carbohydrates_MAE_%": 63.5905095545919,
+                    "protein_MAE": 12.618723672553644,
+                    "protein_MAE_%": 72.19505018436575
+                },
+                "exact_match": {
+                    "calories_MAE": 31.047417928670594,
+                    "calories_MAE_%": 59.2002764162827,
+                    "mass_MAE": 32.393485802276764,
+                    "mass_MAE_%": 92.35996972625738,
+                    "fat_MAE": 2.069637361153108,
+                    "fat_MAE_%": 57.799886176915464,
+                    "carbohydrates_MAE": 2.2472105524359027,
+                    "carbohydrates_MAE_%": 76.39477516067188,
+                    "protein_MAE": 1.7499202210104885,
+                    "protein_MAE_%": 61.94187158149188
+                }
+            }
+        },
+        "1 Example (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 150.82994606140875,
+                    "calories_MAE_%": 59.04086109925537,
+                    "mass_MAE": 144.10853420939972,
+                    "mass_MAE_%": 72.5940690571507,
+                    "fat_MAE": 9.395297338218247,
+                    "fat_MAE_%": 73.22535368006477,
+                    "carbohydrates_MAE": 13.42164832366532,
+                    "carbohydrates_MAE_%": 68.18697584177674,
+                    "protein_MAE": 13.154531412854567,
+                    "protein_MAE_%": 75.26054775004536
+                },
+                "exact_match": {
+                    "calories_MAE": 30.54628907379518,
+                    "calories_MAE_%": 58.24473908957303,
+                    "mass_MAE": 29.98240942672457,
+                    "mass_MAE_%": 85.48553384699045,
+                    "fat_MAE": 1.8525677683575774,
+                    "fat_MAE_%": 51.73766581331482,
+                    "carbohydrates_MAE": 2.0485274203439365,
+                    "carbohydrates_MAE_%": 69.64046671906591,
+                    "protein_MAE": 1.7414331393365392,
+                    "protein_MAE_%": 61.64145461571396
+                }
+            }
+        },
+        "5 Examples (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 195.41228429419488,
+                    "calories_MAE_%": 76.4921677383911,
+                    "mass_MAE": 109.13191321696253,
+                    "mass_MAE_%": 54.97474308426079,
+                    "fat_MAE": 14.022206221794871,
+                    "fat_MAE_%": 109.28669663162101,
+                    "carbohydrates_MAE": 16.124605565301774,
+                    "carbohydrates_MAE_%": 81.91900604345082,
+                    "protein_MAE": 14.263379790692307,
+                    "protein_MAE_%": 81.60456211807279
+                },
+                "exact_match": {
+                    "calories_MAE": 78.59241152985207,
+                    "calories_MAE_%": 83.97797612553315,
+                    "mass_MAE": 51.64761593885601,
+                    "mass_MAE_%": 98.7892294057408,
+                    "fat_MAE": 5.553865833029586,
+                    "fat_MAE_%": 85.54248208991234,
+                    "carbohydrates_MAE": 4.045349814994083,
+                    "carbohydrates_MAE_%": 80.01500503221258,
+                    "protein_MAE": 4.844921019678501,
+                    "protein_MAE_%": 101.33872798081754
+                }
+            }
+        },
+        "5 Examples (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 117.09484235968544,
+                    "calories_MAE_%": 45.8355950109714,
+                    "mass_MAE": 73.77793936484807,
+                    "mass_MAE_%": 37.16532719265362,
+                    "fat_MAE": 8.34726831059758,
+                    "fat_MAE_%": 65.0571932214995,
+                    "carbohydrates_MAE": 11.646036949590275,
+                    "carbohydrates_MAE_%": 59.1662082766663,
+                    "protein_MAE": 9.734269630329354,
+                    "protein_MAE_%": 55.69232695049236
+                },
+                "exact_match": {
+                    "calories_MAE": 42.20203409246374,
+                    "calories_MAE_%": 45.09393900096459,
+                    "mass_MAE": 27.70233074869598,
+                    "mass_MAE_%": 52.987768315318135,
+                    "fat_MAE": 3.281438672677575,
+                    "fat_MAE_%": 50.54180589262569,
+                    "carbohydrates_MAE": 2.346830619759764,
+                    "carbohydrates_MAE_%": 46.41914109722122,
+                    "protein_MAE": 2.3963152423696283,
+                    "protein_MAE_%": 50.12249684080443
+                }
+            }
+        },
+        "5 Examples (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 120.20933339723058,
+                    "calories_MAE_%": 47.05473111453875,
+                    "mass_MAE": 73.77706258468433,
+                    "mass_MAE_%": 37.16488551832737,
+                    "fat_MAE": 9.236285038343738,
+                    "fat_MAE_%": 71.98603878894077,
+                    "carbohydrates_MAE": 11.328037122424751,
+                    "carbohydrates_MAE_%": 57.55065063354194,
+                    "protein_MAE": 9.802111138378718,
+                    "protein_MAE_%": 56.08046613202146
+                },
+                "exact_match": {
+                    "calories_MAE": 44.94388013301864,
+                    "calories_MAE_%": 48.0236707250783,
+                    "mass_MAE": 27.707087065374143,
+                    "mass_MAE_%": 52.996865983253116,
+                    "fat_MAE": 3.438685179793901,
+                    "fat_MAE_%": 52.963768706113754,
+                    "carbohydrates_MAE": 2.214716256431705,
+                    "carbohydrates_MAE_%": 43.80598477453675,
+                    "protein_MAE": 2.6873277965185167,
+                    "protein_MAE_%": 56.20945717392748
+                }
+            }
+        },
+        "5 Examples (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 693.9770207290251,
+                    "calories_MAE_%": 271.6503052401526,
+                    "mass_MAE": 91.5160727953971,
+                    "mass_MAE_%": 46.100837433366614,
+                    "fat_MAE": 28.603416698296893,
+                    "fat_MAE_%": 222.93017759757956,
+                    "carbohydrates_MAE": 108.93275483757503,
+                    "carbohydrates_MAE_%": 553.4189946991146,
+                    "protein_MAE": 10.554942990748083,
+                    "protein_MAE_%": 60.38761594943215
+                },
+                "exact_match": {
+                    "calories_MAE": 274.41005736194535,
+                    "calories_MAE_%": 293.214074961863,
+                    "mass_MAE": 23.20119447767214,
+                    "mass_MAE_%": 44.37819794926099,
+                    "fat_MAE": 12.570603358598312,
+                    "fat_MAE_%": 193.61659877831616,
+                    "carbohydrates_MAE": 34.230776108139445,
+                    "carbohydrates_MAE_%": 677.0677068265668,
+                    "protein_MAE": 3.11002973486532,
+                    "protein_MAE_%": 65.05089681207737
+                }
+            }
+        },
+        "5 Examples (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 116.9601053572077,
+                    "calories_MAE_%": 45.78285357032288,
+                    "mass_MAE": 74.61229327470706,
+                    "mass_MAE_%": 37.58562947164562,
+                    "fat_MAE": 8.815420585039837,
+                    "fat_MAE_%": 68.70589263335464,
+                    "carbohydrates_MAE": 10.613278753976473,
+                    "carbohydrates_MAE_%": 53.919411725564004,
+                    "protein_MAE": 10.144622638065494,
+                    "protein_MAE_%": 58.04006486405432
+                },
+                "exact_match": {
+                    "calories_MAE": 44.17287338756357,
+                    "calories_MAE_%": 47.19983055015431,
+                    "mass_MAE": 29.737180569986116,
+                    "mass_MAE_%": 56.87993724020412,
+                    "fat_MAE": 3.8081509045741635,
+                    "fat_MAE_%": 58.6544022386872,
+                    "carbohydrates_MAE": 2.682381562198582,
+                    "carbohydrates_MAE_%": 53.05617165717168,
+                    "protein_MAE": 2.396387887737059,
+                    "protein_MAE_%": 50.12401632669474
+                }
+            }
+        },
+        "5 Examples (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 119.74261355851115,
+                    "calories_MAE_%": 46.87203834105673,
+                    "mass_MAE": 73.81042041700088,
+                    "mass_MAE_%": 37.18168938630139,
+                    "fat_MAE": 8.18033160732496,
+                    "fat_MAE_%": 63.75611687454913,
+                    "carbohydrates_MAE": 13.637873591550509,
+                    "carbohydrates_MAE_%": 69.28548079155051,
+                    "protein_MAE": 9.793644436666403,
+                    "protein_MAE_%": 56.03202589583925
+                },
+                "exact_match": {
+                    "calories_MAE": 43.436567500564514,
+                    "calories_MAE_%": 46.413069118664076,
+                    "mass_MAE": 27.527669282699954,
+                    "mass_MAE_%": 52.65368374395956,
+                    "fat_MAE": 3.539720620144064,
+                    "fat_MAE_%": 54.51995004113993,
+                    "carbohydrates_MAE": 3.000783669972102,
+                    "carbohydrates_MAE_%": 59.35400680639291,
+                    "protein_MAE": 2.4058613362559074,
+                    "protein_MAE_%": 50.32216759037738
+                }
+            }
+        },
+        "10 Examples (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 171.29648115087417,
+                    "calories_MAE_%": 67.0522798324305,
+                    "mass_MAE": 96.87934911439842,
+                    "mass_MAE_%": 48.80256536093281,
+                    "fat_MAE": 12.560241347625247,
+                    "fat_MAE_%": 97.89239040318144,
+                    "carbohydrates_MAE": 13.940556650118344,
+                    "carbohydrates_MAE_%": 70.82322354151431,
+                    "protein_MAE": 12.286657366552662,
+                    "protein_MAE_%": 70.29521116352869
+                },
+                "exact_match": {
+                    "calories_MAE": 72.8943678213708,
+                    "calories_MAE_%": 76.0825221486574,
+                    "mass_MAE": 47.16527649704142,
+                    "mass_MAE_%": 85.90415885632581,
+                    "fat_MAE": 4.989471577051282,
+                    "fat_MAE_%": 77.0712862933071,
+                    "carbohydrates_MAE": 4.207002400303748,
+                    "carbohydrates_MAE_%": 78.85954748202464,
+                    "protein_MAE": 4.38107585513215,
+                    "protein_MAE_%": 86.86267872621306
+                }
+            }
+        },
+        "10 Examples (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 133.41009906229715,
+                    "calories_MAE_%": 52.22203768983711,
+                    "mass_MAE": 82.75449489335251,
+                    "mass_MAE_%": 41.6872293513746,
+                    "fat_MAE": 8.612883592873589,
+                    "fat_MAE_%": 67.12735367383272,
+                    "carbohydrates_MAE": 13.106875891229292,
+                    "carbohydrates_MAE_%": 66.58781456675452,
+                    "protein_MAE": 10.394122344404192,
+                    "protein_MAE_%": 59.46751856599132
+                },
+                "exact_match": {
+                    "calories_MAE": 46.46682889105137,
+                    "calories_MAE_%": 48.49913160567701,
+                    "mass_MAE": 26.14812974905575,
+                    "mass_MAE_%": 47.62472010313786,
+                    "fat_MAE": 3.4205726932154423,
+                    "fat_MAE_%": 52.836845195874794,
+                    "carbohydrates_MAE": 2.798242166860077,
+                    "carbohydrates_MAE_%": 52.45257549835802,
+                    "protein_MAE": 2.745189960834104,
+                    "protein_MAE_%": 54.428309733789234
+                }
+            }
+        },
+        "10 Examples (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 124.92147078184821,
+                    "calories_MAE_%": 48.89924976664082,
+                    "mass_MAE": 82.74158700681049,
+                    "mass_MAE_%": 41.680727057723814,
+                    "fat_MAE": 8.936262237726034,
+                    "fat_MAE_%": 69.6477119753818,
+                    "carbohydrates_MAE": 11.108603621048308,
+                    "carbohydrates_MAE_%": 56.43584666189788,
+                    "protein_MAE": 9.343583849405638,
+                    "protein_MAE_%": 53.457110434779736
+                },
+                "exact_match": {
+                    "calories_MAE": 45.35129726633411,
+                    "calories_MAE_%": 47.33481038194322,
+                    "mass_MAE": 26.154406558707752,
+                    "mass_MAE_%": 47.636152328145386,
+                    "fat_MAE": 3.3852026740628913,
+                    "fat_MAE_%": 52.29049217427545,
+                    "carbohydrates_MAE": 2.326606646869506,
+                    "carbohydrates_MAE_%": 43.61184755386708,
+                    "protein_MAE": 2.674702755302191,
+                    "protein_MAE_%": 53.03077458697028
+                }
+            }
+        },
+        "10 Examples (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 615.0447830973499,
+                    "calories_MAE_%": 240.7530769379705,
+                    "mass_MAE": 94.59482602094803,
+                    "mass_MAE_%": 47.6517464443542,
+                    "fat_MAE": 22.425285177328227,
+                    "fat_MAE_%": 174.7788685522949,
+                    "carbohydrates_MAE": 100.9251969735312,
+                    "carbohydrates_MAE_%": 512.7376162677897,
+                    "protein_MAE": 9.841456321082953,
+                    "protein_MAE_%": 56.30557031161639
+                },
+                "exact_match": {
+                    "calories_MAE": 274.4733175714187,
+                    "calories_MAE_%": 286.47785676002087,
+                    "mass_MAE": 24.664412913060644,
+                    "mass_MAE_%": 44.92236243149093,
+                    "fat_MAE": 10.009001657915983,
+                    "fat_MAE_%": 154.6068797817103,
+                    "carbohydrates_MAE": 40.138740683289626,
+                    "carbohydrates_MAE_%": 752.3938960800247,
+                    "protein_MAE": 3.0205175466335943,
+                    "protein_MAE_%": 59.887172447099545
+                }
+            }
+        },
+        "10 Examples (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 125.02361121778641,
+                    "calories_MAE_%": 48.939231610089784,
+                    "mass_MAE": 83.71792097870772,
+                    "mass_MAE_%": 42.17255119685329,
+                    "fat_MAE": 8.191969309025016,
+                    "fat_MAE_%": 63.84681914743443,
+                    "carbohydrates_MAE": 11.463116899014281,
+                    "carbohydrates_MAE_%": 58.23690624394878,
+                    "protein_MAE": 10.152291592880085,
+                    "protein_MAE_%": 58.08394097958455
+                },
+                "exact_match": {
+                    "calories_MAE": 44.408357805132745,
+                    "calories_MAE_%": 46.35062992210991,
+                    "mass_MAE": 26.15082233640278,
+                    "mass_MAE_%": 47.629624228977306,
+                    "fat_MAE": 3.4116951282795682,
+                    "fat_MAE_%": 52.69971537396998,
+                    "carbohydrates_MAE": 2.8720251847291207,
+                    "carbohydrates_MAE_%": 53.83562567218032,
+                    "protein_MAE": 2.5662711528913933,
+                    "protein_MAE_%": 50.88092378424012
+                }
+            }
+        },
+        "10 Examples (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 141.28585300726488,
+                    "calories_MAE_%": 55.3049221359234,
+                    "mass_MAE": 83.70484724177369,
+                    "mass_MAE_%": 42.16596535676388,
+                    "fat_MAE": 8.715821962377607,
+                    "fat_MAE_%": 67.92963786376667,
+                    "carbohydrates_MAE": 15.707880066355306,
+                    "carbohydrates_MAE_%": 79.80188519181796,
+                    "protein_MAE": 10.481200910884404,
+                    "protein_MAE_%": 59.965718038470094
+                },
+                "exact_match": {
+                    "calories_MAE": 49.02460422656569,
+                    "calories_MAE_%": 51.16877542634137,
+                    "mass_MAE": 25.762743743940693,
+                    "mass_MAE_%": 46.922799896935196,
+                    "fat_MAE": 3.6469241041603686,
+                    "fat_MAE_%": 56.333246393161566,
+                    "carbohydrates_MAE": 3.76810341883621,
+                    "carbohydrates_MAE_%": 70.63246040778085,
+                    "protein_MAE": 2.7615255559266108,
+                    "protein_MAE_%": 54.75219217619427
+                }
+            }
         }
     },
     "E4B - Q8": {
@@ -14115,6 +15487,510 @@
                     "carbohydrates_MAE_%": 48.07142092892163,
                     "protein_MAE": 2.2207171316220746,
                     "protein_MAE_%": 45.62353630397591
+                }
+            }
+        },
+        "1 Example (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 411.596351268628,
+                    "calories_MAE_%": 161.1152403006065,
+                    "mass_MAE": 251.2090728816568,
+                    "mass_MAE_%": 126.54551574339936,
+                    "fat_MAE": 14.53314019609862,
+                    "fat_MAE_%": 113.26882935491048,
+                    "carbohydrates_MAE": 41.5885484296647,
+                    "carbohydrates_MAE_%": 211.28532641314808,
+                    "protein_MAE": 33.43623734502446,
+                    "protein_MAE_%": 191.2975429005412
+                },
+                "exact_match": {
+                    "calories_MAE": 51.292455871149905,
+                    "calories_MAE_%": 93.61682770862049,
+                    "mass_MAE": 43.98805977514793,
+                    "mass_MAE_%": 128.0880524135174,
+                    "fat_MAE": 2.697048311122288,
+                    "fat_MAE_%": 72.47625595015485,
+                    "carbohydrates_MAE": 4.25318691287574,
+                    "carbohydrates_MAE_%": 129.44686123785297,
+                    "protein_MAE": 3.0732166131301777,
+                    "protein_MAE_%": 107.19833854585453
+                }
+            }
+        },
+        "1 Example (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 139.4257962992426,
+                    "calories_MAE_%": 54.576821698292996,
+                    "mass_MAE": 100.65450219279316,
+                    "mass_MAE_%": 50.70428287390177,
+                    "fat_MAE": 8.913013576496645,
+                    "fat_MAE_%": 69.46651585355339,
+                    "carbohydrates_MAE": 12.468228742368419,
+                    "carbohydrates_MAE_%": 63.34324902155152,
+                    "protein_MAE": 12.450721535305119,
+                    "protein_MAE_%": 71.2338655951415
+                },
+                "exact_match": {
+                    "calories_MAE": 31.711708148549373,
+                    "calories_MAE_%": 57.87887258793967,
+                    "mass_MAE": 18.625362894922688,
+                    "mass_MAE_%": 54.2348644359506,
+                    "fat_MAE": 2.199471428867485,
+                    "fat_MAE_%": 59.10515342875696,
+                    "carbohydrates_MAE": 2.144666772313488,
+                    "carbohydrates_MAE_%": 65.27349673644802,
+                    "protein_MAE": 1.6209025208026189,
+                    "protein_MAE_%": 56.53947607612648
+                }
+            }
+        },
+        "1 Example (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 152.40414464436589,
+                    "calories_MAE_%": 59.657065257023724,
+                    "mass_MAE": 100.65458246321896,
+                    "mass_MAE_%": 50.70432330979175,
+                    "fat_MAE": 8.711609578073855,
+                    "fat_MAE_%": 67.89680725507226,
+                    "carbohydrates_MAE": 15.938037434373939,
+                    "carbohydrates_MAE_%": 80.97117040287672,
+                    "protein_MAE": 14.481975307817235,
+                    "protein_MAE_%": 82.85520479307147
+                },
+                "exact_match": {
+                    "calories_MAE": 27.89135671983609,
+                    "calories_MAE_%": 50.90612824544469,
+                    "mass_MAE": 18.625377989751133,
+                    "mass_MAE_%": 54.23490839031428,
+                    "fat_MAE": 1.793992247532184,
+                    "fat_MAE_%": 48.2089404066447,
+                    "carbohydrates_MAE": 1.981696448750858,
+                    "carbohydrates_MAE_%": 60.31345211761514,
+                    "protein_MAE": 1.4506113036797905,
+                    "protein_MAE_%": 50.59946668449258
+                }
+            }
+        },
+        "1 Example (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 1808.7262063112457,
+                    "calories_MAE_%": 708.0076304603829,
+                    "mass_MAE": 98.39305735098567,
+                    "mass_MAE_%": 49.56508952969245,
+                    "fat_MAE": 30.242355243189287,
+                    "fat_MAE_%": 235.7037865946521,
+                    "carbohydrates_MAE": 130.91947682556628,
+                    "carbohydrates_MAE_%": 665.1197370283251,
+                    "protein_MAE": 13.394008179015476,
+                    "protein_MAE_%": 76.63065756460456
+                },
+                "exact_match": {
+                    "calories_MAE": 265.79590200767814,
+                    "calories_MAE_%": 485.11947305502133,
+                    "mass_MAE": 17.92212255433148,
+                    "mass_MAE_%": 52.18711133964702,
+                    "fat_MAE": 6.835035254110294,
+                    "fat_MAE_%": 183.67404190067853,
+                    "carbohydrates_MAE": 15.40055934186542,
+                    "carbohydrates_MAE_%": 468.72007013767853,
+                    "protein_MAE": 1.4621957048443355,
+                    "protein_MAE_%": 51.00354772212014
+                }
+            }
+        },
+        "1 Example (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 138.19077982247595,
+                    "calories_MAE_%": 54.093386954967,
+                    "mass_MAE": 99.25579413396464,
+                    "mass_MAE_%": 49.99968956185095,
+                    "fat_MAE": 9.067217314995016,
+                    "fat_MAE_%": 70.66835363301347,
+                    "carbohydrates_MAE": 11.911852113407551,
+                    "carbohydrates_MAE_%": 60.51664838033285,
+                    "protein_MAE": 12.450907803072601,
+                    "protein_MAE_%": 71.23493128222444
+                },
+                "exact_match": {
+                    "calories_MAE": 30.410930161670127,
+                    "calories_MAE_%": 55.50474745361685,
+                    "mass_MAE": 17.978665652067544,
+                    "mass_MAE_%": 52.35175818480137,
+                    "fat_MAE": 2.5594051918644563,
+                    "fat_MAE_%": 68.77745014828281,
+                    "carbohydrates_MAE": 1.756102426081488,
+                    "carbohydrates_MAE_%": 53.44743876180282,
+                    "protein_MAE": 1.6207943826843918,
+                    "protein_MAE_%": 56.53570405870413
+                }
+            }
+        },
+        "1 Example (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 149.53365473918356,
+                    "calories_MAE_%": 58.533440935699076,
+                    "mass_MAE": 99.60766383939676,
+                    "mass_MAE_%": 50.17694244861019,
+                    "fat_MAE": 9.850336239389605,
+                    "fat_MAE_%": 76.77184968513741,
+                    "carbohydrates_MAE": 13.402111191950187,
+                    "carbohydrates_MAE_%": 68.08771993101588,
+                    "protein_MAE": 12.415053045501478,
+                    "protein_MAE_%": 71.02979674648485
+                },
+                "exact_match": {
+                    "calories_MAE": 34.83810065428378,
+                    "calories_MAE_%": 63.58503236500512,
+                    "mass_MAE": 18.4193593383905,
+                    "mass_MAE_%": 53.63500632715141,
+                    "fat_MAE": 2.6725952914818287,
+                    "fat_MAE_%": 71.81914376461947,
+                    "carbohydrates_MAE": 2.391845713719156,
+                    "carbohydrates_MAE_%": 72.79645276553654,
+                    "protein_MAE": 1.6492836278406051,
+                    "protein_MAE_%": 57.529451044882556
+                }
+            }
+        },
+        "5 Examples (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 184.62409580927732,
+                    "calories_MAE_%": 72.26924016675835,
+                    "mass_MAE": 105.97615379289941,
+                    "mass_MAE_%": 53.38504252408917,
+                    "fat_MAE": 11.921071888390532,
+                    "fat_MAE_%": 92.91081206360397,
+                    "carbohydrates_MAE": 17.223968441392504,
+                    "carbohydrates_MAE_%": 87.50417919548237,
+                    "protein_MAE": 13.367692037327416,
+                    "protein_MAE_%": 76.48009596906375
+                },
+                "exact_match": {
+                    "calories_MAE": 54.51768055253057,
+                    "calories_MAE_%": 65.98839081851126,
+                    "mass_MAE": 41.40699290138067,
+                    "mass_MAE_%": 82.4288520984103,
+                    "fat_MAE": 3.775393403153846,
+                    "fat_MAE_%": 65.15270124161627,
+                    "carbohydrates_MAE": 3.117959342861933,
+                    "carbohydrates_MAE_%": 64.9410867262385,
+                    "protein_MAE": 3.136223695587771,
+                    "protein_MAE_%": 80.43148575249887
+                }
+            }
+        },
+        "5 Examples (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 153.00393627869926,
+                    "calories_MAE_%": 59.89184764272288,
+                    "mass_MAE": 96.95455515378659,
+                    "mass_MAE_%": 48.84045008751622,
+                    "fat_MAE": 8.67808765068396,
+                    "fat_MAE_%": 67.63554303949736,
+                    "carbohydrates_MAE": 14.547112103192239,
+                    "carbohydrates_MAE_%": 73.90475131128326,
+                    "protein_MAE": 11.626991177122235,
+                    "protein_MAE_%": 66.52108670477341
+                },
+                "exact_match": {
+                    "calories_MAE": 47.193901155723175,
+                    "calories_MAE_%": 57.12366267514467,
+                    "mass_MAE": 21.08958402114181,
+                    "mass_MAE_%": 41.983010121890075,
+                    "fat_MAE": 3.3009688503229104,
+                    "fat_MAE_%": 56.96546408469904,
+                    "carbohydrates_MAE": 3.2182361150310057,
+                    "carbohydrates_MAE_%": 67.02965871899632,
+                    "protein_MAE": 2.2167271290943518,
+                    "protein_MAE_%": 56.85010822147852
+                }
+            }
+        },
+        "5 Examples (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 128.50659232054434,
+                    "calories_MAE_%": 50.30260943305566,
+                    "mass_MAE": 96.9471391545426,
+                    "mass_MAE_%": 48.83671430903371,
+                    "fat_MAE": 8.39011933179397,
+                    "fat_MAE_%": 65.39116681165868,
+                    "carbohydrates_MAE": 11.665264283705838,
+                    "carbohydrates_MAE_%": 59.26389030015726,
+                    "protein_MAE": 10.088118225010541,
+                    "protein_MAE_%": 57.71678819661979
+                },
+                "exact_match": {
+                    "calories_MAE": 37.522972117781485,
+                    "calories_MAE_%": 45.41793641412231,
+                    "mass_MAE": 21.088576084778033,
+                    "mass_MAE_%": 41.98100362415545,
+                    "fat_MAE": 2.827252536716293,
+                    "fat_MAE_%": 48.79044915038544,
+                    "carbohydrates_MAE": 2.1053999365127365,
+                    "carbohydrates_MAE_%": 43.85142486976459,
+                    "protein_MAE": 1.8294625776970337,
+                    "protein_MAE_%": 46.91833476667601
+                }
+            }
+        },
+        "5 Examples (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 890.8045480933615,
+                    "calories_MAE_%": 348.6964556040622,
+                    "mass_MAE": 98.52387271453713,
+                    "mass_MAE_%": 49.63098721984307,
+                    "fat_MAE": 25.362924631591326,
+                    "fat_MAE_%": 197.67433213149462,
+                    "carbohydrates_MAE": 72.4166485426239,
+                    "carbohydrates_MAE_%": 367.9035648707751,
+                    "protein_MAE": 10.896322861247723,
+                    "protein_MAE_%": 62.34074033207157
+                },
+                "exact_match": {
+                    "calories_MAE": 285.40734736486706,
+                    "calories_MAE_%": 345.45804937978494,
+                    "mass_MAE": 37.592322038401406,
+                    "mass_MAE_%": 74.83499129529585,
+                    "fat_MAE": 9.645151327469872,
+                    "fat_MAE_%": 166.44826002606007,
+                    "carbohydrates_MAE": 18.04387607535641,
+                    "carbohydrates_MAE_%": 375.81917922369416,
+                    "protein_MAE": 2.0346784655402708,
+                    "protein_MAE_%": 52.18129441539976
+                }
+            }
+        },
+        "5 Examples (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 151.35530643520494,
+                    "calories_MAE_%": 59.24650811873865,
+                    "mass_MAE": 90.89984708745449,
+                    "mass_MAE_%": 45.790416320261855,
+                    "fat_MAE": 8.677884359852358,
+                    "fat_MAE_%": 67.63395862524116,
+                    "carbohydrates_MAE": 11.582150249287704,
+                    "carbohydrates_MAE_%": 58.841640028036124,
+                    "protein_MAE": 10.716616987806141,
+                    "protein_MAE_%": 61.31259557764137
+                },
+                "exact_match": {
+                    "calories_MAE": 46.20532917265726,
+                    "calories_MAE_%": 55.92709169652558,
+                    "mass_MAE": 21.07668011491535,
+                    "mass_MAE_%": 41.957322330932506,
+                    "fat_MAE": 3.300717202239623,
+                    "fat_MAE_%": 56.96112134458228,
+                    "carbohydrates_MAE": 1.9468746074293624,
+                    "carbohydrates_MAE_%": 40.5496476455435,
+                    "protein_MAE": 1.9201309901172539,
+                    "protein_MAE_%": 49.24361377404984
+                }
+            }
+        },
+        "5 Examples (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 165.2918574527147,
+                    "calories_MAE_%": 64.70183044904353,
+                    "mass_MAE": 103.46768055187707,
+                    "mass_MAE_%": 52.12140966094322,
+                    "fat_MAE": 9.482399414186135,
+                    "fat_MAE_%": 73.90421248457238,
+                    "carbohydrates_MAE": 16.27092273694268,
+                    "carbohydrates_MAE_%": 82.66235180898724,
+                    "protein_MAE": 11.64413522835405,
+                    "protein_MAE_%": 66.61917234886563
+                },
+                "exact_match": {
+                    "calories_MAE": 52.12446647081143,
+                    "calories_MAE_%": 63.09163614119737,
+                    "mass_MAE": 22.104668950215917,
+                    "mass_MAE_%": 44.003738497052645,
+                    "fat_MAE": 4.0519466882385595,
+                    "fat_MAE_%": 69.92523528944822,
+                    "carbohydrates_MAE": 3.8074624596794338,
+                    "carbohydrates_MAE_%": 79.3021084020878,
+                    "protein_MAE": 2.2218163337579515,
+                    "protein_MAE_%": 56.980625790415885
+                }
+            }
+        },
+        "10 Examples (__twostep_base__)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 177.08272305191005,
+                    "calories_MAE_%": 69.31724586395491,
+                    "mass_MAE": 98.87775133530572,
+                    "mass_MAE_%": 49.80925208926846,
+                    "fat_MAE": 12.89008801662722,
+                    "fat_MAE_%": 100.46315938774676,
+                    "carbohydrates_MAE": 13.204519289092703,
+                    "carbohydrates_MAE_%": 67.08387942038965,
+                    "protein_MAE": 13.593962732279685,
+                    "protein_MAE_%": 77.77465036309184
+                },
+                "exact_match": {
+                    "calories_MAE": 72.47570715345759,
+                    "calories_MAE_%": 76.0727397988248,
+                    "mass_MAE": 45.92241404733728,
+                    "mass_MAE_%": 81.14981170183245,
+                    "fat_MAE": 5.082574052291913,
+                    "fat_MAE_%": 79.20626363162232,
+                    "carbohydrates_MAE": 3.6851616035936883,
+                    "carbohydrates_MAE_%": 69.81547356870095,
+                    "protein_MAE": 4.5417763901972386,
+                    "protein_MAE_%": 88.90540906081652
+                }
+            }
+        },
+        "10 Examples (linear_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 162.80400030073628,
+                    "calories_MAE_%": 63.72798385968689,
+                    "mass_MAE": 104.10269104152937,
+                    "mass_MAE_%": 52.44129352896488,
+                    "fat_MAE": 8.824617086188278,
+                    "fat_MAE_%": 68.77756860325442,
+                    "carbohydrates_MAE": 15.099439896659504,
+                    "carbohydrates_MAE_%": 76.7107823591605,
+                    "protein_MAE": 11.747999037250404,
+                    "protein_MAE_%": 67.21340462545642
+                },
+                "exact_match": {
+                    "calories_MAE": 57.088002869912174,
+                    "calories_MAE_%": 59.921330312266,
+                    "mass_MAE": 26.646495982067634,
+                    "mass_MAE_%": 47.087205154969496,
+                    "fat_MAE": 3.8998233767105153,
+                    "fat_MAE_%": 60.77440983928351,
+                    "carbohydrates_MAE": 3.5013890527201843,
+                    "carbohydrates_MAE_%": 66.33389825443246,
+                    "protein_MAE": 3.1170765424490905,
+                    "protein_MAE_%": 61.016866809745586
+                }
+            }
+        },
+        "10 Examples (linear_mass_only_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 138.46183533828693,
+                    "calories_MAE_%": 54.19948890273716,
+                    "mass_MAE": 104.13158406864774,
+                    "mass_MAE_%": 52.45584827006615,
+                    "fat_MAE": 8.466668766808247,
+                    "fat_MAE_%": 65.98778012267418,
+                    "carbohydrates_MAE": 12.092658949137386,
+                    "carbohydrates_MAE_%": 61.435214494019505,
+                    "protein_MAE": 10.34722633689831,
+                    "protein_MAE_%": 59.19921412386319
+                },
+                "exact_match": {
+                    "calories_MAE": 46.90028181864832,
+                    "calories_MAE_%": 49.2279837674047,
+                    "mass_MAE": 26.650800495901112,
+                    "mass_MAE_%": 47.094811690782144,
+                    "fat_MAE": 3.421549982787668,
+                    "fat_MAE_%": 53.32105094331988,
+                    "carbohydrates_MAE": 2.317418933128889,
+                    "carbohydrates_MAE_%": 43.903556391038975,
+                    "protein_MAE": 2.7299309298427277,
+                    "protein_MAE_%": 53.43847983121485
+                }
+            }
+        },
+        "10 Examples (power_law_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 822.3992490685023,
+                    "calories_MAE_%": 321.9198912437233,
+                    "mass_MAE": 96.40789054600012,
+                    "mass_MAE_%": 48.565070086557455,
+                    "fat_MAE": 26.105863084469902,
+                    "fat_MAE_%": 203.4646684046488,
+                    "carbohydrates_MAE": 50.83732869536615,
+                    "carbohydrates_MAE_%": 258.27257725858396,
+                    "protein_MAE": 10.86492763863858,
+                    "protein_MAE_%": 62.16111997341784
+                },
+                "exact_match": {
+                    "calories_MAE": 360.1513480858798,
+                    "calories_MAE_%": 378.02597404289077,
+                    "mass_MAE": 25.909652206419917,
+                    "mass_MAE_%": 45.78512348335174,
+                    "fat_MAE": 11.678010804149386,
+                    "fat_MAE_%": 181.98880979004872,
+                    "carbohydrates_MAE": 20.404300215614196,
+                    "carbohydrates_MAE_%": 386.5599492304153,
+                    "protein_MAE": 2.8610159407705296,
+                    "protein_MAE_%": 56.00447285179411
+                }
+            }
+        },
+        "10 Examples (piecewise_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 158.69022935693636,
+                    "calories_MAE_%": 62.11768971565691,
+                    "mass_MAE": 104.08756444678151,
+                    "mass_MAE_%": 52.43367357037082,
+                    "fat_MAE": 8.631411594031087,
+                    "fat_MAE_%": 67.27175777185138,
+                    "carbohydrates_MAE": 12.125584250576985,
+                    "carbohydrates_MAE_%": 61.602487296860474,
+                    "protein_MAE": 11.679830999255653,
+                    "protein_MAE_%": 66.82339727988746
+                },
+                "exact_match": {
+                    "calories_MAE": 55.43660527154869,
+                    "calories_MAE_%": 58.18797240878654,
+                    "mass_MAE": 26.64424240593389,
+                    "mass_MAE_%": 47.08322284518237,
+                    "fat_MAE": 3.928175834328487,
+                    "fat_MAE_%": 61.21625135690602,
+                    "carbohydrates_MAE": 2.3250558060888094,
+                    "carbohydrates_MAE_%": 44.04823712953384,
+                    "protein_MAE": 3.1093431456418728,
+                    "protein_MAE_%": 60.86548533529447
+                }
+            }
+        },
+        "10 Examples (linear_bias_all5_ts)": {
+            "macro": {
+                "overall": {
+                    "calories_MAE": 173.90589458416767,
+                    "calories_MAE_%": 68.07370840207865,
+                    "mass_MAE": 108.03396824241504,
+                    "mass_MAE_%": 54.42165791313945,
+                    "fat_MAE": 9.998583798544287,
+                    "fat_MAE_%": 77.927266013171,
+                    "carbohydrates_MAE": 16.949020513276107,
+                    "carbohydrates_MAE_%": 86.10734124532071,
+                    "protein_MAE": 11.791592719288962,
+                    "protein_MAE_%": 67.4628155915861
+                },
+                "exact_match": {
+                    "calories_MAE": 61.59542645494101,
+                    "calories_MAE_%": 64.65246126654503,
+                    "mass_MAE": 27.29890853392071,
+                    "mass_MAE_%": 48.24008783400755,
+                    "fat_MAE": 4.846788702867046,
+                    "fat_MAE_%": 75.53181120754034,
+                    "carbohydrates_MAE": 4.211552515945486,
+                    "carbohydrates_MAE_%": 79.78796182871736,
+                    "protein_MAE": 3.131249827747263,
+                    "protein_MAE_%": 61.29430929456043
                 }
             }
         }

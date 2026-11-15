@@ -1,0 +1,60 @@
+{
+    "_strategy_info": {
+        "name": "power_law_all5",
+        "description": "Power-law correction: scale * (pred_val ^ power) for each nutrient (10 parameters)",
+        "nutrients_optimized": [
+            "mass",
+            "cal",
+            "fat",
+            "carbs",
+            "protein"
+        ],
+        "param_type": "power_scale",
+        "n_trials": 5000
+    },
+    "optuna_train_twostep_prediction_gemma4_e2b_q8.json": {
+        "best_combined_mae_perc": 58.27,
+        "optimal_scalars": {
+            "scale_mass": 0.5803040338306222,
+            "power_mass": 0.9828053963392526,
+            "scale_cal": 4.9995906330688324,
+            "power_cal": 0.5981325062219939,
+            "scale_fat": 2.340204484797353,
+            "power_fat": 0.4496918377550075,
+            "scale_carbs": 4.983127836390435,
+            "power_carbs": 0.30889623433261665,
+            "scale_protein": 2.558456745791577,
+            "power_protein": 0.5198491643986036
+        }
+    },
+    "optuna_train_twostep_prediction_gemma4_e4b_q4.json": {
+        "best_combined_mae_perc": 55.09,
+        "optimal_scalars": {
+            "scale_mass": 0.4989173538539668,
+            "power_mass": 1.0381915337348737,
+            "scale_cal": 2.394442408681307,
+            "power_cal": 0.7487463584642514,
+            "scale_fat": 1.6085073992908043,
+            "power_fat": 0.648147549460729,
+            "scale_carbs": 4.999900399267317,
+            "power_carbs": 0.36887883133666344,
+            "scale_protein": 0.7598679007698266,
+            "power_protein": 0.8428878991209059
+        }
+    },
+    "optuna_train_twostep_prediction_gemma4_e4b_q8.json": {
+        "best_combined_mae_perc": 58.72,
+        "optimal_scalars": {
+            "scale_mass": 0.4858374160135458,
+            "power_mass": 0.9813047458581345,
+            "scale_cal": 2.977437787406263,
+            "power_cal": 0.6607128657386278,
+            "scale_fat": 1.7718750989280925,
+            "power_fat": 0.5539880266964756,
+            "scale_carbs": 2.9966656514121928,
+            "power_carbs": 0.41678806722844347,
+            "scale_protein": 0.37116033703463014,
+            "power_protein": 0.9476340743273687
+        }
+    }
+}

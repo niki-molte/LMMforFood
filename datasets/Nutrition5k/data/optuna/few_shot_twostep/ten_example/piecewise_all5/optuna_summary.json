@@ -1,0 +1,75 @@
+{
+    "_strategy_info": {
+        "name": "piecewise_all5",
+        "description": "Threshold multiplier: scale_small if pred < threshold, otherwise scale_large (15 parameters)",
+        "nutrients_optimized": [
+            "mass",
+            "cal",
+            "fat",
+            "carbs",
+            "protein"
+        ],
+        "param_type": "piecewise_scale",
+        "n_trials": 5000
+    },
+    "optuna_train_twostep_prediction_gemma4_e2b_q8.json": {
+        "best_combined_mae_perc": 58.62,
+        "optimal_scalars": {
+            "threshold_mass": 1185.1245165833811,
+            "scale_small_mass": 0.5222645856315054,
+            "scale_large_mass": 2.9328230843617673,
+            "threshold_cal": 1194.7831415953256,
+            "scale_small_cal": 0.4212195427213178,
+            "scale_large_cal": 0.14944194966512028,
+            "threshold_fat": 96.42073231479961,
+            "scale_small_fat": 0.4077279031178119,
+            "scale_large_fat": 0.008214295513621753,
+            "threshold_carbs": 194.76905168522288,
+            "scale_small_carbs": 0.2548296389234344,
+            "scale_large_carbs": 0.008298039568851957,
+            "threshold_protein": 147.0603147972423,
+            "scale_small_protein": 0.44074865554859655,
+            "scale_large_protein": 0.009274476866948813
+        }
+    },
+    "optuna_train_twostep_prediction_gemma4_e4b_q4.json": {
+        "best_combined_mae_perc": 55.13,
+        "optimal_scalars": {
+            "threshold_mass": 65.49944835363391,
+            "scale_small_mass": 1.7105621527553874,
+            "scale_large_mass": 0.6185933037966548,
+            "threshold_cal": 785.6048554348288,
+            "scale_small_cal": 0.5234184167551564,
+            "scale_large_cal": 0.35174982367946067,
+            "threshold_fat": 38.06023032645763,
+            "scale_small_fat": 0.6482423805877886,
+            "scale_large_fat": 0.28469057807414516,
+            "threshold_carbs": 43.86849707285128,
+            "scale_small_carbs": 0.848616126498846,
+            "scale_large_carbs": 0.27046021162714007,
+            "threshold_protein": 41.80145929908758,
+            "scale_small_protein": 0.6081040462693454,
+            "scale_large_protein": 0.3788224197092058
+        }
+    },
+    "optuna_train_twostep_prediction_gemma4_e4b_q8.json": {
+        "best_combined_mae_perc": 58.15,
+        "optimal_scalars": {
+            "threshold_mass": 343.3416724624856,
+            "scale_small_mass": 0.5635769223484753,
+            "scale_large_mass": 0.4086245738111042,
+            "threshold_cal": 1758.4094971473608,
+            "scale_small_cal": 0.3100010298783896,
+            "scale_large_cal": 0.12786834470025155,
+            "threshold_fat": 40.919752157890045,
+            "scale_small_fat": 0.5380128592299374,
+            "scale_large_fat": 0.1761857153072233,
+            "threshold_carbs": 65.4958381743416,
+            "scale_small_carbs": 0.5148648043469207,
+            "scale_large_carbs": 0.2068863656832633,
+            "threshold_protein": 116.45329179740695,
+            "scale_small_protein": 0.30022382902080835,
+            "scale_large_protein": 0.08047346634384248
+        }
+    }
+}
