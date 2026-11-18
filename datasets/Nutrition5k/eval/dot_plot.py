@@ -38,6 +38,7 @@ def plot_dot_grid(
     legend_title="Strategies (Left=1 ex., Center=5 ex., Right=10 ex.)",
     suptitle=None,
     legend_ncol=None,
+    err_fn=None,
 ):
     """
     Draw a grid of dot-plots (one per 'field') plus the individual panels.
@@ -51,6 +52,8 @@ def plot_dot_grid(
     extra_legend_handles: list of matplotlib handles to prepend to the marker legend.
     title_fn(field) -> str
     ylabel_fn(field) -> str
+    err_fn(group, example, strategy, field) -> float | None
+        Uncertainty (SEM) drawn as a vertical error bar on each point.
     """
 
     def draw_panel(ax, field):
@@ -91,6 +94,12 @@ def plot_dot_grid(
                     lw = 1.5 if is_below else 0.6
                     scale = st.MARKER_SIZE_SCALE.get(markers[strat], 1.0)
                     size = (110 if is_below else 80) * scale
+                    err = err_fn(g, ex, strat, field) if err_fn else None
+                    if err:
+                        lower = min(err, 0.95 * plot_val) if log_scale else err
+                        ax.errorbar(x_pos, plot_val, yerr=[[lower], [err]], fmt='none',
+                                    ecolor=colors[strat], elinewidth=1.3, capsize=3,
+                                    capthick=1.3, alpha=0.9, zorder=3)
                     ax.scatter(x_pos, plot_val, color=colors[strat], marker=markers[strat],
                                 s=size, edgecolors=edgecolor, linewidth=lw, zorder=4)
 
@@ -102,6 +111,11 @@ def plot_dot_grid(
     _legend_strats = legend_strategies if legend_strategies is not None else strategies
     strategy_handles = st.strategy_legend_handles(_legend_strats, colors, markers)
     all_legend_handles = (list(extra_legend_handles) if extra_legend_handles else []) + strategy_handles
+    if err_fn is not None:
+        import matplotlib.lines as _ml
+        all_legend_handles.append(_ml.Line2D([], [], color='#444444', marker='|', linestyle='none',
+                                             markersize=12, markeredgewidth=1.5,
+                                             label='Error bar: ±1 SEM'))
 
     # ---- combined panel ----
     rows, cols = grid_shape
@@ -114,6 +128,8 @@ def plot_dot_grid(
         if h < len(axes):
             axes[h].axis('off')
 
+    if legend_ncol and err_fn is not None:
+        legend_ncol += 1
     st.add_bottom_legend(fig, all_legend_handles, legend_title, ncol=legend_ncol)
     if suptitle:
         plt.suptitle(suptitle, fontsize=18, fontweight='bold', y=0.98)

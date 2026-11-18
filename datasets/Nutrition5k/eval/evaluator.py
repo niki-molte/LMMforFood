@@ -11,6 +11,15 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 
+def _sem(values) -> float:
+    """Standard error of the mean (sample std, ddof=1, divided by sqrt(n)).
+    It measures the dispersion of the per-sample errors around their mean."""
+    n = len(values)
+    if n < 2:
+        return 0.0
+    return statistics.stdev(values) / (n ** 0.5)
+
+
 class Nutrition5kEvaluator:
     def __init__(self, pred_json_path: str, nlp_model, vocabulary: list, vocab_embeddings, threshold: float,
                  optuna_scalars: dict = None):
@@ -81,6 +90,8 @@ class Nutrition5kEvaluator:
             "std": {"P": 0.0, "R": 0.0, "F1": 0.0, "IoU": 0.0}
         }
         valid_items = 0
+        per_item = {"non_std": {k: [] for k in ("P", "R", "F1", "IoU")},
+                    "std": {k: [] for k in ("P", "R", "F1", "IoU")}}
         self.similarity_log = []
 
         for item in self.predictions:
@@ -106,21 +117,26 @@ class Nutrition5kEvaluator:
             m_exact = self._compute_set_metrics(pred_set_exact, gt_set)
             for k in sums["non_std"]:
                 sums["non_std"][k] += m_exact[k]
+                per_item["non_std"][k].append(m_exact[k])
 
             pred_set_std = self._standardize_list(pred_list, recipe_id)
             m_std = self._compute_set_metrics(pred_set_std, gt_set)
             for k in sums["std"]:
                 sums["std"][k] += m_std[k]
+                per_item["std"][k].append(m_std[k])
 
             valid_items += 1
 
         if valid_items == 0:
             return {}
 
-        return {
-            "Non-Standardized": {k: v / valid_items for k, v in sums["non_std"].items()},
-            "Standardized": {k: v / valid_items for k, v in sums["std"].items()}
-        }
+        def _pack(key):
+            out = {k: v / valid_items for k, v in sums[key].items()}
+            # uncertainty = SEM of the per-recipe scores
+            out.update({f"{k}_sem": _sem(per_item[key][k]) for k in sums[key]})
+            return out
+
+        return {"Non-Standardized": _pack("non_std"), "Standardized": _pack("std")}
 
     def evaluate_macronutrients(self) -> dict:
         DATA_FIELDNAMES = ["calories", "mass", "fat", "carbohydrates", "protein"]
@@ -279,6 +295,11 @@ class Nutrition5kEvaluator:
             mean_gt = statistics.mean(groundtruth_values[field])
             output_stats["overall"][f"{field}_MAE"] = mean_err
             output_stats["overall"][f"{field}_MAE_%"] = (100 * mean_err / mean_gt) if mean_gt > 0 else 0.0
+            # Uncertainty: SEM of the per-recipe absolute errors (vs. the ground truth);
+            # for the % version it is rescaled by the same mean ground truth.
+            sem_err = _sem(err_values[field])
+            output_stats["overall"][f"{field}_MAE_sem"] = sem_err
+            output_stats["overall"][f"{field}_MAE_%_sem"] = (100 * sem_err / mean_gt) if mean_gt > 0 else 0.0
 
             if len(err_values_exact[field]) > 0:
                 mean_err_ex = statistics.mean(err_values_exact[field])
@@ -288,6 +309,9 @@ class Nutrition5kEvaluator:
                 mean_gt_ex = 0.0
             output_stats["exact_match"][f"{field}_MAE"] = mean_err_ex
             output_stats["exact_match"][f"{field}_MAE_%"] = (100 * mean_err_ex / mean_gt_ex) if mean_gt_ex > 0 else 0.0
+            sem_ex = _sem(err_values_exact[field])
+            output_stats["exact_match"][f"{field}_MAE_sem"] = sem_ex
+            output_stats["exact_match"][f"{field}_MAE_%_sem"] = (100 * sem_ex / mean_gt_ex) if mean_gt_ex > 0 else 0.0
 
         return output_stats
 

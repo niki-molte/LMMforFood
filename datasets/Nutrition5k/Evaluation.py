@@ -163,6 +163,13 @@ def main():
             optuna_strategy=args.optuna_strategy
         )
 
+        # --- 6) Piecewise thresholds chosen by Optuna ---
+        run_step(
+            "Piecewise Optuna thresholds plots",
+            runners.evaluate_piecewise_thresholds,
+            output_dir=os.path.join(OUTPUT_DIR, "few_shot_metrics", "piecewise_thresholds"),
+        )
+
         print(f"\nAll steps have been executed (see above for any failed steps). "
               f"Output in: {OUTPUT_DIR}")
 

@@ -309,4 +309,4 @@ if __name__ == "__main__":
         print("Error: you must specify either (--input and --output) or --batch_dir.")
 
 
-# python evaluation_lookup_table.py --metadata data/metadata/ingredients_metadata.csv --batch_dir data/optuna/few_shot_standard
+# python SemanticMatching.py --metadata data/metadata/ingredients_metadata.csv --batch_dir data/optuna/few_shot_standard

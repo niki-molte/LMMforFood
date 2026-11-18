@@ -30,6 +30,33 @@ def _is_twostep_file(filename):
     return "twostep" in low and "hybrid" not in low
 
 
+def _entry_has_sem(entry):
+    """True if a cached result already contains the uncertainty (SEM) values."""
+    try:
+        return "mass_MAE_sem" in entry["macro"]["overall"]
+    except (KeyError, TypeError):
+        return False
+
+
+NLP_KEYS = ["P", "R", "F1", "IoU"]
+
+
+def _csv_has_sem(path):
+    """True if the CSV cache already has the *_sem columns (otherwise it is recomputed)."""
+    with open(path, 'r', encoding='utf-8') as f:
+        header = next(csv.reader(f), [])
+    return any(c.endswith("_sem") for c in header)
+
+
+def _sem_fieldnames(prefix_nlp=True):
+    names = []
+    for std_key in ["Non-Standardized", "Standardized"]:
+        names += [f"nlp_{std_key}_{k}_sem" for k in NLP_KEYS]
+    for m_key in ["overall", "exact_match"]:
+        names += [f"macro_{m_key}_{fn}_{metric}_sem" for fn in st.MACRO_FIELDS for metric in ["MAE", "MAE_%"]]
+    return names
+
+
 def _norm_key(text):
     return text.lower().replace("_", "").replace("-", "")
 
@@ -139,18 +166,24 @@ def evaluate_few_shot_learning(resources, threshold,
     def load_fs_csv(path):
         if not os.path.exists(path):
             return False
+        if not _csv_has_sem(path):
+            print(f"[INFO] {path} has no uncertainty columns: everything will be re-evaluated.")
+            return False
         with open(path, 'r', encoding='utf-8') as f:
             for row in csv.DictReader(f):
                 g, v = row['Group'], row['Variant']
                 if g in all_results:
                     all_results[g][v] = {
                         "nlp": {
-                            "Non-Standardized": {k: float(row[f"nlp_Non-Standardized_{k}"]) for k in ["P", "R", "F1", "IoU"]},
-                            "Standardized": {k: float(row[f"nlp_Standardized_{k}"]) for k in ["P", "R", "F1", "IoU"]},
+                            sk: {**{k: float(row[f"nlp_{sk}_{k}"]) for k in NLP_KEYS},
+                                 **{f"{k}_sem": float(row[f"nlp_{sk}_{k}_sem"]) for k in NLP_KEYS}}
+                            for sk in ["Non-Standardized", "Standardized"]
                         },
                         "macro": {
-                            m: {f"{fn}_{metric}": float(row[f"macro_{m}_{fn}_{metric}"])
-                                for fn in st.MACRO_FIELDS for metric in ["MAE", "MAE_%"]}
+                            m: {**{f"{fn}_{metric}": float(row[f"macro_{m}_{fn}_{metric}"])
+                                   for fn in st.MACRO_FIELDS for metric in ["MAE", "MAE_%"]},
+                                **{f"{fn}_{metric}_sem": float(row[f"macro_{m}_{fn}_{metric}_sem"])
+                                   for fn in st.MACRO_FIELDS for metric in ["MAE", "MAE_%"]}}
                             for m in ["overall", "exact_match"]
                         }
                     }
@@ -237,6 +270,7 @@ def evaluate_few_shot_learning(resources, threshold,
                 fieldnames += [f"nlp_{std_key}_{k}" for k in ["P", "R", "F1", "IoU"]]
             for m_key in ["overall", "exact_match"]:
                 fieldnames += [f"macro_{m_key}_{fn}_{metric}" for fn in st.MACRO_FIELDS for metric in ["MAE", "MAE_%"]]
+            fieldnames += _sem_fieldnames()
 
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
@@ -252,6 +286,10 @@ def evaluate_few_shot_learning(resources, threshold,
                         for fn in st.MACRO_FIELDS:
                             for metric in ["MAE", "MAE_%"]:
                                 row[f"macro_{m_key}_{fn}_{metric}"] = res["macro"][m_key][f"{fn}_{metric}"]
+                                row[f"macro_{m_key}_{fn}_{metric}_sem"] = res["macro"][m_key][f"{fn}_{metric}_sem"]
+                    for std_key in ["Non-Standardized", "Standardized"]:
+                        for k in NLP_KEYS:
+                            row[f"nlp_{std_key}_{k}_sem"] = res["nlp"][std_key][f"{k}_sem"]
                     writer.writerow(row)
 
     if updated_fs:
@@ -338,6 +376,11 @@ def evaluate_optuna_strategy_comparison(resources, threshold,
         except (json.JSONDecodeError, ValueError) as e:
             print(f"[!] Corrupted cache ({e}), it will be recreated.")
             results = {g: {} for g in st.GROUPS}
+
+    # Old caches without uncertainty (SEM): drop the entries so they are re-evaluated.
+    for _g in list(results):
+        for _k in [k for k, v in results[_g].items() if not _entry_has_sem(v)]:
+            del results[_g][_k]
 
     updated = False
 
@@ -495,119 +538,7 @@ def evaluate_optuna_strategy_comparison(resources, threshold,
 
 
 # ---------------------------------------------------------------------------
-# 3) YOLO vs YOLO Optuna comparison (dot-plot, few-shot style)
-# ---------------------------------------------------------------------------
-def evaluate_yolo_optuna_comparison(resources, threshold,
-                                     base_dir="data/prediction", semantic_matching=False, optuna_strategy="linear_all5"):
-    run_label = "Semantic Matching" if semantic_matching else "Normal"
-    print(f"\n{'=' * 70}\nSTARTING YOLO OPTUNA EVALUATION COMPARISON ({run_label}, strategy={optuna_strategy})\n{'=' * 70}")
-
-    if semantic_matching:
-        folders = ["one_example_semantic_matching", "five_example_semantic_matching", "ten_example_semantic_matching"]
-        folder_to_prefix = {"one_example_semantic_matching": "1 Example", "five_example_semantic_matching": "5 Examples",
-                             "ten_example_semantic_matching": "10 Examples"}
-        yolo_optuna_json_path = f"data/evaluation/few_shot_yolo_optuna_evaluation_semantic_matching_{optuna_strategy}.json"
-        output_dir = f"data/evaluation/yolo_optuna_metrics_semantic_matching_{optuna_strategy}"
-    else:
-        folders = ["one_example", "five_example", "ten_example"]
-        folder_to_prefix = {"one_example": "1 Example", "five_example": "5 Examples", "ten_example": "10 Examples"}
-        yolo_optuna_json_path = f"data/evaluation/few_shot_yolo_optuna_evaluation_{optuna_strategy}.json"
-        output_dir = f"data/evaluation/yolo_optuna_metrics_{optuna_strategy}"
-
-    results = {}
-    if os.path.exists(yolo_optuna_json_path):
-        print(f"Loading existing YOLO Optuna evaluation from {yolo_optuna_json_path}")
-        try:
-            with open(yolo_optuna_json_path, 'r', encoding='utf-8') as f:
-                results = json.load(f)
-        except (json.JSONDecodeError, ValueError) as e:
-            print(f"[!] Corrupted or empty cache file ({e}), it will be recreated from scratch.")
-            os.remove(yolo_optuna_json_path)
-            results = {}
-
-    updated = False
-
-    for folder in folders:
-        pred_folder = os.path.join(base_dir, folder)
-        optuna_summary_path = os.path.join("data", "optuna", "few_shot_yolo", folder,
-                                             optuna_strategy, "optuna_summary.json")
-        if not os.path.exists(pred_folder) or not os.path.exists(optuna_summary_path):
-            print(f"[!] Skipping {folder}: pred_folder or optuna_summary not found (strategy='{optuna_strategy}')")
-            continue
-
-        with open(optuna_summary_path, 'r', encoding='utf-8') as f:
-            optuna_data = json.load(f)
-
-        for filename in os.listdir(pred_folder):
-            if not filename.endswith('.json') or 'yolo' not in filename.lower():
-                continue
-            g, _ = parse_model_name(filename)
-            if g not in st.GROUPS:
-                continue
-
-            prefix = folder_to_prefix[folder]
-            var_name = f"{prefix} (YOLO)"
-            var_name_optuna = f"{prefix} (YOLO Optuna)"
-            results.setdefault(g, {})
-
-            if var_name_optuna in results[g] and var_name in results[g]:
-                continue
-            updated = True
-
-            model_identifier = filename.replace('test_predictions_nutrition5k_yolo_', '').replace('.json', '')
-            optuna_scalars = None
-            for key, val in optuna_data.items():
-                if key.startswith("_"):
-                    continue
-                if model_identifier in key:
-                    optuna_scalars = val.get("optimal_scalars")
-                    break
-            if not optuna_scalars:
-                print(f"[!] Could not find optuna scalars for {filename} in {optuna_summary_path}")
-                continue
-
-            print(f"Evaluating YOLO Optuna: {var_name_optuna} - {g}")
-            pred_path = os.path.join(pred_folder, filename)
-
-            if var_name not in results[g]:
-                evaluator_base = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary, resources.vocab_embeddings, threshold)
-                results[g][var_name] = {
-                    "nlp": evaluator_base.evaluate_nlp_metrics(),
-                    "macro": evaluator_base.evaluate_macronutrients(),
-                }
-
-            evaluator_opt = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary, resources.vocab_embeddings, threshold,
-                                                  optuna_scalars=optuna_scalars)
-            results[g][var_name_optuna] = {
-                "nlp": evaluator_opt.evaluate_nlp_metrics(),
-                "macro": evaluator_opt.evaluate_macronutrients(),
-            }
-
-    if updated:
-        with open(yolo_optuna_json_path, 'w', encoding='utf-8') as f:
-            json.dump(results, f, indent=4)
-
-    os.makedirs(output_dir, exist_ok=True)
-    specs = [
-        ("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", True, False),
-        ("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", True, False),
-        ("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", False, False),
-        ("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", False, False),
-        ("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Overall)", "overall", True, True),
-        ("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Overall)", "overall", True, True),
-        ("MAE", "mae_abs", "Mean Absolute Error (Value)", "Absolute MAE (Exact Match)", "exact_match", False, True),
-        ("MAE_%", "mae_perc", "Mean Absolute Error (%)", "Percentage MAE (Exact Match)", "exact_match", False, True),
-    ]
-    for metric_suffix, file_suffix, ylabel, title_prefix, subset, plot_baseline, log_scale in specs:
-        plots.plot_yolo_optuna_metrics(results, output_dir, metric_suffix, file_suffix, ylabel,
-                                        title_prefix, subset, plot_baseline, log_scale)
-
-    print(f"YOLO Optuna charts saved in {output_dir}")
-    return results
-
-
-# ---------------------------------------------------------------------------
-# 4) Threshold study (threshold loop over all the one-example models)
+# 3) Threshold study (threshold loop over all the one-example models)
 # ---------------------------------------------------------------------------
 def evaluate_threshold_study(resources, pred_json_paths,
                               thresholds, output_dir):
@@ -624,12 +555,12 @@ def evaluate_threshold_study(resources, pred_json_paths,
     updated = False
     for pred_path in pred_json_paths:
         model_name = os.path.basename(pred_path).replace('test_predictions_nutrition5k_', '').replace('.json', '')
-        if model_name in threshold_study_results:
+        if model_name in threshold_study_results and "F1_sem" in threshold_study_results[model_name]:
             continue
 
         print(f"Computing threshold study for missing model: {model_name}...")
         updated = True
-        threshold_study_results[model_name] = {'F1': [], 'IoU': []}
+        threshold_study_results[model_name] = {'F1': [], 'IoU': [], 'F1_sem': [], 'IoU_sem': []}
 
         try:
             evaluator = Nutrition5kEvaluator(pred_path, resources.nlp_model, resources.vocabulary, resources.vocab_embeddings, threshold=1.0)
@@ -639,9 +570,11 @@ def evaluate_threshold_study(resources, pred_json_paths,
                 if nlp_res and "Standardized" in nlp_res:
                     threshold_study_results[model_name]['F1'].append(nlp_res["Standardized"]["F1"])
                     threshold_study_results[model_name]['IoU'].append(nlp_res["Standardized"]["IoU"])
+                    threshold_study_results[model_name]['F1_sem'].append(nlp_res["Standardized"]["F1_sem"])
+                    threshold_study_results[model_name]['IoU_sem'].append(nlp_res["Standardized"]["IoU_sem"])
                 else:
-                    threshold_study_results[model_name]['F1'].append(0.0)
-                    threshold_study_results[model_name]['IoU'].append(0.0)
+                    for _k in ('F1', 'IoU', 'F1_sem', 'IoU_sem'):
+                        threshold_study_results[model_name][_k].append(0.0)
         except Exception as e:
             print(f"[!] Error during the threshold study of file {pred_path}: {e}")
             threshold_study_results.pop(model_name, None)
@@ -655,7 +588,7 @@ def evaluate_threshold_study(resources, pred_json_paths,
 
 
 # ---------------------------------------------------------------------------
-# 5) Per-model evaluation (one_example): feeds the NLP metrics plot
+# 4) Per-model evaluation (one_example): feeds the NLP metrics plot
 #    (bar chart) and the summary tables. Uses the same CSV cache
 #    (nlp_evaluation.csv): if a model is already present it is not
 #    recomputed, so the NLP model may never be
@@ -665,20 +598,25 @@ def evaluate_single_run_models(resources, threshold, pred_json_paths, eval_csv_p
     all_nlp_results = {}
     all_macro_results = {}
 
-    if os.path.exists(eval_csv_path):
+    if os.path.exists(eval_csv_path) and not _csv_has_sem(eval_csv_path):
+        print(f"[INFO] {eval_csv_path} has no uncertainty columns: models will be re-evaluated.")
+    elif os.path.exists(eval_csv_path):
         print(f"Loading existing evaluation results from {eval_csv_path}...")
         with open(eval_csv_path, 'r', encoding='utf-8') as f:
             for row in csv.DictReader(f):
                 m_name = row['model_name']
                 all_nlp_results[m_name] = {
-                    "Non-Standardized": {k: float(row[f"nlp_Non-Standardized_{k}"]) for k in ["P", "R", "F1", "IoU"]},
-                    "Standardized": {k: float(row[f"nlp_Standardized_{k}"]) for k in ["P", "R", "F1", "IoU"]},
+                    sk: {**{k: float(row[f"nlp_{sk}_{k}"]) for k in NLP_KEYS},
+                         **{f"{k}_sem": float(row[f"nlp_{sk}_{k}_sem"]) for k in NLP_KEYS}}
+                    for sk in ["Non-Standardized", "Standardized"]
                 }
                 all_macro_results[m_name] = {"overall": {}, "exact_match": {}}
                 for fn in st.MACRO_FIELDS:
                     for m_key in ["overall", "exact_match"]:
                         all_macro_results[m_name][m_key][f"{fn}_MAE"] = float(row[f"macro_{m_key}_{fn}_MAE"])
                         all_macro_results[m_name][m_key][f"{fn}_MAE_%"] = float(row[f"macro_{m_key}_{fn}_MAE_%"])
+                        all_macro_results[m_name][m_key][f"{fn}_MAE_sem"] = float(row[f"macro_{m_key}_{fn}_MAE_sem"])
+                        all_macro_results[m_name][m_key][f"{fn}_MAE_%_sem"] = float(row[f"macro_{m_key}_{fn}_MAE_%_sem"])
 
     updated = False
 
@@ -745,6 +683,7 @@ def evaluate_single_run_models(resources, threshold, pred_json_paths, eval_csv_p
             for m_key in ["overall", "exact_match"]:
                 for fn in st.MACRO_FIELDS:
                     fieldnames += [f"macro_{m_key}_{fn}_MAE", f"macro_{m_key}_{fn}_MAE_%"]
+            fieldnames += _sem_fieldnames()
 
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
@@ -759,6 +698,11 @@ def evaluate_single_run_models(resources, threshold, pred_json_paths, eval_csv_p
                     for fn in st.MACRO_FIELDS:
                         row[f"macro_{m_key}_{fn}_MAE"] = all_macro_results[m_name][m_key][f"{fn}_MAE"]
                         row[f"macro_{m_key}_{fn}_MAE_%"] = all_macro_results[m_name][m_key][f"{fn}_MAE_%"]
+                        row[f"macro_{m_key}_{fn}_MAE_sem"] = all_macro_results[m_name][m_key][f"{fn}_MAE_sem"]
+                        row[f"macro_{m_key}_{fn}_MAE_%_sem"] = all_macro_results[m_name][m_key][f"{fn}_MAE_%_sem"]
+                for std_key in ["Non-Standardized", "Standardized"]:
+                    for k in NLP_KEYS:
+                        row[f"nlp_{std_key}_{k}_sem"] = all_nlp_results[m_name][std_key][f"{k}_sem"]
                 writer.writerow(row)
 
     return all_nlp_results, all_macro_results
@@ -860,6 +804,8 @@ def evaluate_all_strategies_combined(resources, threshold, output_dir, optuna_st
                             col = f"macro_{subset}_{field}_{metric}"
                             if col in row and row[col]:
                                 macro[subset][f"{field}_{metric}"] = float(row[col])
+                            if f"{col}_sem" in row and row[f"{col}_sem"]:
+                                macro[subset][f"{field}_{metric}_sem"] = float(row[f"{col}_sem"])
 
                 all_results[g][key] = {"macro": macro}
 
@@ -905,3 +851,10 @@ def evaluate_all_strategies_combined(resources, threshold, output_dir, optuna_st
         )
 
     print(f"[INFO] 8 combined charts generated in: {output_dir}")
+
+
+def evaluate_piecewise_thresholds(output_dir=None):
+    """Dot-plots of the Optuna thresholds of the piecewise_all5 strategy."""
+    from . import piecewise_thresholds as pt
+    pt.plot_thresholds(pt.load_thresholds(), output_dir or pt.OUTPUT_DIR)
+    print(f"[INFO] Piecewise threshold charts generated in: {output_dir or pt.OUTPUT_DIR}")
